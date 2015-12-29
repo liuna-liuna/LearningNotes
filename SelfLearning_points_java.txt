@@ -1,0 +1,231 @@
+Java Self Learning Points
+
+1.	Difference between java and javax
+
+	Java	Javax
+Similarity	都是Java的API包
+
+Difference	java是核心包
+
+java 是java j2sdk 中的类库，也就是Java Development kit, 提供基础的类库如io库、桌面程序的类库，如awt。集合库（如Collection、List、Map）。
+
+	javax的x是extension的意思，也就是扩展包
+
+javax是java的扩展包,如j2ee 中的类库，包括servlet，jsp，ejb，数据库相关的一些东西，xml的等。
+
+2.	Difference between org.hibernate.query and javax.persistence.query
+
+Same?
+
+
+3.	Difference between ArrayList and List?
+
+Ref doc: http://zhidao.baidu.com/link?url=r3aax65U7lPKZ7x91ugIUnsWDTYaS6G8i7jjgclOx_OCsTnyn-UwwFlFhWn1-Y5c_gDrIwc3W0Uip3kAiNMFIa
+
+	ArrayList	List
+Difference	
+
+ArrayList：我们可以将其看作是能够自动增长容量的数组。
+利用ArrayList的toArray()返回一个数组。
+Arrays.asList()返回一个列表。
+1.ArrayList底层采用数组实现，当使用不带参数的构造方法生成ArrayList对象时，实际上会在底层生成一个长度为10的Object类型数组
+2.如果增加的元素个数超过了10个，那么ArrayList底层会新生成一个数组，长度为原数组的1.5倍+1，然后将原数组的内容复制到新数组当中，并且后续增加的内容都会放到新数组当中。当新数组无法容纳增加的元素时，重复该过程。
+3.对于ArrayList元素的删除操作，需要将被删除元素的后续元素向前移动，代价比较高。
+4.集合当中只能放置对象的引用，无法放置原生数据类型，我们需要使用原生数据类型的包装类才能加入到集合当中。 
+5.集合当中放置的都是Object类型，因此取出来的也是Object类型，那么必须要使用强制类型转换将其转换为真正的类型（放置进去的类型）
+	List是一个接口，而ListArray是一个类。 ListArray继承并实现了List。
+
+
+List：是一个有序的集合，可以包含重复的元素。提供了按索引访问的方式。它继承 Collection。
+
+List有两个重要的实现类：ArrayList 和 LinkedList
+
+
+
+4.	Final 关键字
+final: const inline un-derivable
+final变量不可修改
+final方法不可覆盖
+final类不可继承
+final修饰符 可以修饰 类 方法 属性
+当修饰类时，该类不能被继承
+当修饰方法时，该方法不能重写
+当修改属性时，该属性不能变更堆栈地址（说白了就是不能再用=了）
+所以final是个锁。
+
+The difference between static and final :
+	Static	Final
+Difference	static表示静态的，是该类的所有对象共享的资源，可以用来修饰变量和方法，也可以修饰一个代码块。
+
+
+static如果用这个修饰你女朋友就意味着你女朋友是所有人的女朋友。
+	final用来修饰变量的时候表示该变量是一个常量，不能再程序修改变量的值，用来修饰方法的时候，表示该方法不能被重写；用来修饰类的时候，表示该方法不能被继承。
+
+final如果用这个修饰你女朋友那就是意味着她已经变成你老婆了，你甩不掉了。只给你一次初始化机会。
+
+
+
+
+5.	Java packages FAQ
+
+Package name	Description 
+javax.persistence	The javax.persistence package contains the classes and interfaces that define the contracts between a persistence provider and the managed classes and the clients of the Java Persistence API.
+
+http://docs.oracle.com/javaee/5/api/javax/persistence/package-summary.html
+
+	
+	
+	
+
+6. jar command : jar - the java archive tool
+create jar file :                     jar c jarfile
+update jar file :                     jar u jarfile
+extract jar file :                    jar x jarfile
+list table of contents of jar file :  jar t jarfile
+add index to jar file:                jar i jarfile
+  examples:
+    jar tf 1.jar
+# ref doc: http://docs.oracle.com/javase/7/docs/technotes/tools/windows/jar.html
+
+
+7. java code snippet analysis
+7.1)  import hudson.model.StringParameterValue;
+  +  @Override
+  public void buildEnvironment(Run<?,?> build, EnvVars env) {
+    env.put(name, value);
+    env.put(dynamicName, dynamicValue);     
+  }
+ 
+# ref:
+    https://www.codatlas.com/github.com/jenkinsci/jenkins/HEAD/core/src/main/java/hudson/model/StringParameterValue.java?line=59 
+1) + wrong grammar.
+2) maven-compiler-plugin is set twice in <pluginManagement/> and <plugins/>. 
+   # ex. C:\temp\lntest_jenplugin2_DynamicParameter_orig\pom.xml
+   
+   Why? 
+   
+# ref:   
+   http://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html
+
+    <!-- // to use maven-compiler-plugin 1.8 : -source 8 -->
+    <build>
+    <pluginManagement>
+         <plugins>
+             <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5</version>
+                <executions>
+                <execution>
+                    <id>default-compile</id>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>compile</goal>
+                    </goals>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>default-testCompile</id>
+                    <phase>test-compile</phase>
+                    <goals>
+                        <goal>testCompile</goal>
+                    </goals>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </execution>
+                </executions>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>        
+         </plugins>
+    </pluginManagement> 
+    </build>
+    
+    <!-- settings for developing jenkins plugin end -->	
+
+
+    
+    
+7.2) import hudson.util.VariableResolver;
+  @Override
+  public VariableResolver<String> createVariableResolver(AbstractBuild<?, ?> build) {
+    return new VariableResolver<String>() {
+      public String resolve(String name) {
+        return DynamicParameterValue.this.name.equals(name) ? value : (DynamicParameterValue.this.dynamicName.equals(name) ? dynamicValue : null);
+      }
+    };
+  }
+
+# ref:
+    explanation:    http://javadoc.jenkins-ci.org/hudson/model/ParameterValue.html
+                    public VariableResolver<String> createVariableResolver(AbstractBuild<?,?> build)
+                    returns a VariableResolver so that other components like Builders can perform variable substitution
+                           to reflect parameter values into the build process. 
+                           ParameterValue can influence a build.
+                    Parameters:
+                            build - The build for which this parameter is being used. Never null.
+                    Returns:
+                            if the parameter value is not interested in participating to the variable replacement process, return VariableResolver.NONE.
+                    
+    definiton:      https://www.codatlas.com/github.com/jenkinsci/jenkins/master/core/src/main/java/hudson/model/ParameterValue.java?keyword=createVariableResolver&line=111
+    example:        https://www.codatlas.com/github.com/jenkinsci/jenkins/master/core/src/main/java/hudson/model/StringParameterValue.java?keyword=createVariableResolver&line=61
+    utils:          https://www.codatlas.com/github.com/jenkinsci/jenkins/master/core/src/main/java/hudson/util/VariableResolver.java
+    
+
+
+7.3) which input parameter grammar?
+
+	public CustomizeParametersDefinitionProperty(
+			ParameterDefinition... parameterDefinitions) {
+		super(parameterDefinitions);
+	}
+    
+    
+
+7.4) associated views of class ParameterDefinition
+    hudson.model.ParameterDefinition
+ 
+# ref:  http://javadoc.jenkins-ci.org/hudson/model/ParameterDefinition.html 
+#
+# Associated Views
+#
+config.jelly
+    ParameterDefinition class uses config.jelly to contribute a form fragment in the job configuration screen.
+    Values entered there are fed back to Descriptor.newInstance(StaplerRequest, JSONObject) to create ParameterDefinitions.
+
+index.jelly
+    The index.jelly view contributes a form fragment in the page where the user enters actual values of parameters for a build.
+    The result of this form submission is then fed to createValue(StaplerRequest, JSONObject) to create ParameterValues.
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+  
+
+
