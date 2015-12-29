@@ -1,0 +1,442 @@
+Self-Learning Points of Maven
+
+1.	What is Maven
+1)	A build tool, dependency management tool and project information management tool.
+作为Apache组织中的一个颇为成功的开源项目，Maven主要服务于基于Java平台的项目构建、依赖管理和项目信息管理。
+构建：编译、运行单元测试、生成文档、打包和部署等等。
+
+
+2)	Characteristics
+•	Convention over Configuration
+•	Cross-platform
+•	Developed in Java, having a huge central repository of free plugins.
+提供了中央库，能帮我们自动下载构件。
+
+•	Actions done in plugins
+抽象了一个完整的构建生命周期模型
+能帮助我们标准化构建过程
+
+3)	Advantage
+工具	优点	缺点
+Make	由一个名为Makefile的脚本文件驱动。Make语法的基本组成部分为一系列规则。Makefile的基本结构：
+TARGET: PREREQUISITE
+COMMAND
+	和操作系统绑定在一起了。
+Ant (Another Neat Tool)	作者JamesDuncan Davidson，最早用来构建著名的Tomcat。
+可以将Ant看作是一个Java版本的Make。跨平台。
+格式如build.xml:
+<?xml version=”1.0”?>
+<project name=”Hello” default=”compile”>
+<target name=”compile” description=”…”>
+    <mkdir dir=”classname”/>
+    <javac srcdir=”.” Destdir=”classes”/>
+</target>
+…	Make, Ant都是过程式的，必须显式指定每个目标，以及完成这个目标需要执行的任务。重复。
+Ant没有依赖管理。
+
+
+Maven	从Maven2.0.9开始，所有核心的插件都设定了稳定版本。
+
+Maven是声明式的，项目构建过程和过程中各个阶段所需的工作都由插件实现。
+	
+
+4)	Disadvantage
+见上图。
+
+5)	Difference between Maven Core and Maven Plugins
+当你下载Maven的时候，你得到的是一个包含了基本躯壳的Maven核心，它知道如何解析命令行，管理classpath，解析POM文件，在需要的时候下载Maven插件。
+
+This is our first brush with convention over configuration.
+这是我们对于约定优于配置(convention over configuration)的第一笔。
+
+通过保持Compiler插件和Maven核心分离，并且提供更新机制，用户很容易能使用编译器最新的版本。通过这种方式，Maven插件提供了通用构建逻辑的全局重用性.
+
+6)	Difference between tag “plugins” and “pluginManagement” in pom.xml
+Ref doc:  https://maven.apache.org/pom.html 
+Tag name	Same points	Difference
+plugins	Both under project/build/	Setting is taken by this pom; if taken by inheriting poms is determined by “<inherited>true/false</inherited>” tag of each plugin.
+
+maven会在当前项目中加载plugins声明的插件.
+
+pluginManagement		Settings is taken by this pom and all inheriting poms.
+Only for plugins which are already bound into maven? Jetty is embedded in maven.
+
+pluginManagement是表示插件声明，即你在项目中的pluginManagement下声明了插件，maven不会加载该插件，pluginManagement声明可以被继承。
+
+
+Similar is the difference between “dependencies” and “dependencyManagement”.
+
+
+7)	Transitive Dependency (传递性依赖)
+Maven同时下载构件和POM文件的这种行为，对Maven支持传递性依赖来说非常重要。
+在Maven中一个依赖不仅仅是一个JAR。它是一个POM文件，这个POM可能也声明了对其它构件的依赖。这些依赖的依赖叫做传递性依赖，Maven仓库不仅仅存贮二进制文件，也存储了这些构建的元数据（metadata），才使传递性依赖成为可能。
+
+Maven也提供了不同的依赖范围(dependency scope)。
+例如，当一个依赖的范围是test的时候，说明它在Compiler插件运行compile目标的时候是不可用的。它只有在运行compiler:testCompile和surefire:test目标的时候才会被加入到classpath中。
+当为项目创建JAR文件的时候，它的依赖不会被捆绑在生成的构件中，他们只是用来编
+译。
+当用Maven来创建WAR或者EAR，
+你可以配置Maven让它在生成的构件中捆绑依赖，
+你也可以配置Maven，使用provided范围，让它排除WAR文件中特定的依赖。provided范围告诉Maven一个依赖在编译的时候需要，但是它不应该被捆绑在构建的输出中。
+当你开发web应用的时候provided范围变得十分有用，你需要通过Servlet API来编译你的代码，但是你不希望Servlet API的JAR文件包含在你web应用的WEB-INF/lib目录中。
+
+小结：
+依赖性传递两点:
+i.	项目A依赖于项目B和C，项目B依赖于项目D，项目C依赖于项目E，但是项目A所需要做的只是定义对B和C的依赖。
+
+ii.	Maven同时也提供了一种机制，能让你排除一些你不想要的传递性依赖。利用依赖范围（dependency scope） 和/或 provided范围。
+
+8)	Meaning of jar, war, ear
+Ref doc:
+http://m.blog.csdn.net/blog/cailiang517502214/4711881 
+Name	Description	Contents	Deployment Files	Inheritance
+jar
+
+	java archive
+
+封装类
+	jar是class,properties文件，是文件封装的最小单元	application-client.xml 	jar文件可以将ejb包含其中。
+jar表示java的标准档案文件，有一个有趣的双关语：
+      a jar of beans (一罐豆子)。
+
+war
+	web archive
+
+封装web站点	war是servlet、jsp页面、jsp标记库、jar库文件、html/xml文档和其他公用资源文件，如图片、音频文件等	web.xml            	war可以将web组件包含其中。   
+ear
+
+	enterprise archive
+
+
+封装ejb
+	ear是除了包含jar、war以外，还包括ejb组件。
+ejb = entprise java bean   	application.xml   	ear中可以包含war,jar文件。
+
+ 
+2.	Java Modules
+1)	Jaxen
+I.	Jaxen是一个Java编写的开源的XPath库。这是适应多种不同的对象模型，包括DOM，XOM，dom4j和JDOM。也可以作为适配器，转换Java字节代码或XML的Java bean为xml，从而使您可以使用XPath查询这些树了.
+
+II.	Relationship between DOM4J and Jaxen
+仅操作XML文档的话, dom4j OK.
+如果需要使用XPath的话,还需要jaxen.
+
+Ref doc: 
+Module	Reference
+Log4j	http://blog.csdn.net/anlina_1984/article/details/5313023/ 
+http://blog.chinaunix.net/uid-84860-id-2031097.html
+
+
+III.	Advantage and Disadvantage between DOM, SAX, JDOM and DOM4J
+
+DOM,SAX,JDOM,DOM4J优缺点比较及生产xml和解析xml 
+
+	Basics	Advantage	Disadvantage	Usage Scenario
+DOM	解析器读入整个文档，然后构建一个驻留内存的树结构，使用 DOM 接口来操作这个树结构。	整个文档树在内存中，便于操作；
+
+支持删除、修改、重新排列等多种功能；
+
+访问效率高。	将整个文档调入内存（包括无用的节点），浪费时间和空间；	一旦解析了文档还需多次访问这些数据；
+
+硬件资源充足（内存、CPU）
+SAX	1、边读边解析，应用于大型XML文档
+2、只支持读
+3、访问效率低
+4、顺序访问
+			
+JDOM		①是基于树的处理XML的Java API，把树加载在内存中
+     ②没有向下兼容的限制，因此比DOM简单
+     ③速度快，缺陷少
+     ④具有SAX的JAVA规则	①不能处理大于内存的文档
+
+②JDOM表示XML文档逻辑模型。不能保证每个字节真正变换。
+
+③针对实例文档不提供DTD与模式的任何实际模型。
+
+④不支持与DOM中相应遍历包
+	JDOM具有树的便利，也有SAX的JAVA规则。在需要平衡时使用
+DOM4J	DOM4J 是一个非常非常优秀的Java XML API，具有性能优异、功能强大和极端易用使用的特点，
+同时它也是一个开放源代码的软件。
+			
+
+ 
+3.	POM Details
+1)	Super pom
+-	Simple pom
+-	Effective pom
+-	Final pom
+2)	Attributes reference
+Name	Description
+env	环境变量
+例如： ${env.PATH}
+
+project	POM信息
+例如： ${project.artifactId}
+
+settings	Maven Settings
+例如： ${settings.offline} from ~/.m2/settings.xml
+
+java.lang.System	所有可以通过 java.lang.System 中 getProperties() 方法访问的属性都被暴露成POM属性。一些系统属性的例子是：hudson，/home/hudson，/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0/jre，和Linux。
+一个完整的系统属性列表可以在java.lang.System类的Javadoc中找到。
+
+x	通过pom.xml或者settings.xml中的properties元素设置自己的属
+性，或者还可以使用外部载入的文件中属性。
+例如：
+  在POM中设置${foo}=bar的语法：
+<properties>
+<foo>bar</foo>
+</properties>
+
+
+3)	Dependency Scope 
+Name	Description
+compile	Default value.
+编译范围依赖在所有的classpath中可用，同时它们也会被打包。
+
+provided	只有在当JDK或者一个容器已提供该依赖之后才使用。
+在编译classpath（不是运行时）可用。它们不是传递性的，也不会被打包。
+
+runtime	在运行和测试系统的时候需要，但在编译的时候不需要。
+比如，你可能在编译的时候只需要JDBC API JAR，而只有在运行的时候才需要JDBC驱动实现。
+
+test	在一般的 编译和运行时都不需要，它们只有在测试编译和测试运行阶段可用。
+
+system	与provided类似，但是你必须显式的提供一个对于本地系统中JAR文件的路径。这么做是为了允许基于本地对象编译，而这些对象是系统类库的一部分。
+必须同时提供一个systemPath元素。不推荐使用。
+
+
+4)	坐标
+GAV
+Classifier: 如果你的项目使用本地扩展类库，你可以使用分类器为每一个目标平台生成一个构件。
+
+5)	POM Best Practice
+i.	依赖归类
+通过创建一个 packaging 为 pom 的 pom.xml。
+ii.	多模块 vs. 继承
+	多模块	继承
+区别	是管理一组子模块。
+
+每个模块的配置可能完全不同。
+	所有的设置都从父传给子。
+
+为了给一组逻辑关联的项目共享依赖和通用配置。
+
+
+
+ 
+4.	优化和重构 POM：依赖和插件
+1)	上移共同的依赖至dependencyManagement
+父POM包含一个版本和一组排除配置，所有的子POM需要使用groupId和artifactId引用这个依赖。
+如果依赖已经在dependencyManagement中列出，子项目可以忽略版本和排除配置。
+2)	对紧密关联的依赖组件，定义版本号属性、然后引用这个版本号。
+如hibernate-annotations和hibernate-commons-annotations都是JBoss发布的同一个项目的组件，当有新的版本发布的时候，两个依赖都会改变。
+<properties>
+<hibernate.annotations.version>3.3.0.ga</hibernate.annotations.version>
+</properties>
+
+3)	为兄弟项目使用内置的项目version和groupId
+使用{project.version}和org.sonatype.mavenbook来引用兄弟项目。
+
+4)	将共同的插件配置上移到元素顶层POM build元素下的pluginManagement元素。
+5)	总是为你代码引用的类显式声明依赖。
+可用 mvn dependency:analyze 和 mvn dependency:tree查看。
+
+6)	定期运行 mvn dependency:analyze， 确保依赖优化。
+7)	定期查看所有 POM 中的插件配置，确保优化。
+Maven 2.x会在编译范围引入传递性依赖。
+ 
+5.	生命周期 LifeCycle
+1)	What is lifecycle?
+i.	一个构建生命周期是一组精心组织的有序的阶段，
+它的存在能使所有注册的目标变得有序运行。
+这些目标根据项目的打包类型被选择并绑定。
+
+ii.	Maven中有三种标准的生命周期：
+•	clean
+•	default ( = compile )
+•	site
+
+Name	Total Phrases
+clean	3:
+Pre-clean
+Clean
+Post-clean
+
+default ( = compile )	21:
+Validate
+Generate-sources
+Process-sources
+Generate-resources
+Process-resources
+Compile
+Process-classes
+Generate-test-sources
+Process-test-sources
+Generate-test-resources
+Process-test-resources
+Test-compile
+Test 
+Prepare-package
+Package
+Pre-integration-test
+Integration-test
+Post-integration-test
+Verify 
+Install
+Deploy 
+
+site	4:
+Pre-site
+Site
+Post-site
+Site-deploy
+
+
+iii.	Maven中有7种打包相关的生命周期：
+•	jar
+•	pom
+•	maven plugin
+•	ejb
+•	war
+•	ear
+•	其它打包类型
+
+生命周期阶段 和 目标 的对应:
+
+Phase / Goal	Jar	Pom	Maven plugin	Ejb	War	Ear
+Generate-resources	-	-	plugin:descriptor	-	-	ear:generate-application-xml
+Process-resources	resources:resources	-	resources:resources	resources:resources	resources:resources	resources:resources
+Compile	compiler:compile	-	compiler:compile	compiler:compile	compiler:compile	-
+Process-test-resources	resources:testResources	-	resources:testResources	resources:testResources	resources:testResources	-
+Test-compile	test:testCompile	-	test:testCompile	test:testCompile	test:testCompile	-
+Test	surefire:test	-	surefire:test	surefire:test	surefire:test	-
+Package	jar:jar	site:attach-descriptor	jar:jar plugin:addPluginArtifactMetadata
+	ejb:ejb	war:war	ear:ear
+Install 	install:install	install:install	install:install plugin:updateRegistry
+	install:install	install:install	install:install
+Deploy 	deploy:deploy	deploy:deply	deploy:deploy	deploy:deploy	deploy:deploy	deploy:deploy
+
+
+
+
+6.	构建Profile
+1)	What is profile for?
+•	能让你为一个特殊的环境自定义一个特殊的构建
+•	使得不同环境间构建的可移植性成为可能。
+2)	Portability through maven profiles
+i.	4 levels
+Pom.xml
+Profiles.xml
+~/.m2/settings.xml
+/usr/local/maven/conf/settings.xml
+
+ii.	Definition of profile
+<project…>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			...
+		</profile>
+		<profile>
+			<id>prod</id>
+			...
+		</profile>
+	</profiles>
+</project>
+
+iii.	Definition of profile activation
+<project…>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<jdk>1.5</jdk>
+				<os>
+					<name>Windows XP</name>
+					<family>Windows</family>
+					<arch>x86</arch>
+					<version>5.1.2600</version>
+				</os>
+				<property>
+					<name>mavenVersion</name>
+					<value>2.0.5</value>
+				</property>
+				<file>
+					<exists>file2.properties</exists>
+					<missing>file1.properties</missing>
+				</file>
+			</activation>
+			...
+		</profile>
+		<profile>
+			<id>prod</id>
+			...
+		</profile>
+	</profiles>
+</project>
+
+iv.	Profile activation and usage
+•	Method1: 
+define property ex. environment.type in settings.xml 
+ and 
+use it in pom.xml as activation criteria
+<id>development</id>
+<activation>
+<property>
+<name>environment.type</name>
+<value>dev</value>
+</property>
+</activation>
+
+•	Method2:
+define profile
+ and 
+use it in mvn command
+	mvn –P${profile_id}
+
+v.	Checking active profiles
+mvn help:active-profiles
+
+vi.	Platform classifier
+•	Can be used in maven assembly plugin and maven jar plugin.
+•	Example:
+
+<project>
+...
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<classifier>${envClassifier}</classifier>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+...
+	<profiles>
+		<profile>
+			<id>windows</id>
+			<activation>
+				<os>
+					<family>windows</family>
+				</os>
+			</activation>
+			<properties>
+				<envClassifier>win</envClassifier>
+			</properties>
+		</profile>
+		<profile>
+			<id>linux</id>
+			<activation>
+			<os>
+				<family>unix</family>
+			</os>
+			</activation>
+			<properties>
+				<envClassifier>linux</envClassifier>
+			</properties>
+		</profile>
+	</profiles>
+</project>
