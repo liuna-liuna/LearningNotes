@@ -1,0 +1,420 @@
+Self-Learning Points of Git
+	
+1.	What is Git	4
+1)	Characteristics	4
+2)	Advantage	4
+3)	Disadvantage	4
+2.	Key Points	4
+1)	Stage and commit	4
+2)	Branch is a named pointer to a commit.	5
+3)	How to revert changes in git	5
+4)	Git has 3 level config	6
+5)	Merge	6
+6)	Rebase	7
+7)	Pull and Push	8
+3.	FAQ	9
+1)	What’s SHA1?	9
+2)	How to allow multiple people push code to a same repository?	9
+4.	Frequently Used Commands	10
+1)	git log	10
+2)	git cat-file, git ls-tree	11
+3)	git diff	12
+5.	FAQ	13
+1)	“detached from”	13
+6.	Training Materials	15
+1.	Gerrit Concepts	16
+1)	Push	16
+2)	Push New Patch Set	17
+
+ 
+Table 1 Difference of using Soft, Mixed and Hard in git reset B	9
+Table 2 Examples of git log	13
+Table 3 Examples of git cat-file and git ls-tree	16
+
+ 
+Figure 1 Index in git repository: git add	7
+Figure 2 Folder objects in git repository: git commit	8
+Figure 3 Git has 3 level config	9
+Figure 4 Before Fast Forward merge	9
+Figure 5 After Fast Forward merge	9
+Figure 6 Before Cherry-Pick merge	10
+Figure 7 After Cherry-Pick merge	10
+Figure 8 Git before rebase	11
+Figure 9 Git after rebase: fast forward merge is possible	11
+ 
+Git
+1.	What is Git
+1)	Characteristics
+TODO
+2)	Advantage
+TODO
+3)	Disadvantage
+TODO
+
+2.	Key Points
+1)	Stage and commit
+Index = Stage Area
+ 
+Figure 1 Index in git repository: git add
+
+ 
+Figure 2 Folder objects in git repository: git commit
+
+2)	Branch is a named pointer to a commit.
+Ex. master. Its full name is refs/heads/master.
+•	<= This is why create/move/delete branch in git is quick.
+
+•	Current branch is the branch pointed by HEAD
+git checkout sets the current branch
+git commit updates the current branch
+git reset B reset current branch to commit B
+
+3)	How to revert changes in git
+•	When change is only in working directory, not staged yet.
+TODO
+•	When change is staged, not committed yet.
+TODO
+
+•	When change is committed.
+TODO
+
+•	Difference of using Soft, Mixed and Hard in git reset B
+Reset	Working Directory	Stage (Index)	Remote Repo(Branch)
+soft	No	No	Yes
+mixed	No	Yes	Yes
+hard	Yes	Yes	Yes
+Table 1 Difference of using Soft, Mixed and Hard in git reset B
+4)	Git has 3 level config
+ 
+Figure 3 Git has 3 level config
+5)	Merge
+•	Merge commit is a commit with more than one parent.
+•	git merge feature1 by default is Fast Forward merge, which just moves the pointer, no new merge commit is created. 
+Fast Forward merge：当前分支的每一个提交都已经存在另一个分支里了。
+<= this is why merge in git is fast.
+ 
+Figure 4 Before Fast Forward merge
+
+ 
+Figure 5 After Fast Forward merge
+
+•	git cherry-pick feature1 applies only changes done by F, means the diff-2, has no parent relation to F.
+
+ 
+Figure 6 Before Cherry-Pick merge
+ 
+Figure 7 After Cherry-Pick merge
+
+
+
+
+6)	Rebase
+•	重新定义某个分支的参考基准. 就好比移花接木那樣（稼接），把某個樹枝接到別的樹枝。
+•	git rebase master redo the work done in teature1 branch on top of the master.
+•	Alternative to Merge – Keeping history linear
+•	Fast Forward merge is possible after rebase.
+•	git rebase –onto <new base commit> <current base commit>指定要從哪裡開始接枝
+https://blog.yorkxin.org/posts/2011/07/29/git-rebase/ 
+ 
+Figure 8 Git before rebase
+
+
+ 
+Figure 9 Git after rebase: fast forward merge is possible
+
+7)	Pull and Push
+Pull is equal to 3 possibilities:
+•	git pull = git fetch + git merge
+or
+•	git pull = git fetch + git rebase
+or
+•	git pull = git fetch
+
+Push could mean to deal with 3 scenarios:
+•	push (when remote ‘origin’ repo is NOT changed)
+or
+•	fetch, merge, push (when remote ‘origin’ repo is changed)
+or
+•	fetch, rebase, push (when remote ‘origin’ repo is changed)
+
+3.	FAQ
+1)	What’s SHA1?
+SHA1 is a globally unique commit ID
+SHA1 is a function of the commit object content.
+SHA1 is a 40-digit hexadecimal number, seen in git log output, git history view etc. ex. e168254… 23400e6…
+
+2)	How to allow multiple people push code to a same repository?
+Using core.sharedRepository to control access.
+Ref: http://criticallog.thornet.net/2010/01/07/sharing-your-git-repository/ 
+
+Steps:
+•	Create a group git, put multiple people into it.
+useradd git
+usermod -g git steven
+useradd -g git nicholas
+chmod 770 /home/git
+chmod g+w objects/
+
+•	Update .git/config, adding sharedRepository
+sharedRepository=1
+加这个参数的目的是git在objects目录下创建的目录的属性由
+drwxr-xr-x 变成 drwxrwsr-x
+	Done.
+
+
+4.	Frequently Used Commands
+1)	git log
+Ref: http://www.cnblogs.com/beginman/p/3577553.html 
+
+Command	Description
+git log --follow pom.xml	Shows commits that changed pom.xml, including those that occurred before the file was given its present name.
+git log --name-only pom.xml                              	Shows the commits for file pom.xml, listing only name
+--name-only 仅在提交信息后显示已修改的文件清单。
+
+git log --name-status pom.xml                          	Shows the commits for file pom.xml, listing name and status
+--name-status 显示新增、修改、删除的文件清单。
+
+git log --stat pom.xml	Generates a diffsta.
+显示简要的增改行数统计,每次提交文件的变更统计.
+
+git log -p pom.xml	Similar to--stat, with more info.
+git log -1 pom.xml	Limits the number of commits to show to 1
+git shortlog pom.xml	Shows commit with only name and short description.
+
+git log --pretty=oneline pom.xml	Set the output to oneline format
+一行显示，只显示哈希值和提交说明。
+
+git log --since=200.days -- pom.xml	Shows the changes during the last 200 days to the file pom.xml. “-- is necessary to avoid confusion with a branch named pom.xml.
+--since, --after 仅显示指定时间之后的提交。
+
+git log --until=200.days pom.xml	--until, --before 仅显示指定时间之前的提交。
+
+git log rel-5.10 extensions/                                             	Shows all commits since version rel-5.10 that changed any file in extensions/ subdirectories
+
+git log --graph pom.xml	--graph 显示 ASCII 图形表示的分支合并历史。
+git log --branches --not --remotes=origin	Shows all commits that are in any of local branches but not in any of remote-tracking branches for origin (what you have that origin doesn’t).
+git log master --not --remotes=*/master	Shows all commits that are in local master but not in any remote repository master branches.
+Table 2 Examples of git log
+
+2)	git cat-file, git ls-tree
+git cat-file provide content or type and size information for repository objects.
+Ref: http://gitbook.liuhui998.com/7_2.html 
+
+Command	Description
+	
+git cat-file -t 24aa5cbbe229
+显示类型	Output:
+commit
+
+git cat-file commit 24aa5cbbe229
+显示内容	Output:
+tree 4fd4fbf360df0fc5d24c6fe5872f2592466887b6
+parent f23fed367902342cb639d706869eb8dbb0904c3f
+author Felix Xi <felix.xi@sap.com> 1438591623 +0800
+committer Gerrit Code Review <gerrit@git.wdf.sap.corp> 1438594911 +0200
+
+Summary: add demo page for legend text wrap
+
+Change-Id: I4fa3021da2e1a30605ea1b233c0e1590f77a93ec
+JIRA: BITSDC1-7210
+Action: add
+
+git ls-tree 24aa5cbbe229
+显示树的内容	Output:
+100644 blob 05000bc34e374d540116fa83662108a6e96a1da0    .gitignore
+100644 blob 326a99ef49bf772ea1d39b57eed3aa6a62287fe2    .gitreview
+040000 tree 8a5a68e4982038d2ea5ce04a26ed6c7f88e1dc91    container
+100644 blob b97b4bc1a3129e4f56d2435f42ce9d106ecea1b9    cvom.html_context_Visual Intelligence.xml
+040000 tree a2ac5ce35313d2f9902151d1eb5634843b987d27    documentation
+040000 tree a6475fe4436f68037507f42ce7da4bcbc7b56faa    extension
+040000 tree 3cd5614b2a8d7a89651f34d76f43c5f99d71a4ce    fortify
+040000 tree 4dcdbad168902aa45561c1947e9577ab22b960c4    info
+100644 blob 55c0e6df5087017a5783d4ed13035e2a1925c13e    pom.xml
+040000 tree 60df7c4ecef2192d5aa9086a6040b33cff324337    testPnR
+040000 tree 4182968183fad31ffc389b3e80e8862783610ee7    viz
+040000 tree 2ea8a93bd3e2758031d0f61c37a5d1d056a5fe2d    vizPacker
+
+git cat-file -p master^{tree}	Output:
+100644 blob 05000bc34e374d540116fa83662108a6e96a1da0    .gitignore
+100644 blob 5ebfd75fb43b68f670c5148e7cfa15834325eadb    .gitreview
+040000 tree e88c475df6e75cbaae601b866a7770948d233c3d    container
+100644 blob b97b4bc1a3129e4f56d2435f42ce9d106ecea1b9    cvom.html_context_Visual Intelligence.xml
+040000 tree a2ac5ce35313d2f9902151d1eb5634843b987d27    documentation
+040000 tree 3733cb7468f0aff8a21f91caee9b266e0d07bf5a    extension
+040000 tree 3cd5614b2a8d7a89651f34d76f43c5f99d71a4ce    fortify
+040000 tree d47fd2b8eb9eaeeb82f89d8a037c0eeaeae71d03    info
+100644 blob 55c0e6df5087017a5783d4ed13035e2a1925c13e    pom.xml
+040000 tree 60df7c4ecef2192d5aa9086a6040b33cff324337    testPnR
+040000 tree 93d31d1d7f2aaf4cac21735a858ee45c567a7cbe    viz
+040000 tree 2ea8a93bd3e2758031d0f61c37a5d1d056a5fe2d    vizPacker
+
+
+git cat-file blob 05000bc34e374d5
+显示内容	Output:
+_src
+.project
+.classpath
+.settings
+*.swp
+target/
+/container/node_modules
+.DS_Store
+.idea/*
+info/src/test/js/example/geo/demo_map_ex/jspm_packages
+info/src/test/js/example/geo/demo_map_ex/node_modules
+
+git config --get-all user.name
+	Get value of a given key.
+
+git config --global gc.auto 0
+	Disable this behavior permanently without further considerations
+git gc	Clean up unnecessary files and optimize the local repository
+
+	
+git log --until=200.days pom.xml	--until, --before 仅显示指定时间之前的提交。
+
+git log rel-5.10 extensions/                                             	Shows all commits since version rel-5.10 that changed any file in extensions/ subdirectories
+
+git log --graph pom.xml	--graph 显示 ASCII 图形表示的分支合并历史。
+git log --branches --not --remotes=origin	Shows all commits that are in any of local branches but not in any of remote-tracking branches for origin (what you have that origin doesn’t).
+git log master --not --remotes=*/master	Shows all commits that are in local master but not in any remote repository master branches.
+Table 3 Examples of git cat-file and git ls-tree
+
+3)	git diff
+
+Command	Description
+git diff 	显示当前工作目录 和 上次提交 
+         与本地索引之间的差异。
+必须是修改。
+git diff –cached	显示下次要提交的内容。
+
+5.	FAQ
+1)	“detached from”
+•	Phenomenon: 
+$ git branch
+trace: built-in: git 'branch'
+* (detached from df5c9a7)
+
+•	Root cause & solution
+
+http://stackoverflow.com/questions/5772192/how-can-i-reconcile-detached-head-with-master-origin 
+
+1089 down vote accepted 	First, let’s clarify what HEAD is and what it means when it is detached. 
+HEAD is the symbolic name for the currently checked out commit. When HEAD is not detached (the “normal”1 situation: you have a branch checked out), HEAD actually points to a branch’s “ref” and the branch points to the commit. HEAD is thus “attached” to a branch. When you make a new commit, the branch that HEAD points to is updated to point to the new commit. HEAD follows automatically since it just points to the branch.
+•	git symbolic-ref HEAD yields refs/heads/master
+The branch named “master” is checked out.
+•	git rev-parse refs/heads/master yield 17a02998078923f2d62811326d130de991d1a95a
+That commit is the current tip or “head” of the master branch.
+•	git rev-parse HEAD also yields 17a02998078923f2d62811326d130de991d1a95a
+This is what is means to be a “symbolic ref”. It points to an object through some other reference.
+(Symbolic refs were originally implemented as symbolic links, but later changed to plain files with extra interpretation so that they could be used on platforms that do not have symlinks.)
+We have HEAD → refs/heads/master → 17a02998078923f2d62811326d130de991d1a95a
+When HEAD is detached, it points directly to a commit—instead of indirectly pointing to one through a branch. You can think of a detached HEAD as being on an unnamed branch. 
+•	git symbolic-ref HEAD fails with fatal: ref HEAD is not a symbolic ref
+•	git rev-parse HEAD yields 17a02998078923f2d62811326d130de991d1a95a
+Since it is not a symbolic ref, it must point directly to the commit itself.
+We have HEAD → 17a02998078923f2d62811326d130de991d1a95a
+The important thing to remember with a detached HEAD is that if the commit it points to is otherwise unreferenced (no other ref can reach it), then it will become “dangling” when you checkout some other commit. Eventually, such dangling commits will be pruned through the garbage collection process (by default, they are kept for at least 2 weeks and may be kept longer by being referenced by HEAD’s reflog).
+1 It is perfectly fine to do “normal” work with a detached HEAD, you just have to keep track of what you are doing to avoid having to fish dropped history out of the reflog.
+________________________________________
+The intermediate steps of an interactive rebase are done with a detached HEAD (partially to avoid polluting the active branch’s reflog). If you finish the full rebase operation, it will update your original branch with the cumulative result of the rebase operation and reattach HEAD to the original branch. My guess is that you never fully completed the rebase process; this will leave you with a detached HEAD pointing to the commit that was most recently processed by the rebase operation.
+To recover from your situation, you should create a branch that points to the commit currently pointed to by your detached HEAD:
+git branch temp
+git checkout temp
+(these two commands can be abbreviated as git checkout -b temp)
+This will reattach your HEAD to the new temp branch.
+Next, you should compare the current commit (and its history) with the normal branch on which you expected to be working:
+git log --graph --decorate --pretty=oneline --abbrev-commit master origin/master temp
+git diff master temp
+git diff origin/master temp
+(You will probably want to experiment with the log options: add -p, leave off --pretty=… to see the whole log message, etc.)
+If your new temp branch looks good, you may want to update (e.g.) master to point to it:
+git branch -f master temp
+git checkout master
+(these two commands can be abbreviated as git checkout -B master temp)
+You can then delete the temporary branch:
+git branch -d temp
+Finally, you will probably want to push the reestablished history:
+git push origin master
+You many need to use --force to push if the remote branch can not be “fast-forwarded” to the new commit (i.e. you dropped, or rewrote some existing commit, or otherwise rewrote some bit of history).
+If you were in the middle of a rebase operation you should probably clean it up. You can check whether a rebase was in process by looking for the directory .git/rebase-merge/. You can manually clean up the in-progress rebase by just deleting that directory (e.g. if you no longer remember the purpose and context of the active rebase operation). Usually you would use git rebase --abort, but that does some extra resetting that you probably want to avoid (it moves HEAD back to the original branch and resets it back to the original commit, which will undo some of the work we did above).
+
+
+6.	Training Materials
+http://git.wdf.sap.corp:50002/presentations/git-gerrit-workshop/git-gerrit-workshop.html 
+
+ 
+Gerrit
+1.	Gerrit Concepts
+1)	Push
+•	Push to Gerrit is the same like push to Git, with one Gerrit speciality “refs/for” in the target branch name.
+•	Gerrit creates internally a new branch for the commit and creates a new open change containing the pushed commit
+•	Change consists of
+	Change ID (important)
+	Metadata (owner, project, etc.)
+	One or more patch-sets
+	Comments 
+	Votes (Build & Test results / Code Review)
+Patch set represents a Git commit.
+	Push to Git	Push to Gerrit
+Command	git push origin HEAD:master	git push origin HEAD:refs/for/master
+		
+
+•	What if feature branch contained 2 commits?
+Same for Git and Gerrit, 
+	2 commits in Git / 2 changes in Gerrit.
+
+ 
+
+
+
+
+2)	Push New Patch Set
+•	A Common Mistake
+a.	author of the Patch Set 1 is not available and somebody else needs to continue and provide Patch Set 2
+b.	use git pull to get the Patch Set 1 into a local branch
+c.	Fix issues in commit
+d.	Push (including the same Change-Id)
+e.	Gerrit rejects!
+f.	git pull origin refs/changes/66/366/1
+g.	D is successor of C and can not be Patch Set 2
+•	The right way:
+a.	fetch (don’t pull)
+b.	create a new branch out of the fetched Patch Set 1
+c.	fix the issue
+d.	commit –amend
+e.	push
+f.	commit D is not successor of C
+g.	D can become Patch Set 2
+
+
+
+
+2). Can NOT connect to git server through ssh
+•	Phenomenon: 
+$ c:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\bin\git.exe -c core.askpass=true fetch --tags --progress ssh://cvom_build_master1@git.wdf.sap.corp:2
+trace: built-in: git 'fetch' '--tags' '--progress' 'ssh://cvom_build_master1@git.wdf.sap.corp:29418/SV/cvom.html.git' '+refs/heads/*:refs/remotes/origin/*'
+trace: run_command: 'ssh' '-p' '29418' 'cvom_build_master1@git.wdf.sap.corp' 'git-upload-pack '\''/SV/cvom.html.git'\'''
+Permission denied (publickey).
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+•	Root cause & solution
+ssh public-key and private-key are not set up.
+
+=> fix:
+copy id_rsa and id_rsa.pub, config from C:\Users\SERVICE.TIP.CVOM\.ssh to C:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\.ssh\
+
+=> to double check
+#use ssh command to connect to git / gerrit server
+C:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\bin\ssh.exe -p 29418 -v cvom_build_master1@git.wdf.sap.corp
+#   available git command through ssh are two:
+#            receive-pack
+#            upload-pack
+ssh -p 29418 -v i321105@git.wdf.sap.corp git receive-pack SV/cvom.html.git | head -50
+#
+c:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\bin\git.exe -c core.askpass=true fetch --tags --progress ssh://cvom_build_master1@git.wdf.sap.corp:29418/SV/cvom.html.git +refs/heads/*:refs/remotes/origin/* 
+
+
