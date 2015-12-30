@@ -445,10 +445,81 @@ vi.	Platform classifier
 1)	What is an assembly?
 •	An assembly is a group of files, directories and dependencies that are assembled into an archive format and distributed.
 •	Currently 2 goals are used:
-assembly: assembly
+assembly:assembly
   and 
 assembly:single
 
+Goal	Description
+assembly:assembly	是一个聚合mojo。
+即：无论有多少个模块正被构建，该mojo在一个构件中最多被运行一次。
+
+=》 只在命令行中运行，永远不要绑定到生命周期阶段中。因为有副作用：强迫 package 提前运行。
+
+assembly:single	应该被绑定到生命周期的某个阶段。
+
+
+•	Ref doc: http://maven.apache.org/plugins/maven-assembly-plugin/ 
+
+2)	套件描述符 Assembly Descriptor
 •	Maven assembly plugin relies on the provided assembly descriptors to dictate its execution.
+套件描述符描述归档解决方案。
+
+•	Maven Assembly插件预定义的4种套件描述符：bin, jar-with-dependencies, project, src.
 
 
+Maven Assembly	Description
+bin	生成二进制分发包。
+包含主构建和LICENSE, README, NOTICE文件等。
+
+jar-with-dependencies	生成一个自包含的，可运行的jar包。
+
+project	生成一个解压缩后立刻能由maven构建的包。
+包含整个项目目录结构。
+忽略Target目录。
+
+src	类似于project。
+但是源文件和资源文件只能位于标准的src目录下，譬如src/main/java下。
+
+3)	Building an assembly
+•	Method 1: 	maven command to run assembly mojo:
+mvn -DdescriptorId=project assembly:single
+
+•	Method 2: 	define descriptorRef to assembly plugin, 
+bind assembly mojo to ex. package phase in pom.xml
+step1:
+pom.xml:
+<project>
+...
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2-beta-2</version>
+				<executions>
+					<execution>
+						<id>create-executable-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptorRefs>
+								<descriptorRef>
+									jar-with-dependencies
+								</descriptorRef>
+							</descriptorRefs>
+							<archive>
+								<manifest>
+									<mainClass>org.sonatype.mavenbook.App</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+
+Step2:
+mvn package
