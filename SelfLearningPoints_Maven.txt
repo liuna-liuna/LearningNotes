@@ -440,3 +440,15 @@ vi.	Platform classifier
 		</profile>
 	</profiles>
 </project>
+
+7.	Maven Plugin: Assembly
+1)	What is an assembly?
+•	An assembly is a group of files, directories and dependencies that are assembled into an archive format and distributed.
+•	Currently 2 goals are used:
+assembly: assembly
+  and 
+assembly:single
+
+•	Maven assembly plugin relies on the provided assembly descriptors to dictate its execution.
+
+
