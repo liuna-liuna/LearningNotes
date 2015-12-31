@@ -523,3 +523,33 @@ pom.xml:
 
 Step2:
 mvn package
+
+8.	仓库管理器 Nexus
+1)	核心的 Nexus 服务
+•	实际上是一堆 REST 服务，你正使用的 UI 只是和这些 REST 服务交互以配置和查看 Nexus 的组及仓库。
+
+2)	Nexus 的日志和配置文件
+•	日志文件
+nexus.log
+nexus-rest-0.log
+•	配置文件
+nexus.xml
+•	add a new repository into Nexus (for admin)
+taking “caja” as an example.
+Setting Item	Value	Notes
+Repository ID	caja	
+Repository Name	Google Caja	
+Repository Type	proxy	
+Format	maven2	
+Repository Policy	Release	enumerated
+Remote Storage Location	http://google-caja.googlecode.com/svn/maven  
+
+Download Remote Indexes	True	enumerated
+Checksum Policy	Warn	enumerated
+
+•	Add a repository into a Nexus group (for admin)
+Under Repository Groups,
+	Click “Add” 
+-> select the repository-to-be-added from “Available Repositories”
+-> drag it into “Ordered Group Repositories”
+-> “Save”. 
