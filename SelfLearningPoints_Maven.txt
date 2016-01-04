@@ -553,3 +553,109 @@ Under Repository Groups,
 -> select the repository-to-be-added from “Available Repositories”
 -> drag it into “Ordered Group Repositories”
 -> “Save”. 
+
+
+9.	编写插件 Maven Plugin
+1)	What is IoC? DI?
+•	反转控制：基本想法：将对象的创建和管理从代码中剥离，并将控制放到IoC框架手中。
+•	在 Java 实现的 IoC 容器中，最重要的一个功能是称为依赖注入（DI）的机制。
+•	Spring 是著名的开源IoC框架。
+•	Maven的心脏是一个名为Plexus的反转控制（IoC）框架。是一个用来管理及关联组件的系统。
+《= 在一个如 Plexus 的 IoC 容器中，
+-	你负责通过简单的提供输入输出接口来声明组件之间的关系。
+-	你不需要初始化对象， Plexus 会帮你完成；
+-	你的应用程序的代码不用去管理组件的状态， Plexus 负责。
+
+=》 当启动 Maven 的时候，实际上是启动 Plexus 来管理一个带有很多相互关联组件的系统。
+
+•	在一个 Java IoC容器中，有三种方法将依赖值注入到一个组件对象中：
+注入方法	属性	例子 (对 Person 类：)
+构造器   	公共方法	Person(String name);                             
+Set 方法	公共方法	使用无参构造函数， 然后 setName(String name);
+字段注入	私有属性	person.Name = ***;
+
+2)	Plexus 简介
+•	Maven的心脏是一个名为Plexus的反转控制（IoC）框架。是一个用来管理及关联组件的系统。
+《= 在一个如 Plexus 的 IoC 容器中，
+-	你负责通过简单的提供输入输出接口来声明组件之间的关系。
+-	你不需要初始化对象， Plexus 会帮你完成；
+-	你的应用程序的代码不用去管理组件的状态， Plexus 负责。
+
+=》 当启动 Maven 的时候，实际上是启动 Plexus 来管理一个带有很多相互关联组件的系统。
+
+•	如何在 Plexus 中自定义组件
+-	你的程序可以针对接口编程，
+-	并通过配置 Plexus 来将正确的实现连接到正确的组件。
+即：
+-	编写独立的组件，
+-	然后通过一个 XML 文件来配置组件应当如何被装配在一起。
+
+•	配置文件 META-INF/plexus/components.xml.
+
+•	Plexus 和 Maven 由同一个发明。Maven 被创建的时候， Spring 还不成熟。 Spring 项目的一部分由 Maven 构建。
+
+3)	什么是Maven插件？
+•	Maven插件就是包含了一个插件描述符和一个或多个Mojo的Maven构件。
+•	一个Mojo可以认为是Maven 中的一个目标，每个Mojo对应着一个目标。
+•	Mojo 的配置：
+in META-INF/maven/plugin.xml, mojos -> mojo -> mojo settings:
+Mojo 的配置元素	注释
+goal	
+description	
+requiresDirectInvocation	如果是 true， 该目标只能在命令行执行。
+requiresProject	默认为 true。目标需要一个带有 POM 的项目。
+requiresReports	默认是false。
+requiresOnline	如果依赖于网络资源，设为 true。
+aggregator	不推荐使用。
+inheritedByDefault	
+phase	目标绑定到的阶段。
+implementation	告诉 Maven 需要为该 Mojo 初始化什么类。
+这是一个 Plexus 组件属性。
+
+language	默认是 Java。
+可以是 Groovy，Ruby 等。
+instantiationStrategy	告诉 Plexus 如何创建和管理组件实例。
+在 Maven 中， 所有 mojo 的 instantiationStrategy 都被配置成 per-lookup，每次 Maven 从 Plexus 中获取该 mojo 的时候，一个新的实例被创建。
+
+这是一个 Plexus 组件属性。
+
+executionStrategy	不推荐使用。
+parameters
+   name
+   type
+   required
+   editable
+   description
+   configuration
+   requirements
+	描述 mojo 的所有参数。
+
+editable = true, 该参数可以在 POM 中被重写。
+
+configuration 提供默认值。包含 implementation 属性来指定参数的类型。其元素值即默认值，硬编码或者一个 Maven 属性引用。
+
+requirements 定义对其它 Plexus 组件的依赖。
+
+
+
+4)	什么是插件描述符？
+•	Maven 插件包含了一个告诉 Maven 各种 Mojo 和插件配置的路线图，即插件描述符。
+•	插件描述符位于 JAR 文件中的 META-INF/maven/plugin.xml.
+
+<= 当 Maven 载入一个插件的时候，
+-	它读取该 XML 文件，
+-	初始化并配置插件对象，
+-	使 Mojo 被保护在插件中，供 Maven 使用。
+
+•	顶层插件描述符元素(5个)：
+Plugin 元素中顶层配置元素	注释
+Description	简短描述
+GAV	坐标
+goalPrefix	目标前缀。
+默认值： ${prefix}-maven-plugin OR
+         maven-${prefix}-plugin
+
+inheritedByDefault	缺省继承
+isolatedRealm	不推荐使用
+
+
