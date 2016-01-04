@@ -1,0 +1,112 @@
+Learning notes
+1.	Examples
+1)	In my working area, git log shows exactly what I'd expect-- I'm on the right trail with the commits I didn't want gone, and new ones there, etc.
+
+2)	The story is far from being over, we continue to support Dansk closely and prepare ourselves for the next “elephants” to come. But this is a great moment to sit back and see how far we have come in making the HANA promises tangible with “BW for HANA” for SAP customers.
+
+3)	Yet, there are training terminals available in the training rooms with which you may logon via MSTSC to your desktop PC, but out of experience that is quite problematic and should only be used as last resort.
+
+4)	If you have an older version than 3.3.0, then please do yourself a favor and ensure that the version is updated. Especially older versions like <=2.2 respectively the 3.0.x series is known to be buggy, and also behave quite strangely in your daily business. Unfortunately, these older versions are quite common – thus having a look is worthwhile.
+respectively  adv. 分别地, 各个地
+5)	As time during the course is short, we won’t have enough time to perform all these setup activities. Thus, I would like to kindly ask you, to check the items depicted above, and prepare yourself accordingly.
+
+6)	I’m not charming and slim, but I want to be stronger.
+7)	I see something in you.
+8)	She accompanied me.
+9)	Hundreds of customers have already signed up to try things out, and we've got an additional list of key customers awaiting a high touch trial. 
+high touch
+高接触; 高体会; 高触派;
+“Touch”这个字第一次出现在约翰· 奈斯比特1982 年的畅销书《大趋势》中。奈斯比特说当新科技诞生时, 人类社会必须有一种与之相平衡的心态、感情或行为, 否则那项新科技便无法普及。更进一步来讲,“High Touch”就是人性、人情、人味。它是一种跨越理性的体贴、超越工具的触感。它是一种对于不可思议的事物的相信,甚至追寻。它是一种对细节的注意和对情感的用心。
+http://blog.sina.com.cn/s/blog_48ed0c2d01000anp.html 
+
+ex. High-Tech, High-Touch customer service.
+
+10)	All in all these were really tough decisions to make, as all of these colleagues are highly talented and have contributed so much to our mission, for which I am truly grateful.
+
+11)	Besides his role as VP for Design Studio and Analysis Office he recently took over a central role for architectural cross-topics.
+
+12)	Earlier today, I took part in an all-hands meeting at SAP Labs China to announce the move.
+
+13)	Analytics Cloud development capacity moved to SME will be balanced by additional resources in Walldorf and Vancouver. 
+
+14)	These moves are part of a concerted effort to harmonize people and product strategies within P&I:, in the spirit of one-SAP, helping to strengthen the SME team in Shanghai with a team of very experienced cloud professionals, bringing CVOM closer to Lumira and Design Studio;
+
+a concerted effort共同努力
+ex. But a concerted effort has begun to improve the quality of the urban air.
+但是各方已经开始共同努力改善城镇空气质量。
+Only a concerted effort by both of us had kept the fire alive.
+只有我们双方协调的努力才能让火种常久不熄。
+
+15)	One of the largest teams at SAP Labs China, SME Development & Support is the powerhouse behind SAP Anywhere and SAP Business One on HANA.
+
+16)	By incorporating CVOM within Michael’s area, the team will be able to cooperate even more closely with Lumira and Design Studio colleagues and take charting to the next level in our BI on-premise portfolio.
+
+17)	And thank you all for showing the professionalism needed to embrace this change without disrupting our collective goals.
+
+
+18)	The analyst briefing started with Rodolpho’s briefing regarding SAP Anywhere and went on with EJ Jackson’s introduction about Go To Market. 
+在分析师简会上，Rodolpho对SAP Anywhere作了基本介绍，并进行了简要分析。此后，EJ Jackson对Go To Market进行了简要介绍。
+
+In the following hot discussion, analysts provided various insights including praises and concerns.
+在随后的讨论环节，分析师们对SAP Anywhere提出了各式各样的观点。
+
+Not only a scenario-centric demo but also a localized version which provides good UE (User Experience) and direct comprehension does SAP Anywhere reach is highly spoken of by the most.
+很多人认为，SAP Anywhere的Demo版本不仅给人以身临其境之感还非常符合中国的实际情况，现场使用之后就有非常好的交互体验，对产品也有很直观的了解。这些方面，SAP Anywhere无疑是个中翘楚。
+
+19)	German Chancellor Angela Merkel paid an official visit to China on Oct 29-30, which is her eighth trip since 2005 in the capacity of chancellor.
+北京时间10月29-30日，德国总理安吉拉·默克尔对中国进行了国事访问，这也是自她2005年担任总理以来第八次来到中国。
+
+As the most important technology company in Germany, SAP plays a key and active role in Sino-Germany collaboration. 
+作为德国影响力最大的技术公司，SAP一直积极投身于中德合作之中。
+
+XCMG– SAP Industry 4.0 collaboration is the first Industry 4.0 showcase in China.
+SAP与徐州重工的合作则开创了中国工业4.0的先河。
+
+Signifying strategic deals of SALES Team gets official endorsement of Sino-German government. In further, it will help to create marvelous market opportunity and impose a deep impact on subsequent cooperation.
+反映了中德双方政府对于SAP销售团队战略协议的高度肯定。在未来，销售团队将创造出更好的市场契机，为更多市场合作打下基础。
+
+
+Government Relation team will continue to impulse business enablement of opportunity for SALES Team.
+政府关系团队始终将协助销售团队，创造更多商业契机作为自己的使命。
+
+
+20)	When companies move their business processes to the cloud, security is their top priority. Software security is part of our core business, and data security and protection are part of our DNA. 
+
+Justin will develop, implement, and manage our overall policies, standards, and guidelines in accordance with the SAP Security Strategy as well as ongoing SAP security initiatives to meet the emerging international IT and cyber security environments and data protection and privacy laws worldwide.
+
+Justin is a seasoned leader who has successfully implemented security strategies in response to market and industry needs.
+
+a seasoned leader一个经验丰富的领导人
+
+
+With their amazing team spirit, they not only led us successfully through the change we are going through while transforming into THE cloud company powered by SAP HANA, but set the right course for our positioning and our success internally and externally. We will build on the progress that would not have been possible without them, and count on the ongoing engagement of Gerold and Ralph and their teams as they are crucial for our ongoing success.
+
+Security aspects of SAP’s products and offerings are crucial for our customers and can be a key differentiator for us.
+
+a key differentiator关键不同点。区分…的关键因素。分水岭。
+
+21)	At CeBIT 2015, the leading international IT exhibition & conference, IoT and Industry 4.0 were at the center of the dialogues. 
+I couldn’t agree more! 
+We live in times where even agriculture has gone high-tech!
+
+Now is the time to reimagine the future in a profoundly changed digital world. 
+
+This marked the next milestone of our SAP S/4HANA journey. It
+
+
+
+22)	段子手 punster
+段子手是写段子的笔者（英文punster），而与作家一类进行区分的则是段子手大多以副业的形式存在而非主业，除却写段子以外仍有其他的工作。但大多数段子手的文笔不可谓不好。而段子的形式大多以短篇和架空为主。
+
+
+23)	Instrumental adj.仪器的; 乐器的; 有帮助的; 起作用的;
+
+It is an instrumental work. 这是一部可以用乐器演奏的作品。
+He was instrumental in catching the criminal. 在捉拿那个罪犯的过程中，他起了作用。
+I am confident these dynamic leaders will be instrumental in helping us achieve our goals
+
+dynamic  adj.动态的; 动力的，动力学的; 充满活力的，精力充沛的; 不断变化的，充满变数的; 
+
+n.动态; 动力学; 活力; 动力，推动变化的力量;
+
+	
