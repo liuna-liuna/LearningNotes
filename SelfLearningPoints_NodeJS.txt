@@ -199,7 +199,101 @@ server.listen(80);　　　　　
   
 
 　　　　　　　　   
+#
+# steps
+#
+	1) 	install nodejs, add NODE_HOME, add PATH=%PATH%;%NODE_HOME%
+	2)	npm install -g supervisor express express-generator
+	
+		# set proxy
+		# 	npm config set proxy http://proxy.${proxy1}:8080
+		# 	npm config set https-proxy http://proxy.${proxy1}:8080
 
+	## to test 
+-------------------------------------------------	
+		http://weistar.iteye.com/blog/2088691
+		使用express创建一个工程:
+		express helloworld 注意可选择模板创建，如express -e ejs helloworld
+		新版本中命令发生了一些改变, 创建好project之后还需要用npm进行添加依赖和启动:
+		cd helloworld
+		npm install 安装所有依赖
+		npm start 运行应用
+-------------------------------------------------   
+	
+	3)	install eclipse and nodeeclipse plugin
+		# ref :    http://www.tuicool.com/articles/z2iqMr
+		
+		extraced eclipse from eclipse-jee-mars-1-win32.zip
+			to C:\Work\tools\eclipse\eclipse\
+			
+			set up workspace C:\eclipse\ 
+			create project -> nodejs -> tempalte: none/empty -> input project name ex. ${eclipse_project1} 
+			remove everything under C:\eclipse\${eclipse_project1}\ except .settings
+			copy everything under C:\git\cvom-scm2\ScmPortal2\target\bin to C:\eclipse\${eclipse_project1}\ except .settings
+   
+	4) git clone ssh://${git_user1}@${git_server1}:29418/${git_repo1}  
+		checkout branch master_scmportal.
+		
+		cd C:\git\${git_repo1_local_path}
+		mvn clean package		
+		cd target\bin\bin
+		node www
+		  or
+		supervisor www
+		
+		http://localhost:3000/
+		
+		
+		
+   
+   
+##
+## nodejs usage
+##
+
+# userconfig:
+	# C:\Users\${git_user1} \.npmrc
+#
+# check npm config
+#
+npm config get
+# output example:
+; cli configs
+	# user-agent = "npm/3.3.6 node/v5.0.0 win32 x64"
+	# 
+	# ; userconfig C:\Users\${git_user1} \.npmrc
+	# https-proxy = "http://proxy.${proxy1} :8080/"
+	# proxy = "http://proxy.${proxy1} :8080/"
+	# 
+	# ; builtin config undefined
+	# prefix = "C:\\Users\\${git_user1} \\AppData\\Roaming\\npm"
+	# 
+	# ; node bin location = C:\PROGRA~1\nodejs\node.exe
+	# ; cwd = c:\eclipse\usePrac
+	# ; HOME = C:\Users\${git_user1} 
+	# ; "npm config ls -l" to show all defaults.
+
+# npm config: show all defaults
+npm config ls -l
+npm config ls
+
+	
+# npm config:	设置"目录路径" 
+npm config set prefix 
+
+# 设定安装模式
+npm set global=true
+# 查看当前使用的安装模式
+npm get global
+
+# npm ref doc: 
+	# http://www.cnblogs.com/linjiqin/p/3765772.html
+# npm官方文档：
+	# https://www.npmjs.org/doc/
+
+
+	
+	
  　　　　　　　　　　
 
 
