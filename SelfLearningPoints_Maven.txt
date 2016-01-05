@@ -964,3 +964,102 @@ end
 
 run_mojo TestPlexus
 
+
+
+1)	用 Groovy 编写插件
+•	什么是 Groovy ?
+-	Groovy 是一个基于 Java 虚拟机的动态语言。
+-	Groovy 最终被编译成 Java 字节码。
+-	Groovy 使用了 Java 的很多特性，同时进行了略微的裁剪，并加入了一些新特性，如 闭包 closure， 鸭子类型判断 duck-typing 和正则表达式。
+-	Groovy 网站：http://groovy.codehaus.org.
+
+•	Groovy 插件所需文件
+-	一个 pom.xml
+-	一个用 Groovy
+-	 实现的 Mojo 。
+在目录 src/main/groovy/ 下。
+例子：
+
+-	pom.xml:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.sonatype.mavenbook.plugins</groupId>
+	<artifactId>firstgroovy-maven-plugin</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>maven-plugin</packaging>
+	<name>Example Groovy Mojo - firstgroovy-maven-plugin</name>
+	<dependencies>
+		<dependency>
+			<groupId>org.codehaus.mojo.groovy</groupId>
+			<artifactId>groovy-mojo-support</artifactId>
+			<version>1.0-beta-3</version>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<version>2.3</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.codehaus.mojo.groovy</groupId>
+						<artifactId>groovy-maven-plugin</artifactId>
+						<version>1.0-beta-3</version>
+						<extensions>true</extensions>
+						<executions>
+							<execution>
+								<goal>generateStubs</goal>
+								<goal>compile</goal>
+								<goal>generateTestStubs</goal>
+								<goal>testCompile</goal>
+							</execution>
+						</executions>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+
+
+
+
+-	EchoMojo.groovy:
+
+package org.sonatype.mavenbook.plugins
+
+import org.codehaus.mojo.groovy.GroovyMojo
+
+/**
+ * Example goal which echos a message
+ *
+ * @goal echo
+**/
+class EchoMojo extends GroovyMojo {
+	/**
+	* Message to print
+	*
+	* @parameter expression="${echo.message}" default-value="Hello Maven World"
+	**/
+	String message
+	
+	void execute() {
+		log.info( message )
+	}
+	
+	
+}
+
+
+
+
+
+•	编写并运行Groovy 插件
+-	编写好2个文件 ( pom.xml, EchoMojo.groovy )
+-	在 ~/.m2/settings.xml 中配置好插件组，如 org.sonatype.mavenbook.plugins
+-	mvn install
+-	mvn firstgroovy:echo
+
