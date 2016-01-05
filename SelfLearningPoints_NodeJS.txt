@@ -148,6 +148,63 @@ process.env.ENV_VARIABLE		// Where ENV_VARIABLE is the name of the variable you 
 
 
 
+NodeJs初学者经典入门解析
+
+      Node.js 是一个基于谷歌浏览器JavaScript执行环境建立的一个平台，让JavaScript可以脱离客户端浏览器运行，让JavaScript具有服务器语言的能力。我们可以使用NodeJs方便地快速的搭建 易于扩展的网络应用。Node.js 借助事件驱动， 非阻塞I/O 模型变得轻量和高效， 非常适合运行在分布式设备的数据密集型的实时应用。V8引擎执行Javascript的速度非常快，性能非常好。Node对一些特殊用例进行了优化，提供了替代的API，使得V8在非浏览器环境下运行得更好。
+
+NodeJs入门
+
+　　　一、下载NodeJs平台
+
+　　　直接在百度中搜索”NodeJs“,点击nodejs官方网站。官方网站如下，然后点击Install(安装)，浏览器会弹出一个下载对话框，我们需要把NodeJs保存到电脑中。
+ 
+ 
+
+
+　　  二、安装nodejs
+
+　　  直接点击已经下载好的安装文件，建议在安装的过程中，采用默认安装，并且安装到一个没有中文和空格个路径中。
+
+      安装程序自动会把”node“命令加入到系统PATH中，打开控制器查看”node“命令是否可用。 
+     
+     
+
+         
+　　　注意以上命令运行不成功的小伙伴们，那么证明你的nodejs安装失败或者是nodejs没有加入系统PATH中。
+
+  　　三、一分钟写一个web服务器
+
+　　　   1.新建一个文本文件，命名为app.js
+         2.加入实现服务器代码
+
+
+ //引入http模块
+var http = require("http");
+//创建服务器
+var server = http.createServer(function(req,res){
+    //req 请求对象
+    //res 响应对象
+    res.writeHead(200,{"content-type":"text/html;charset=UTF-8"});
+    res.write("<h1>Hello NodeJs , 源代码教育</h1>");
+    res.end();
+});
+//启动服务器，并且监听80端口。
+server.listen(80);　　　　　
+
+　       3.运行app.js代码
+ 
+         4.浏览器访问
+
+　　　　　　　 地址栏输入：http://localhost,效果如下
+  
+
+　　　　　　　　   
+
+ 　　　　　　　　　　
+
+
+
+
 
 
 
