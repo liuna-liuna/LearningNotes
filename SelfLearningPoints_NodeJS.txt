@@ -1,1 +1,163 @@
 SelfLearningPoints_NodeJS.txt
+
+
+##
+## javascript全局变量与局部变量？
+##
+#	ref doc: http://zhidao.baidu.com/link?url=LJL0Pn930GbhfjPP-8PyYXbETnXzwr4ZfF8h3nGUZ083hPizPVCVpK7I0h4qI1OskuZCtQCdNGoek7x_bWkR-PikamLAj8LYcUGSCBnEsXS
+#
+
+<html>
+<head>
+<script type="text/javascript">
+/*
+变量的scope是根据方法块来划分的（也就是说以function的一对大括号｛ ｝来划分）
+ 
+Javascript在执行前(!!!!!!)会对整个脚本文件的声明部分做完整分析(包括局部变量)，从而确定实变量的作用域。
+ 
+当全局变量跟局部变量重名时，局部变量的scope会覆盖掉全局变量的scope，(当离开局部变量的scope后，又重回到全局变量的scope，)
+ 
+而当全局变量遇上局部变量时，用window.globalVariableName来使用全局变量
+ 
+*/
+</script>
+<script>
+var variable = "variable in global";
+function show(){
+     
+    alert(variable);   //undefined 因为此时variable为局部变量但是代码执行到此处时未赋值
+    //alert(window.variable);  //  variable in global   全局变量
+    var variable = "variable in local"; //声明并初始化variable 
+    alert(variable);   //  variable in global局部变量
+};
+</script>
+</head>
+<body>
+<input type="button" onclick="show()"/>
+</body>
+<script>
+</script>
+</html>
+
+##
+## javascript : set default function parameters
+##
+#	ref doc: http://stackoverflow.com/questions/11942149/javascript-unassigned-default-function-parameters
+#
+foo = function(a){
+    if (!a) a = "Some value";
+    // something done with a
+    return a;
+}
+
+# better use if(typeof a == "undefined") // Because !a can be true for 0, an empty string '' or just null.
+# A common short hand for this is, return a || "Some value" instead of if(!a) a = "some value"; return a;
+
+
+
+
+
+
+##
+##	node.js中的http.response.writeHead方法使用说明
+##
+#	ref doc:	http://www.jb51.net/article/58471.htm
+#
+
+方法说明：
+	向请求的客户端发送响应头。
+	该函数在一个请求内最多只能调用一次，如果不调用，则会自动生成一个响应头。
+
+语法：
+	response.writeHead(statusCode, [reasonPhrase], [headers])
+
+接收参数：
+	statusCode              HTTP状态码，如200(请求成功），404（未找到）等。
+	reasonPhrase
+	headers                   类似关联数组的对象，表示响应头的每个属性
+
+例子：
+	var body = 'hello world';
+	response.writeHead(200, {
+	'Content-Length': body.length,
+	'Content-Type': 'text/plain'
+	});
+
+
+
+##
+##	node.js中的http.response.write方法使用说明
+##
+#	ref doc:	http://www.jb51.net/article/58469.htm
+#
+
+方法说明：
+	向请求的客户端发送响应内容。
+	在 response.end() 之前，response.write() 可以被执行多次。
+
+语法：
+	response.write(chunk, [encoding])
+
+接收参数：
+	chunk                   是一个buffer 或 字符串，表示发送的内容
+	encoding                如果chunk是字符串，就需要指定encoding来说明它的编码方式，默认utf-8
+
+例子：
+	var http = require('http');
+	http.createServer(function(req, res){
+	res.writeHead(200, {'Content-type' : 'text/html'});
+	res.write('<h1>Node.js</h1>');
+	res.end('<p>Hello World</p>');
+	}).listen(3000);
+
+
+
+##
+## nodejs : read environment variables
+##
+# ref doc: http://stackoverflow.com/questions/4870328/how-to-read-environment-variable-in-node-js
+#
+process.env.ENV_VARIABLE		// Where ENV_VARIABLE is the name of the variable you wish to access.
+#
+#  If you want to use a string key generated in your Node.js program, say, var v = 'HOME', you can use process.env[v].
+#	Otherwise, process.env.VARNAME has to be hardcoded in your program.
+
+# to customize environment variables
+#	through an .env file
+#	ref doc: http://stackoverflow.com/questions/22312671/node-js-setting-environment-variables/28821696#28821696
+#
+	I highly recommend looking into the dotenv package.
+	https://github.com/motdotla/dotenv
+	
+	It's a kinda similar to the answer from @Benxamin, but it's a lot cleaner and doesn't require any bash scripts. The code base is pretty popular and is well maintained.
+	Basically you need a .env file (which you can git ignore):
+	
+	FOO=bar
+	BAZ=bob
+	
+	Then in your application entry file put the following line in as early as possible:
+	require('dotenv').load();
+	
+	Boom. Done. 'process.env' will now contain the variables above:
+	console.log(process.env.FOO);
+	// bar
+	
+	The '.env' file isn't required so you don't need to worry about your app falling over in it's absence.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
