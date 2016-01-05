@@ -659,3 +659,308 @@ inheritedByDefault	缺省继承
 isolatedRealm	不推荐使用
 
 
+
+
+10.	使用可选语言编写 Maven 插件
+如用 Ant， Ruby， Groovy 来编写 Maven 插件。
+1)	用 Ant 编写插件
+•	什么是 Ant ?
+-	Ant 是一种构建工具。
+-	Ant 能让你通过一组归并成构建目标的任务来描述一个构建。
+-	Ant 允许你声明不同构建目标之间的依赖。
+=》 比如，使用 Ant 你实际上是在创建自己的生命周期。
+对比： Maven 有高度可重用的构建插件。
+               Maven 有全局生命周期。
+
+但是， Ant 仍然十分有用。例如，当你需要执行一些文件操作，XSLT转换等等。
+               关于 Ant 任务有一个很大的类库。包括了几乎所有功能。例如运行 JUnit 测试，转换 XML， 
+	用 SCP 复制文件至远程服务器等等。
+
+•	Ant 插件所需文件
+-	一个 pom.xml
+-	一个用 Ant 实现的 Mojo 描述符，
+包括两部分：XML 文件中的 Ant 任务，一个提供 Mojo 描述符信息的文件。
+在目录 src/main/scripts/ 下。
+	例子：
+
+-		pom.xml:
+	<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.sonatype.mavenbook.plugins</groupId>
+	<artifactId>firstant-maven-plugin</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>maven-plugin</packaging>
+	<name>Example Ant Mojo - firstant-maven-plugin</name>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-script-ant</artifactId>
+			<version>2.0.6</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<version>2.3</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven</groupId>
+						<artifactId>maven-plugin-tools-ant</artifactId>
+						<version>2.0.5</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+
+
+-	echo.build.xml:
+<project>
+	<target name="echotarget">
+		<echo>${message}</echo>
+	</target>
+</project>
+
+
+
+-	echo.mojos.xml:
+<pluginMetadata>
+	<mojos>
+		<mojo>
+			<goal>echo</goal>
+			<call>echotarget</call>
+			<description>Echos a Message</description>
+			<parameters>
+				<parameter>
+					<name>message</name>
+					<property>message</property>
+					<required>false</required>
+					<expression>${message}</expression>
+					<type>java.lang.Object</type>
+					<defaultValue>Hello Maven World</defaultValue>
+					<description>Prints a message</description>
+				</parameter>
+			</parameters>
+		</mojo>
+	</mojos>
+</pluginMetadata>
+
+•	编写并运行Ant 插件
+-	编写好3个 xml  文件 ( pom.xml, echo.build.xml, echo.mojos.xml )
+-	在 ~/.m2/settings.xml 中配置好插件组，如 org.sonatype.mavenbook.plugins
+-	mvn install
+-	mvn firstant:echo
+
+2)	用 Ruby编写插件
+•	什么是 Ruby, JRuby ?
+-	Ruby 是一种面向对象的脚本语言。
+-	Ruby 为元编程（meta-programming）和反射提供了丰富的基础设施。
+-	Ruby 对于 closure 和 block 的使用造就了一种既紧凑又不失强大的编程风格。
+-	Ruby 出现于1993年。大部分人了解 Ruby 是在基于 Ruby 的 web 框架 Ruby on Rails 流行之后。
+-	JRuby 是 Java 编写的 Ruby 解析器。
+
+•	Ruby 插件所需文件
+-	一个 pom.xml
+-	一个用 Ruby 实现的 Mojo 。
+在目录 src/main/scripts/ 下。
+例子：
+
+-	pom.xml:
+
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.sonatype.mavenbook.plugins</groupId>
+	<artifactId>firstruby-maven-plugin</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>maven-plugin</packaging>
+	<name>Example Ruby Mojo - firstruby-maven-plugin</name>
+	<dependencies>
+		<dependency>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>jruby-maven-plugin</artifactId>
+			<version>1.0-beta-4</version>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<version>2.3</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>jruby-maven-plugin</artifactId>
+						<version>1.0-beta-4</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+
+
+
+
+-	echo.rb:
+
+# Prints a message
+# @goal "echo"
+# @phase "validate"
+class Echo < Mojo
+
+	# @parameter type="java.lang.String" default-value="Hello Maven World" expression="${message}"
+	def message
+	end
+	
+	def execute
+		info $message
+	end
+	
+end
+
+run_mojo Echo
+
+
+
+•	编写并运行Ruby 插件
+-	编写好2个文件 ( pom.xml, echo.rb )
+（echo.rb ,
+-	Echo 类必须继承 Mojo， 
+-	Echo 类必须实现 execute()，
+-	最后必须 run_mojo Echo. ）
+
+-	在 ~/.m2/settings.xml 中配置好插件组，如 org.sonatype.mavenbook.plugins
+-	mvn install
+（在构建过程中，Maven Plugin 插件的 descriptor 目标应用了 JRuby 萃取器 extractor 创建了一个 plugin.xml 文件，该文件萃取了所有 Echo 类的注解。）
+
+-	mvn firstruby:echo
+
+•	Ruby Mojo 的实现
+Ruby Mojo 在源文件中使用注释进行注解。
+-	一个单独的注解如 @parameter 可以接受很多属性.
+-	多个属性都必须在同一行中指定。注解属性之间不能有换行符。
+-	类和参数都可以被注解。
+-	关于参数可以有4种注解。
+
+Ruby Mojo 参数的注解	描述
+@parameter	接受4种属性：
+	alias
+	default-value
+	expression
+                type， 默认值是type java.lang.String
+
+@required	“<true|false>”
+@readonly	“<true|false>”
+@deprecated	“<true|false>”
+
+
+-	Mojo 参数可以引用 Java 类和 Maven 属性。
+例子：
+
+# This is a mojo description
+# @goal test
+# @phase validate
+class Test < Mojo
+
+	# @parameter type="java.lang.String" default-value="nothing" alias="a_string"
+	def prop
+	end
+
+	# @parameter type="org.apache.maven.project.MavenProject" expression="${project}"
+	# @required true
+	def project
+	end
+	
+	def execute
+		info "The following String was passed to prop: '#{$prop}'"
+		info "My project artifact is: #{$project.artifactId}"
+	end
+	
+end
+
+run_mojo Test
+
+<=  通过命令 mvn install, mvn firstruby:test运行。
+
+
+-	Ruby 的 Mojo 类可以使用5种注解。
+Ruby Mojo 参数的注解	描述
+@goal	目标的名字
+@phase	该目标绑定的默认的阶段
+@requiresDependencyResolution	if true, Mojo 的依赖在运行之前被解析。
+@aggregator	标记该 Mojo 为聚合。
+@execute	支持在运行 Mojo 之前执行一个目标或者生命周期阶段。
+接受3种属性：
+	goal
+	phase
+	lifecycle
+
+
+•	Ruby Mojo 中使用日志
+3种方法： info(), debug(), error().
+例子：
+# Tests Logging
+# @goal logtest
+# @phase validate
+class LogTest < Mojo
+
+	def execute
+		info "Prints an INFO message"
+		error "Prints an ERROR message"
+		debug "Prints to the Console"
+	end
+	
+end
+
+run_mojo LogTest
+
+•	Raise 一个 MojoError
+例子：
+# Prints a Message
+# @goal error
+# @phase validate
+class Error < Mojo
+
+	# @parameter type="java.lang.String" default-value="Hello Maven World" expression="${message}"
+	# @required true
+	# @readonly false
+	# @deprecated false
+	def message
+	end
+	
+	def execute
+		info $message
+		raise MojoError.new( "This Mojo Raised a MojoError")
+	end
+	
+end
+
+run_mojo Error
+
+•	在 JRuby 中引用 Plexus
+-	Ruby Mojo 可以依赖于一个 Plexus 组件
+<= 需要使用 @parameter 注解的 expression 参数，在这里为 Plexus 指定 role 和 hint。
+
+例子：
+以 Plexus 中 Archiver 组件为例：role: org.codehaus.plexus.archiver.Archiver   hint:zip
+
+# This mojo tests plexus integration
+# @goal testplexus
+# @phase validate
+class TestPlexus < Mojo
+
+	# @parameter type="org.codehaus.plexus.archiver.Archiver" expression="${component.org.codehaus.plexus.archiver.Archiver#zip}"
+	def archiver
+	end
+	
+	def execute
+		info $archiver
+	end
+	
+end
+
+run_mojo TestPlexus
+
