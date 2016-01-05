@@ -1,0 +1,82 @@
+
+# 
+# how to add a registry key
+#
+	# ref doc http://www.ehow.com/how_5180231_add-registry-key.html
+#
+# 删除整个文件夹
+#
+del /s/q d:\123\*.* ----(用于删除文件夹下的子文件)
+rd /s/q d:\123 ----(用于删除文件夹)
+/s参数为子目录
+/q参数为不用确认
+
+#
+# 拷贝整个文件夹
+#
+#  !!! must set /R:n 		because /R:n :: 失败副本的重试次数: 默认为 1 百万。
+1)
+	将文件夹下的所有文件（包括空文件夹）全部复制到目标文件夹，则上述命令应改为：
+	robocopy D:\Document E:\Home /e /r:3 
+	robocopy /e /r:3 Music c:\tmp\tt
+	
+	此处参数"/e"的表示所有子目录（包括空文件夹）。
+
+	#	完全拷贝
+	在Windows默认的复制粘贴下，如果已存在一个同名文件夹，系统会进行增量复制，而不会进行文件夹的替换操作。
+	如果我们需要使目标文件夹与源文件夹完全相同，也就是说在复制的同时也删除在目标文件夹里存在但源文件夹里并没有的文件。
+	则需要使用以下命令：
+	robocopy /mir /np /r:3 Music c:\tmp\tt
+	robocopy . c:\tmp\tt /mir /np /r:3 /log:c:\tmp\robocopy.log
+
+
+2)
+	xcopy /S/E/Y/I Music c:\tmp\tt
+
+
+#
+# 处理日期
+#
+date		# output: Thu 11/19/2015
+date /T		# show date only, not update
+
+echo "%date:~4,2%-%date:~7,2%-%date:~10,4%"
+set Mdy="%date:~4,2%-%date:~7,2%-%date:~10,4%"
+echo %Mdy%	# output: "11-19-2015"
+
+#
+# kill chrome, restart machine
+#
+taskkill /F /IM chrome.exe
+set errorlevel=0
+shutdown -r -t 0
+
+
+#
+# how to avoid breaking a windows batch file from running when a command failed
+#
+>dir 123
+...
+File Not Found
+
+>echo %errorlevel%
+1
+
+>dir 123 || dir 1>nul 2>nul
+...
+File Not Found
+
+>echo %errorlevel%
+0
+
+
+##
+## PowerShell command
+##
+# to delete file/directory whose path is > 255 characters
+# ex. to remove node_modules
+open PowerShell
+mkdir temp
+robocopy  temp node_modules /MIR   # MIR = mirror
+rm -r temp
+rm -r node_modules
