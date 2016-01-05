@@ -1,0 +1,174 @@
+SelfLearning_points_jenkins
+
+##
+## How to fix problem on Jenkins master ${jenkins_server}?
+##
+##
+Jenkins master:  ${jenkins_server}
+account:         ${jenkins_master_account}
+
+Try steps one by one. If the first step doesn't work, then try the next step.
+1) go to Jenkins portal http://${jenkins_server}:8080/, login with ${jenkins_master_account}/$pwd, click "Restart Safely" on it.
+2) go to Jenkins master ${jenkins_server} through Remote Desktop, go to Service -> find the service Jenkins -> restart it.
+3) reboot Jenkins master ${jenkins_server}.
+
+##
+## Issue 1. for error: 
+#           Retriggered by user i321105 for Gerrit: https://git.*/${patchID}    
+#           [EnvInject] - Loading node environment variables.   
+#           Building remotely on ${jenkins_builder1} (builder windows) in workspace c:\jenkins\workspace\${jenkins_job}    
+#           Unpacking git-win-1.9.4.zip to c:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4 on ${jenkins_builder1}     
+#           ERROR: Failed to download git-win-1.9.4.zip from slave; will retry from master    
+#           java.io.IOException: remote file operation failed: c:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4 at hudson.remoting.Channel@1473e182:${jenkins_builder1} : java.net.ConnectException: Connection r    efused: connect
+#           	at hudson.FilePath.act(FilePath.java:977)
+##    ex. http://${jenkins_server}:8080/job/${jenkins_job1}/5320/console
+##
+fix:
+Jenkins Dashboard -> Manage Jenkins -> Configure System -> for git installation: update http://${jenkins_server}/ to http://${jenkins_server}:8080/
+
+##
+## Issue 2. for error: ${jenkins_user1} couldn't log in to jenkins
+## 
+##     for error:
+Invalid login information. Please try again. 
+Try again
+If you are a system administrator and suspect this to be a configuration problem, see the server console output for more details.
+##
+##
+to debug:
+[didn't work] 	1) check Service -> Jenkins -> LogON account
+[didn't work] 	2) check if ssh* plugins are right version. ex. ssh-slaves current is 1.10, on 09.27.2015 is 1.9.
+					change back to 1.9 in config.xml, credentials.xml.
+				#		go to d:\jenkins\config.xml, check       <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.10">
+				#	
+				#	current @1.10
+				#		<launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.10">
+				#			<host>*</host>
+				#			<port>22</port>
+				#			<credentialsId>*</credentialsId>
+				#			<maxNumRetries>0</maxNumRetries>
+				#			<retryWaitTime>0</retryWaitTime>
+				#		</launcher>
+				#	
+				#	on 09.27.2015:
+				#		<launcher class="hudson.slaves.JNLPLauncher"/>	  
+
+[didn't work] 	3) check if the used LDAP account / password is correct.
+					call 9 6030 8800 asking double check i-number is ok.
+				#	https://www.mail-archive.com/builds@apache.org/msg03195.html
+				#		You are using the wrong password.
+				#		Your LDAP account has now been locked.
+				#		Go to id.apache.org/reset/enter to set a new one.
+
+[didn't work] 	4) run jenkins in command line
+					go to D:\Jenkins
+					in cmd, java -jar jenkins
+
+[didn't work] 	5) testing using another jenkins server instance
+					ex. on https://${jenkins_server2}/
+						log in to http://*:8080/ 
+					
+[didn't work] 	6) double check LDAP connection info is correct.
+					<securityRealm class="hudson.security.LDAPSecurityRealm" plugin="ldap@1.6">
+						<server>*</server>
+						<rootDN>DC=*</rootDN>
+						<inhibitInferRootDN>false</inhibitInferRootDN>
+						<userSearchBase></userSearchBase>
+						<userSearch>sAMAccountName={0}</userSearch>
+						<groupSearchBase>OU=*</groupSearchBase>
+						<groupSearchFilter>(&amp;(objectclass=group)(cn={0}))</groupSearchFilter>
+						<managerDN>CN=*,OU=*,DC=*</managerDN>
+						<managerPassword>*=</managerPassword>
+						<disableMailAddressResolver>false</disableMailAddressResolver>
+						<cache>
+						<size>100</size>
+						<ttl>3600</ttl>
+						</cache>
+					</securityRealm>
+
+[work!] 		7) check if there is a LDAP outage
+					# https://issues.apache.org/jira/browse/INFRA-7531
+	  
+# root cause
+#
+LDAP server is down.
+	#	${LDAP_server1}
+	#
+	# ping: no response.
+
+# solution
+rdp to ${jenkins_server}
+go to services -> Jenkins ->
+	double check to make sure it runs under name ${jenkins_master_account}} .
+	stop
+	switch to another LDAP server.
+		#	${LDAP_server2} 
+		# 	in D:\${jenkins_install_path}\config.xml, 
+		#
+	start
+#
+see How to test if a LDAP server is on-line from a Windows client on wiki:
+	 using ldp.exe
+•             Download ldp.zip, unzip it. It's an executable ldp.exe, can be used without installation.
+•             Start ldp.exe
+•             Connection/ Server: ${LDAP_server2} 
+•             Connection/ Bind/ Simple Bind
+•             User: ${LDAP_user1} , Password: ******
+•             Expected output:
+				res = ldap_simple_bind_s(ld, '${LDAP_user1} ', <unavailable>); // v.3
+				Authenticated as: '${LDAP_user1} '.
+If the ouput is not as expected, it's recommended to double check if the LDAP server is on-line or not.
+
+
+
+##
+## Issue 3. jenkins slave is off-line, click "Launch", it will download "slave-agent.jnlp" instead of "Launch slave agents via Java Web Start".
+## 		ex. http://${jenkins_server}:8080/computer/${jenkins_build1}/
+##     
+to debug:
+1. double check and set Java security settings on that slave.
+	control panel -> java -> security -> add "http://${jenkins_server}:8080/" into exception list
+---------------------------------------------------------------------
+calling Java Application from Web
+这是JAVA安全设置
+把你的网站加到安全LIST里
+控制面板/JAVA
+
+我在控制面板里搜索到是 Java（32bit），这个是 OK的吗？
+恩
+---------------------------------------------------------------------
+	
+2. services -> jenkins slave -> ${jenkins_service_account}  -> restart  # not necessary, local system account also work.
+# jenkins slave should be set up as a service.
+
+# only for manual test
+#	3. 	java -jar slave.jar -jnlpUrl http://${jenkins_server}:8080/computer/${jenkins_build1} /slave-agent.jnlp
+
+# double check %JAVA_HOME% and %PATH%
+ex. JAVA_HOME=${JAVA_JDK_INSTALL_PATH} instead of ${JAVA_JRE_INSTALL_PATH}
+	PATH=%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;%SYSTEMROOT%\System32\WindowsPowerShell\v1.0\;%JAVA_HOME%\bin;
+	
+
+#
+# information for Maven Disk Usage Plugin
+# 
+information for Maven Disk Usage Plugin in a configuration file:
+<properties>
+	<com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+		<autoRebuild>false</autoRebuild>
+		<rebuildDisabled>false</rebuildDisabled>
+	</com.sonyericsson.rebuild.RebuildSettings>
+	<hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.25"/>
+</properties>
+	
+example configuration file is http://${jenkins_server}:8080/job/${jenkins_job1} /jobConfigHistory/configOutput?type=xml&timestamp=2016-01-05_10-49-42
+
+information for Maven Disk Usage Plugin in a jenkins system:
+	configuration is 			http://${jenkins_server}:8080/configure -> Disk Usage
+	version can be checked via 	http://${jenkins_server}:8080/pluginManager/installed -> disk-usage plugin
+	disk usage report is		http://${jenkins_server}:8080/plugin/disk-usage/
+	ref foc is 					https://wiki.jenkins-ci.org/display/JENKINS/Disk+Usage+Plugin
+	
+	
+	
+	
