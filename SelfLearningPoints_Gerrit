@@ -448,9 +448,27 @@ g.	D can become Patch Set 2
 #    how to search on https://${gerrit_server1}/
 #    docu:  https://${gerrit_server1}/Documentation/user-search.html
 #
-owner:* status:merged   # => https://${gerrit_server1}/#/q/owner:na.liu01%2540sap.com+status:merged
+method 1: in browser:
+owner:* status:merged   # => https://${gerrit_server1}/#/q/owner:*+status:merged
 change:1377981						   # => https://${gerrit_server1}/#/q/change:1377981
 ref: refs/heads/1297988			   	   # => https://${gerrit_server1}/#/q/ref:+refs/heads/1297988
+
+
+method 2: in windows command:
+	# to check changes with status:open project:${git_repo1}
+	ssh -p 29418 ${gerrit_user1}@${gerrit_server1} gerrit query status:open project:${git_repo1}
+	
+	# get Change-Id of a commit
+	git log -1 | findstr -i Change-Id
+	
+	# query the info of a patch set of a change: --current-patch-set
+	ssh -p 29418 ${gerrit_user1}@${gerrit_server1} gerrit query status:open project:${git_repo1} change:I565d8ff0ef96fc8cc9a1bf65c755de05241d0b21 --current-patch-set
+	
+	# query the info of all approved patch sets of a change: --current-patch-set --all-approvals
+	ssh -p 29418 ${gerrit_user1}@${gerrit_server1} gerrit query status:open project:${git_repo1} change:I565d8ff0ef96fc8cc9a1bf65c755de05241d0b21 --current-patch-set --all-approvals
+	
+
+
 
 Where can I see which files have been changed between two patch sets?
 Currently the Gerrit WebUI does not provide an overview about which files have been changed between two patch-sets (but there is already a Gerrit issue which requests this feature).
