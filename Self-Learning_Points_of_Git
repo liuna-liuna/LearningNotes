@@ -397,6 +397,13 @@ set GIT_TRACE=true
 c:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\bin\git.exe reflog expire --expire-unreachable=now --all
 c:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\bin\git.exe gc --prune=now
 
+4) how to fix “WARNING: terminal is not fully functional” error in command console?
+#		ex. git log -1
+#   Solution: http://stackoverflow.com/questions/7949956/why-does-git-diff-on-windows-warn-that-the-terminal-is-not-fully-functional
+#
+add an env. variable : TERM=xterm. # works both as system env. variable and as user env. variable.
+
+
 
 6.	Training Materials
 http://git.wdf.sap.corp:50002/presentations/git-gerrit-workshop/git-gerrit-workshop.html 
