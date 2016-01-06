@@ -430,3 +430,69 @@ f.	commit D is not successor of C
 g.	D can become Patch Set 2
 
 
+6. Gerrit usage
+
+#    how to search on https://${gerrit_server1}/
+#    docu:  https://${gerrit_server1}/Documentation/user-search.html
+#
+owner:* status:merged   # => https://${gerrit_server1}/#/q/owner:na.liu01%2540sap.com+status:merged
+change:1377981						   # => https://${gerrit_server1}/#/q/change:1377981
+ref: refs/heads/1297988			   	   # => https://${gerrit_server1}/#/q/ref:+refs/heads/1297988
+
+Where can I see which files have been changed between two patch sets?
+Currently the Gerrit WebUI does not provide an overview about which files have been changed between two patch-sets (but there is already a Gerrit issue which requests this feature).
+Only for each changed file you can view the diff between two patch sets (see How can I see the diff between two patch sets?).
+As a workaround it is possible to use the Git command line to get the list of files which have been changed between two patch sets:
+Copy the checkout command (Anonymous Git) for patch set X from the Change Screen in the Gerrit WebUI and execute it.
+Copy the checkout command (Anonymous Git) for patch set Y from the Change Screen in the Gerrit WebUI, remove the '&& git checkout FETCH_HEAD' part and execute it.
+Compare HEAD and FETCH_HEAD in order to see all files which have been changed between the two patch sets: git diff --name-status HEAD FETCH_HEAD
+Example for comparing patch sets 3 and 5 of change 1739
+$ git fetch git://${gerrit_server1}/NGP/LJS/store-application refs/changes/39/1739/5 && git checkout FETCH_HEAD
+...
+ 
+$ git fetch git://${gerrit_server1}/NGP/LJS/store-application refs/changes/39/1739/3
+...
+ 
+$ git diff --name-status HEAD FETCH_HEAD
+M       com.sap.core.examples.blueprint.abap/build.properties
+M       com.sap.core.examples.blueprint.persistence.sqlmapdao/build.properties
+M       com.sap.core.examples.blueprint.persistence/build.properties
+M       com.sap.core.examples.blueprint.web/WebContent/build.properties
+M       pom.xml
+There is also a shell script that allows you to download all patch sets for a change at once (for details have a look at How can I efficiently get all patch sets of a change locally?).
+
+
+
+# use ssh command to connect to git / gerrit server
+ssh -p 29418 -v ${gerrit_user1}@${gerrit_server1} 
+#   available git command through ssh are two:
+#            receive-pack
+#            upload-pack
+ssh -p 29418 -v ${gerrit_user1}@${gerrit_server1}  git receive-pack ${git_repo1} | head -50
+
+#
+# how to update settings of an account on Gerrit
+#
+steps:
+	go to https://${gerrit_server1}/
+	login as the account ex. ${gerrit_user1}
+	goto settings -> Contact Information https://${gerrit_server1}/#/settings/contact
+	select "...Register New Email ..." in "Preferred Email", click "Register New Email...", click "Register"
+	[to be verified]	click the link in the mail sent out to complete the registration.
+	[if needed]	add this account as a member of a gerrit group ex. cvom_users https://${gerrit_server1}/#/admin/groups/6523,members
+
+#
+# How to configure SSH access to Gerrit for technical user (as Jenkins Administrator)
+#
+#
+Add the following entries (replace "jenkins_ssh_username" with your technical user name and "~/.ssh/id_rsa" by the path of the private key file):
+Host ${gerrit_server1} 
+  User jenkins_ssh_username
+  HostName ${gerrit_server1} 
+  IdentityFile ~/.ssh/id_rsa
+#
+#	ex. in C:\Users\${gerrit_user1}\.ssh\config on ${jenkins_server1} 
+#			backed up in D:\backup\${gerrit_user1}.ssh\.
+
+
+
