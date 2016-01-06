@@ -140,6 +140,19 @@ Gerrit:
 
 Table 1 Difference between Git and Gerrit Push
 
+Difference between Change and Patch Set in Gerrit
+Term	Description
+Change	The unit of review.
+Results in a single commit when merged to the git repository.
+Change numbers are unique and never change.
+
+Patch Set	A revision of a Change.
+Each time a Change is modified, it will receive a new Patch Set.
+Patch Set numbering starts from 1.
+
+	Technically, a Patch Set is a unique git commit.
+
+
 
  
 Figure 1 Difference between Git and Gerrit Push
