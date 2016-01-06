@@ -1063,3 +1063,202 @@ class EchoMojo extends GroovyMojo {
 -	mvn install
 -	mvn firstgroovy:echo
 
+11.	Settings 细节
+1)	Settings.xml
+•	可位于两个地方：
+Maven 安装目录：	    $M2_HOME/conf/settings.xml
+用户特定的 Settings 文件:    ~/.m2/settings.xml
+
+•	Settings.xml 目的： 	    只关注构建系统整体，不应该和任何一个特定的项目绑定。
+•	Settings.xml 内容： 	    包括本地仓库地址，候选的远程仓库服务器，以及一些认证信息。
+Settings 元素下最顶层元素的概述：
+
+<settings 	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:SchemaLocation="http://maven.apache.org/POM/4.0.0								http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+	<localRepository/>
+	<interactiveMode/>
+	<usePluginRegistry/>
+	<offline/>
+	
+	<pluginGroups/>
+	<servers/>
+	<mirrors/>
+	<proxies/>
+	<profiles/>
+	<activeProfiles/>
+	
+</settings>
+
+
+2)	Settings 细节
+
+Items at top level in settings.xml	Description
+简单值：（4个）
+	localRepository
+	interactiveMode
+	usePluginRegistry
+	offline
+	localRepository： 本地仓库的路径。
+		   默认值 ${workspace}/.m2/repository。
+
+interactiveMode：默认true。
+		   如果需要和用户交互以获得输入，设为true。
+
+usePluginRegistry：默认false。
+		    如果需要使用${workspace}/.m2/plugin-registry.xml
+		         来管理版本插件，设为true。
+
+offline：默认false。
+		   如果需要在离线模式下运行，设为true。
+
+
+pluginGroups	包含一个 pluginGroup 元素列表，每个子元素包含了一个 groupId。
+
+默认包含了 org.apache.maven.plugins。
+
+servers	通常包含一些不应该和 pom.xml 一起分发的设置如安全证书。
+
+包含子元素：
+	id
+	username, password
+	privateKey, passphrase
+	filePermissions, directoryPermissions
+
+mirrors	包含子元素：
+	id, name
+	url
+	mirrorOf
+
+url 是该镜像的 URL。构建系统会优先考虑使用该 URL，而非使用默认的服务器 URL。
+
+mirrorOf 是被镜像的服务器的 id。例如 central。central 是 Maven 中央仓库 http://repo1.maven.org/maven2 的id。
+
+proxies	包含子元素：
+	id
+	active
+	protocol, host, port
+	username, password
+	nonProxyHosts
+
+使用： protocol://host:port.
+
+profiles	Settings.xml 中的 profiles 是 pom.xml 中 profiles 元素的裁剪版本。
+
+包含子元素：
+	activation
+	repositories
+	pluginRepositories
+	properties
+
+I.	如果一个 settings 中的 profile 被激活，它的值会覆盖任何其它定义在 POM 中或者 profile.xml 中的带有相同 id 的 profile。
+
+当activation中定义的所有条件满足的时候，该 profile 被激活。
+See An example for activation below. 例如例子当中的 jdk, os, property, file.
+
+II.	属性 Properties 有5种不同的形式，并且都能在 settings.xml 中访问：
+    
+Properties形式	
+env.x   	Shell  环境变量
+project.x	POM 中对应的元素值
+settings.x	Settings.x 中对应元素的值
+Java System Properties	可通过 java.lang.System.getProperties() 访问的属性
+X	由 <properties/> 定义的元素，
+或者外部文件中设置，
+以 ${somevar} 的形式使用。
+
+
+III.	仓库 repositories是 用来填充构建系统本地仓库所使用的一组远程项目。
+例如配置 releases 和 snapshots 两种构件的策略，包括 
+enabled, 
+updatePolicy ( always, daily (default), interval:X (mins), never )
+checksumPolicy ( ignore, fail, warn )
+
+而 Maven 是从本地仓库中使用其插件和依赖。
+See An example for repositories below.
+
+IV.	插件仓库pluginRepositories
+每个 pluginRepostory 元素指定一个 Maven 可以用来寻找新插件的远程地址。
+
+仓库是两种主要构件的家。一种是被用作其它构件的依赖，另一种是插件。
+Maven 插件是一种特殊类型的构件。由于此原因，插件仓库独立于其它仓库。
+
+activeProfiles	任何在 activeProfiles 定义的 profile id，对应的 profile 都会被激活，不论环境设置如何。
+如果没有匹配的 profile，则什么都不会发生。
+
+See An example for activeProfiles below.
+
+
+
+•	An example for activation:
+<profiles>
+	<profile>
+		<id>test</id>
+		<activation>
+			<activeByDefault>false</activeByDefault>
+			<jdk>1.5</jdk>
+			<os>
+				<name>Windows XP</name>
+				<family>Windows</family>
+				<arch>x86</arch>
+				<version>5.1.2600</version>
+			</os>
+			<property>
+				<name>mavenVersion</name>
+				<value>2.0.3</value>
+			</property>
+			<file>
+				<exists>/.../$file1</exists>
+				<missing>/.../$file2</missing>
+			</file>
+		</activation>
+		...
+	</profile>
+</profiles>
+
+•	激活 profile 的方式：3种
+I.	activation in profile section
+II.	activeProfile in settings.xml file
+III.	command line: ex.  mvn -P test
+
+•	查看构件中哪些 profile 会激活：
+mvn help:active-profiles
+
+•	An example for repositories:
+<profiles>
+	<profile>
+		...
+		<repositories>
+			<repository>
+				<id>codehausSnapshots</id>
+				<name>Codehaus Snapshots</name>
+				<releases>
+					<enabled>false</enabled>
+					<updatePolicy>always</updatePolicy>
+					<checksumPolicy>warn</checksumPolicy>
+				</releases>
+				<snapshots>
+					<enabled>true</enabled>
+					<updatePolicy>never</updatePolicy>
+					<checksumPolicy>fail</checksumPolicy>
+				</snapshots>
+				<url>http://snapshots.maven.codehaus.org/maven2</url>
+				<layout>default</layout>
+			</repository>
+		</repositories>
+		<pluginRepositories>
+		...
+		</pluginRepositories>
+		...
+	</profile>
+</profiles>
+
+•	An example for activeProfiles:
+<settings ...>
+...
+	<activeProfiles>
+		<activeProfile>env-test</activeProfile>
+	</activeProfiles>
+...
+</settings>
