@@ -45,7 +45,50 @@ Figure 9 Git after rebase: fast forward merge is possible	11
 Git
 1.	What is Git
 1)	Characteristics
-TODO
+•	Git 是一个分布式版本管理系统
+•	Git 是一个内容寻址系统 Content Tracking System
+•	有两个主要的数据结构： 对象库 object store， 索引 index。
+(都位于 .git 下)
+
+•	Index是一个临时的、动态的二进制文件。
+•	有4种类型的原子对象：
+blob, tree, commit, tag.
+Git 对象类型	描述
+blob	二进制大对象 Binary Large Object
+指某些可以保护任意数据的变量或者文件。
+只保存数据，不包括元数据。
+
+tree	代表一层目录信息。
+包括： 
+     blob标识符
+     路径名
+     在一个目录里所有文件的一些元数据
+     其他目录或者子树对象。
+
+commit	提交。
+每一个commit 对象指向一个 tree 对象。
+保存版本库中每一次变化的元数据，
+包括：
+   作者
+提交者
+提交日期
+日志信息。
+
+tag	一个标签对象分配一个任意且可读的名字给一个特定对象，通常是一个提交对象。
+分为两种：轻量级 lightweight、带附注的 annotated。
+
+
+•	Git 使用了一种叫做打包文件 pack file 的存储机制。
+首先定位内容非常相似的全部文件，为它们之一存储整个内容。
+之后计算相似文件之间的差异并且只存储差异。
+
+•	Git 与传统数据库、Unix 文件系统的区别
+系统	索引机制	数据记录
+Git	.git/objects/hash、树对象内容	blob对象、书对象
+传统数据库	索引顺序存取方法	数据记录
+Unix 文件系统	目录/path/to/file	数据块
+
+
 2)	Advantage
 TODO
 3)	Disadvantage
