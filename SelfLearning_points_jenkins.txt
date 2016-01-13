@@ -300,4 +300,35 @@ for (node in mapByNodeName.keySet()) {
 #	ref doc: https://wiki.jenkins-ci.org/display/JENKINS/Monitoring+Scripts
 
 		
+#
+# best practice for jenkins users
+# 	
+1. use Jenkins Plugins productively
+
+2. standarize Jenkins slaves
+	install same toolsets, and doing download and installation job automatically ex. through a script.
+	for slaves created from an image in Could or VMs: 
+		better: spin a slave up from a pre-configured image;
+				update the image when slave confiurations need to be updated;
+				update the image;
+				spin up a new slave instead of updating the existing slaves.
+	set up builds on slaves, not run builds on master
+	
+3. 	use incremental builds when possible for daily and development purpose,
+	use full builds for release, and ex. quality build to generate code coverage reports.
+	<= maven project type has built-in support for incremental builds. (TODO: need to be updated?)
+	
+4. integrate with other tools 
+	(ex. Gerrit, Jira, Sonar, 
+		 Artifacts-Staging ex. through Maven / Groovy / Ivy etc.
+		 Chat/IM notifications
+		 )
+		 
+5. balance the jenkins sytem (slaves, builds, etc.)	
+
+6. stick with stable releases of Jenkins itself
+	use Jenkins core LTS releases. LTS = Long Term Support
+	
+7. join Jenkins community
+
 	
