@@ -170,5 +170,134 @@ information for Maven Disk Usage Plugin in a jenkins system:
 	ref foc is 					https://wiki.jenkins-ci.org/display/JENKINS/Disk+Usage+Plugin
 	
 	
+#	
+#
+# to monitor the memory usage of a jenkins slave
+#
+## Step1: using jenkins plugin: Monitoring plugin and slave-status plugin
+1) to see http://${jenkins_server1}:8080/computer/(master)/monitoring/  
+	-> View memory histogram -> Details
 	
+#Not needed. And could introduce exception in running Groovy script could due to missing modules.	 set an env. variable JAVA_HOME = "C:\Program Files\Java\jdk1.8.0_40"
+  #Not needed. And could introduce exception in running Groovy script could due to missing modules.		on Manage jenkins
+  #Not needed. And could introduce exception in running Groovy script could due to missing modules.		and master config
+
+
+2) slave-status plugin:
+	real-time memory usage report:
+		http://${jenkins_slave1}:3141/
+		http://${jenkins_server1}:3141/
+	
+## result example
+on ${jenkins_slave1}:
+slave-status plugin is intalled: 
+	result can be seen through http://${jenkins_slave1}:3141/.
+	It's a real-time status and memory usage report.
+result from Monitoring plugin:
+	http://${jenkins_server1}:8080/monitoring/nodes/${jenkins_slave1_name}?period=annee
+	It shows Java memory usage.
+	It shows physical memory usage too through:
+        Go to page  http://${jenkins_server1}:8080/monitoring/nodes/${jenkins_slave1_name}?period=annee
+        Go to “System Information” -> “Details”:
+
+	
+	ex.
+		OS:	OS Windows Server 2008 R2 Service Pack 1, amd64/64 (32 cores)
+		Java:	Java(TM) SE Runtime Environment, 1.8.0_40-b26
+		JVM:	Java HotSpot(TM) 64-Bit Server VM, 25.40-b25, mixed mode
+		PID of process:	1984
+		Start:	1/13/16 10:44 AM
+		JVM arguments:	-Xrs
+		Memory:	Non heap memory = 23 Mb (Perm Gen, Code Cache),
+		Loaded classes = 2,306,
+		Garbage collection time = 0 ms,
+		Process cpu time = 7,534 ms,
+		Committed virtual memory = 3,276 Mb,
+		Free physical memory = 248,443 Mb,
+		Total physical memory = 262,070 Mb,
+		Free swap space = 507,268 Mb,
+		Total swap space = 524,139 Mb
+		Free disk space:	405,816 Mb
+
+
+
+	
+
+## Step2: perfmon on windows 2008
+result from perfmon:
+	% Committed Bytes In Use = 9.013 max, 4.305 min.
+	paging file = 262070MB
+	What does Memory \ %Committed Bytes in Use mean ?
+        % Committed Bytes In Use is the ratio of Memory \ Committed Bytes to the Memory \ Commit Limit. 
+        Committed memory is the physical memory in use for which space has been reserved in the paging file should it need to be written to disk. 
+		The commit limit is determined by the size of the paging file.  If the paging file is enlarged, the commit limit increases, and the ratio is reduced). 
+		This counter displays the current percentage value only; it is not an average.
+		If this value is consistently over 80% then your page file may be too small.
+
+# ref doc : 	http://blogs.technet.com/b/askperf/archive/2008/01/25/an-overview-of-troubleshooting-memory-issues.aspx 
+
+
+## Step3:  real-time check through node -> "Script Console":
+#	example: http://${jenkins_server1}:8080/computer/${jenkins_slave1_name}/script
+Display jvm data, memory data, deadlocked threads by node
+
+#
+# pre-requisite: install net.bull.javamelody first.
+#
+import net.bull.javamelody.*;
+
+String nodeName = null; // null for all nodes, not null for a particular node
+Map mapByNodeName = new RemoteCallHelper(nodeName).collectJavaInformationsListByName();
+for (node in mapByNodeName.keySet()) {
+  java = mapByNodeName.get(node);
+  println "\nNode:\n	" + node;
+
+  println "\nsessions count:\n    " + java.sessionCount;
+  println "\nactive HTTP threads count:\n    " + java.activeThreadCount;
+  println "\nthreads count:\n    " + java.threadCount;
+  println "\nsystem load average:\n    " + java.systemLoadAverage;
+  println "\navailable processors:\n    " + java.availableProcessors;
+  println "\nhost:\n    " + java.host;
+  println "\nos:\n    " + java.os;
+  println "\njava version:\n    " + java.javaVersion;
+  println "\njvm version:\n    " + java.jvmVersion;
+  println "\npid:\n    " + java.pid;
+  println "\nserver info:\n    " + java.serverInfo;
+  println "\ncontext path:\n    " + java.contextPath;
+  println "\nstart date:\n    " + java.startDate;
+  println "";
+
+  memory = java.memoryInformations;
+  println "\nused memory:\n    " + Math.round(memory.usedMemory / 1024 / 1024) + " Mb";
+  println "\nmax memory:\n    " + Math.round(memory.maxMemory / 1024 / 1024) + " Mb";
+  println "\nused perm gen:\n    " + Math.round(memory.usedPermGen / 1024 / 1024) + " Mb";
+  println "\nmax perm gen:\n    " + Math.round(memory.maxPermGen / 1024 / 1024) + " Mb";
+  println "\nused non heap:\n    " +       Math.round(memory.usedNonHeapMemory / 1024 / 1024) + " Mb";
+  println "\nused physical memory:\n    " +       Math.round(memory.usedPhysicalMemorySize / 1024 / 1024) + " Mb";
+  println "\nused swap space:\n    " +       Math.round(memory.usedSwapSpaceSize / 1024 / 1024) + " Mb";
+  println "";
+
+  threads = java.getThreadInformationsList();
+  deadlocked = new java.util.ArrayList();
+  for (thread in threads) {
+    if (thread.deadlocked)
+      deadlocked.add(thread);
+  }
+  println deadlocked.size() + " deadlocked threads / " + threads.size() + " threads (" + java.activeThreadCount + " threads active)";
+  for (thread in deadlocked) {
+    println "";
+    println thread;
+    for (s in thread.getStackTrace())
+      println "    " + s;
+  }
+  println "";
+
+  println "*************************************************************";
+  println "";
+}
+
+
+#	ref doc: https://wiki.jenkins-ci.org/display/JENKINS/Monitoring+Scripts
+
+		
 	
