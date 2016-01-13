@@ -472,7 +472,8 @@ Command	git push origin HEAD:master	git push origin HEAD:refs/for/master
 Same for Git and Gerrit, 
 	2 commits in Git / 2 changes in Gerrit.
 
- 
+ => in Gerrit, a Change is bigger than a Patch Set.
+               a Patch Set represents a Git Commit.
 
 
 
@@ -496,5 +497,11 @@ f.	commit D is not successor of C
 g.	D can become Patch Set 2
 
 
+3)	Gerrit Best Practices
+•	One proposal feature, one feature branch.
+•	Push only finished features to branches with build and test automatics.
+•	Push complete feature as one commit ex. by squash.
+•	Prefer small yet complete changes to big one before pushing.
+•	Write good commit messages.
 
 
