@@ -1,0 +1,13 @@
+#
+#	fix "Permission denied (publickey)" in git commands
+#    on Windows box.
+Once "Permission denied (publickey)." error happens when running git command, 
+ex.
+	C:\jenkins\workspace\scm_create_git_branch_docs>c:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\bin\git.exe -c core.askpass=true fetch --tags 
+	--progress ssh://${git_authorized_user1}@${jenkins_server1}:29418/${git_repo1} +refs/heads/*:refs/remotes/origin/*
+	Permission denied (publickey).
+	fatal: Could not read from remote repository.
+
+=> double check if .ssh exists under c:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\, same directory as the git.exe.
+=> double check if .ssh exists in the user home.
+<= copy ${git_authorized_user1}\.ssh to it.
