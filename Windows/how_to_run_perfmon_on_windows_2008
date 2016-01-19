@@ -1,0 +1,22 @@
+how to run perfmon on windows 2008
+1. What is the perfmon counter "%Committed Bytes in Use":
+	ex. 
+	% Committed Bytes In Use = 9.013 max, 4.305 min.
+	paging file = 262070MB
+	What does Memory \ %Committed Bytes in Use mean ?
+        % Committed Bytes In Use is the ratio of Memory \ Committed Bytes to the Memory \ Commit Limit. 
+        Committed memory is the physical memory in use for which space has been reserved in the paging file should it need to be written to disk. 
+		The commit limit is determined by the size of the paging file.  If the paging file is enlarged, the commit limit increases, and the ratio is reduced). 
+		This counter displays the current percentage value only; it is not an average.
+		If this value is consistently over 80% then your page file may be too small.
+
+# ref doc : 	http://blogs.technet.com/b/askperf/archive/2008/01/25/an-overview-of-troubleshooting-memory-issues.aspx 
+
+2. How to show information from multiple logs of perfmon
+	open Performance Monitor, click "View Log Data(Ctrl + L)";
+	go to "Source" tab, select "Log files:" in "Data source", click "Add..." to add multiple log files, must add them one by one;
+	click "Time Range" => you can see the total time range in all these multiple log files. and select the time range you want to check; 
+	click "Apply", "OK".
+	
+	=> Done. The data is shown on the right panel.
+
