@@ -302,7 +302,7 @@ for (node in mapByNodeName.keySet()) {
 		
 #
 # best practice for jenkins users
-# 	
+# 	[on 1/20/2016] moved to https://github.com/liuna-liuna/LearningNotes/blob/master/Jenkins/best_practice_for_jenkins
 1. use Jenkins Plugins productively
 
 2. standarize Jenkins slaves
