@@ -1,0 +1,13 @@
+go to ${jenkins_master1} -> click "Job Import Plugin" on the left panel
+	=> http://${jenkins_master1}:8080/job-import/
+input "http://${orig_jenkins_master1}:8080/"	into "Remote Jenkins URL",
+(optional) input "${jenkins_user1}"	into "Username(optional)",
+get from "API Token" as "${jenkins_user1_APIToken}" from http://${jenkins_master1}:8080/user/${jenkins_user1}/configure/,
+input "${jenkins_user1_APIToken}"	into "Password/API Token", click "Query"
+	=> Remote Jenkins Job Selection
+	=> Import?		Name				Description
+	=> 				${jenkins_job1}		${jenkins_job1_description}
+click "Done!"	.
+	=> Done.
+	
+	
