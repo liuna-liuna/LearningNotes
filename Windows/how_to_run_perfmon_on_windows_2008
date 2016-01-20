@@ -1,4 +1,10 @@
-how to run perfmon on windows 2008
+#
+# how to run perfmon on windows 2008
+#
+Commands:
+%windir%\system32\perfmon.exe
+%windir%\system32\perfmon.exe /res
+
 1. What is the perfmon counter "%Committed Bytes in Use":
 	ex. 
 	% Committed Bytes In Use = 9.013 max, 4.305 min.
