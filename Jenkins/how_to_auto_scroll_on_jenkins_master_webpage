@@ -1,0 +1,39 @@
+
+#
+# information for auto-scroll on Jenkins master website (jenkins version 1.596.2)
+#
+
+# changelog : What's new in 1.598 (2015/01/25)
+	Fixed side/main panel scrolling issues. (issue 26312, issue 26298, issue 26306)
+	#	ref doc: https://jenkins-ci.org/changelog/
+
+	log in page redirection: http://${jenkins_master1}:8080/login?from=%2F#top
+
+While in Jenkins version 1.596.2, if it's set up as a windows service through:
+		jenkins.exe
+		jenkins.exe.config
+	
+scroll to the top of the log in page through "log in". 
+Clicking "log in", you'll be re-dicrected to the log in page.
+However, if the page expands several screens, the input boxes for "log in" is at the top while the focus could at the bottom,
+ex. when there is a long list in "Build Executor Status".
+
+
+
+# how to Custom login screen message on jenkins master / jenkins server
+click the "Add description" link on the top page,
+write the custom message. 
+
+=> It would appear at the top of the Jenkins top page. 
+
+Notes: 	The System Message does not appear to the login page and if you allow 
+		access to jenkins only to logged users, they will see only the login page. 
+		<= 
+		Method1: Add "Anonymous" to all "Globral roles", "Project roles" and "Slave roles", the System Message can dock at all jenkins pages including the login page.
+		Method2: Manually at "#top" to the log in url, ex. http://${jenkins_master1}:8080/login?from=%2F#top
+		Method3: Manually shorten the log in page when it expands several screens, ex. click "collapse" of "Build Executor Status".
+
+
+
+
+
