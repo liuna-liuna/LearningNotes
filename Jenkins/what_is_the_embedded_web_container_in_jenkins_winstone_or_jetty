@@ -1,0 +1,22 @@
+#
+#	what is the embedded web server in jenkins, winstone or jetty?
+#
+before 1.535: winstone
+after 1.535:  jetty
+[on 1/20/2016] by default: the embedded web container in jenkins is jetty.
+And finally, if you are having difficulty installing Jenkins with a container, you can always run Jenkins just by itself: java -jar jenkins.war (which uses Jetty)
+#	ref doc: https://wiki.jenkins-ci.org/display/JENKINS/Containers
+
+
+Servlet container. Embedded Winstone (before 1.535) or Jetty8 (1.535+, but not in 1.532.1 LTS) vs Tomcat. 
+Jetty used to be better on consistent throughput and resource consumption than Tomcat. 
+But for recent Jetty 8-9 and Tomcat 7 there are no clear evidence of it.
+#	ref doc: http://soldering-iron.blogspot.de/2014/01/jenkins-performance-hints.html
+
+
+>> On Thu, Sep 8, 2011 at 1:25 PM, Kirill Evstigneev 
+>>> Winstone is unable to transfer more than 2 Gbytes per request. If a job 
+>>> tends to produce large artifacts it will be impossible to get them from 
+>>> Jenkins. 
+>>> Switching to Jetty or Tomcat should help in this case. 
+#	ref doc: http://jenkins-ci.361315.n4.nabble.com/Which-web-container-is-the-best-for-running-jenkins-td3798886.html
