@@ -1,0 +1,72 @@
+##
+## How to fix problem of Jenkins slave failed to connect to master
+##
+phenomena:
+ex.
+	# ref doc: https://issues.jenkins-ci.org/browse/JENKINS-10582
+
+phenomenon1:
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x0000000005893a90, pid=1708, tid=2836
+#
+# JRE version: 7.0_25-b17
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (23.25-b01 mixed mode windows-amd64 compressed oops)
+# Problematic frame:
+# C  0x0000000005893a90
+#
+# Core dump written. Default location: C:\Java\bin\hs_err_pid1708.mdmp
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.sun.com/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+phenomenon2:
+[10/28/13 16:47:39] [SSH] Opening SSH connection to batvm06.perf.lab.tripwire.com:22.
+ERROR: Unexpected error in launching a slave. This is probably a bug in Jenkins.
+java.lang.NullPointerException
+    at hudson.plugins.sshslaves.SSHLauncher.pemKeyEquals(SSHLauncher.java:471)
+    at hudson.plugins.sshslaves.SSHLauncher.access$000(SSHLauncher.java:120)
+    at hudson.plugins.sshslaves.SSHLauncher$1.matches(SSHLauncher.java:449)
+    at com.cloudbees.plugins.credentials.matchers.AllOfMatcher.matches(AllOfMatcher.java:63)
+    at com.cloudbees.plugins.credentials.CredentialsMatchers.firstOrDefault(CredentialsMatchers.java:356)
+    at com.cloudbees.plugins.credentials.CredentialsMatchers.firstOrNull(CredentialsMatchers.java:374)
+    at hudson.plugins.sshslaves.SSHLauncher.retrieveExistingCredentials(SSHLauncher.java:436)
+    at hudson.plugins.sshslaves.SSHLauncher.upgrade(SSHLauncher.java:404)
+    at hudson.plugins.sshslaves.SSHLauncher.getCredentials(SSHLauncher.java:389)
+    at hudson.plugins.sshslaves.SSHLauncher.openConnection(SSHLauncher.java:1044)
+    at hudson.plugins.sshslaves.SSHLauncher.launch(SSHLauncher.java:588)
+    at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:230)
+    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+    at java.lang.Thread.run(Thread.java:662)
+[10/28/13 16:47:39] [SSH] Connection closed.
+
+#
+# root cause
+#
+1. connection through security is enabled between master and slaves.
+	double check:
+		go to ${jenkins-master1} -> Global Security,
+		check if "Enable Slave → Master Access Control" is ticked.
+		
+2.	jenkins-slave is installed as a windows service, however, the arguments in jenkins-agent.jnlp are different from that in jenkins-slave.xml, especially the "-secret" argument.
+
+
+# solution
+step 1. disable security: de-select "Enable Slave → Master Access Control" ;
+step 2. make sure arguments in jenkins-agent.jnlp are same as that in jenkins-slave.xml:
+ 	# parameter <argument> in jenkins-agent.jnlp to be used as value for  -secret  in jenkins-slave.xml 
+	# <jnlp codebase=...>  in jenkins-agent.jnlp to be used as value for  -jnlpUrl in jenkins-slave.xml 
+
+
+
+#
+# how to fix jenkins 启动slave，出现com.sun.deploy.net.FailedDownloadException: Unable to load resource
+#
+refer to Jenkins Master/slave 使用问题汇总及解决方案 through http://blog.csdn.net/achang21/article/details/45153199.
