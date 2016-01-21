@@ -3,6 +3,11 @@
 #
 install "Sidebar Plugin",
 go to ${jenkins_master1} -> "Manage Jenkins",
-go to "Sidebar Links", click "Add Link", add name, url and an icon if prefers to, ex. "log in to top", "http://${jenkins_master1}:8080/login?from=%2F#top", save,
+go to "Sidebar Links", click "Add Link", add 
+	Link URL,
+	Link Text,
+	Link Icon (optional, if prefers to),
+	ex. "log in to top", "http://${jenkins_master1}:8080/login?from=%2F#top", 
+	click "Add Link",
 	=> an additional link "log in to top" will appear on the left panel.
 => Done.
