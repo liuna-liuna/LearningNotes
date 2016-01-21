@@ -35,3 +35,40 @@
 	use Jenkins core LTS releases. LTS = Long Term Support
 	
 7. join Jenkins community
+
+8. back up the jenkins home regularly
+
+9. limit project names to a sane character set e.g. alphanumeric
+
+10. use "file fingerprinting" to manage dependencies
+
+11. integrate tightly with your issue tracking system, like JIRA or bugzilla, to reduce the need for maintaining a Change Log
+
+12. integrate tightly with a repository browsing tool like FishEye if you are using Subversion as source code management tool
+
+13. always configure your job to generate trend reports and automated testing when running a Java build
+
+14. set up jenkins on a partition that has the most free disk-space
+
+15. archive unused jobs before removing them
+
+16. set up a different job / project for each maintenance or development branch you create
+
+17. prevent resource collisions in jobs that are running in parallel
+	e.g. using Throttle Concurrent Builds Plugin
+
+18. avoid scheduling all jobs to start at the same time
+	e.g. use the H syntax in the cron expression or prefefined tokens such as @hourly to distribute job starting times evently.
+	
+19. set up email notifications mapping to ALL developers in the project,
+	so that everyone on the team has his pulse on the project's current status.
+	
+20. take steps to ensure failures are reported as soon as possible
+
+21. wirte jobs for your maintenance tasks,	
+	such as cleanup operations to avoid full disk problems.
+	
+22. tag, label, or baseline the codebase after the successful build.
+
+# ref doc: https://wiki.jenkins-ci.org/display/JENKINS/Jenkins+Best+Practices
+
