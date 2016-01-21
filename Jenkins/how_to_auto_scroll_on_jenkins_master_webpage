@@ -21,10 +21,17 @@ ex. when there is a long list in "Build Executor Status".
 
 
 # how to Custom login screen message on jenkins master / jenkins server
-click the "Add description" link on the top page,
-write the custom message. 
+#	for a view:
+	click the "Add description" link on the top page,
+	write the custom message. 
+	=> It would appear at the top of the Jenkins top page. 	
+	
+#	for the whole system:
+	go to http://${jenkins_master1}:8080/ -> "Manage Jenkins" -> "Configure System",
+		=> http://${jenkins_master1}:8080/configure/,
+	write the custom message into "System Message". 
+	=> It would appear at the top of the Jenkins top page. 
 
-=> It would appear at the top of the Jenkins top page. 
 
 Notes: 	The System Message does not appear to the login page and if you allow 
 		access to jenkins only to logged users, they will see only the login page. 
