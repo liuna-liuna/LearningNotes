@@ -47,6 +47,7 @@
 12. integrate tightly with a repository browsing tool like FishEye if you are using Subversion as source code management tool
 
 13. always configure your job to generate trend reports and automated testing when running a Java build
+	e.g. to enable "Show disk usage trend graph on the project page" for "Disk usage" through "Manage Jenkins".
 
 14. set up jenkins on a partition that has the most free disk-space
 
