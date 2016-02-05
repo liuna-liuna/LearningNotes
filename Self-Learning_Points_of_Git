@@ -531,7 +531,16 @@ c:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\bin\git.exe gc --prune
 #
 add an env. variable : TERM=xterm. # works both as system env. variable and as user env. variable.
 
-
+5)	如何生成块 blob
+git hash-object –w $filename
+–w 即生成一个 blob 对象到 object database 里。
+如何查看 SHA 值：
+Method 1.	git hash-object $filename
+Method 2.	git cat-file --batch， git cat-file --batch-check命令
+echo HEAD:pom.xml | git cat-file --batch | head
+echo HEAD:pom.xml | git cat-file --batch-check
+echo 'HEAD@{5 minutes ago}':pom.xml | git cat-file --batch-check
+Ref: https://github.com/git/git/blob/master/Documentation/git-cat-file.txt 
 
 6.	Training Materials
 http://git.wdf.sap.corp:50002/presentations/git-gerrit-workshop/git-gerrit-workshop.html 
