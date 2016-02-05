@@ -1,30 +1,39 @@
 Self-Learning Points of Git
 	
-1.	What is Git	4
-1)	Characteristics	4
-2)	Advantage	4
-3)	Disadvantage	4
-2.	Key Points	4
-1)	Stage and commit	4
-2)	Branch is a named pointer to a commit.	5
-3)	How to revert changes in git	5
-4)	Git has 3 level config	6
-5)	Merge	6
-6)	Rebase	7
-7)	Pull and Push	8
-3.	FAQ	9
-1)	What’s SHA1?	9
-2)	How to allow multiple people push code to a same repository?	9
-4.	Frequently Used Commands	10
-1)	git log	10
-2)	git cat-file, git ls-tree	11
-3)	git diff	12
-5.	FAQ	13
-1)	“detached from”	13
-6.	Training Materials	15
-1.	Gerrit Concepts	16
-1)	Push	16
-2)	Push New Patch Set	17
+1.	What is Git	5
+1)	Characteristics	5
+2)	Advantage	6
+3)	Disadvantage	6
+2.	Key Points	6
+1)	Stage and commit	6
+2)	Branch is a named pointer to a commit.	7
+3)	How to revert changes in git	7
+4)	Git has 3 level config	8
+5)	Git Merge	8
+6)	Git Rebase	10
+7)	Pull and Push	11
+8)	Git Objects	11
+9)	Git Refs	12
+3.	FAQ	14
+1)	What’s SHA1?	14
+2)	How to allow multiple people push code to a same repository?	14
+3)	如何由里程碑 A 对应的提交构造出一个根提交	14
+4)	如何在整个 git 仓库的提交历史中找寻内容并删除	14
+4.	Frequently Used Commands	16
+1)	git log	16
+2)	git cat-file, git ls-tree, git log, git write-tree	17
+3)	git diff	19
+4)	git stash	19
+5)	git archive	19
+6)	git dissect 二分查找	19
+7)	git cherry-pick	19
+5.	FAQ	21
+1)	“detached from”	21
+6.	Training Materials	23
+1.	Gerrit Concepts	24
+1)	Push	24
+2)	Push New Patch Set	25
+3)	Gerrit Best Practices	25
 
  
 Table 1 Difference of using Soft, Mixed and Hard in git reset B	9
@@ -179,6 +188,82 @@ or
 •	fetch, merge, push (when remote ‘origin’ repo is changed)
 or
 •	fetch, rebase, push (when remote ‘origin’ repo is changed)
+
+8)	Git Objects
+•	Git 对象 ID的类型：4种
+Blob
+Commit
+Tree
+Tag
+
+可通过 git cat-file -t [SHA1] 查看。
+
+•	Git 对象以两种形式存储：
+松散对象 loose object
+打包对象 packed object
+
+都是以 SHA 值为索引用 gzip 格式压缩的。
+
+•	查看松散对象在对象库中的实际位置：
+For id in [若干SHA1]; do ls .git/ojbects/${id:0:2}/${id:2}*; done
+
+•	查看对象类型、内容等：
+git cat-file –t $SHA
+git cat-file $type $SHA ($type = commit / blob / tree / tag)
+git ls-tree $SHA
+git ls-files –stage //列出索引即 index 中的内容
+
+•	打包文件 packfile 和打包文件索引 packfile index：
+o	打包文件 packfile 格式：
+ Header（包括 4bytes 的“PACK”, 
+4bytes 的版本号，
+4bytes 的此文件中入口的个数）
+一系列打包过的对象（每个都有自己的 header 和 body。
+	header：1bit是否还有后续字节，
+		3bits是 type，
+		4bits和可能的后续 7bits的字节，是数据展开后的长度。
+）
+trailer (即校验尾部)
+
+o	打包文件索引 packfile index 基本上是一系列指向打包文件内位置的书签。格式：
+header
+fanout table 展开
+sha1 listing
+crc checksum
+packfile offset
+crc checksum of packfile and idxfile
+
+
+9)	Git Refs
+•	branch, remote-tracking branch, tag etc. 都是对 commit 的 Reference
+全写和简写的格式：
+refs/heads/test 			<->	 test
+refs/tags/v1.0.0 			<->	 v1.0.0
+refs/remotes/origin/master 	<-> 	origin/master
+
+Tip: 仓库的名字可以代替该仓库的HEAD
+例如：origin 是访问 origin 中HEAD 分支的一个捷径。
+
+•	查看、更新refs：
+git show-ref
+git rev-parse HEAD
+git pack-refs
+git update-ref
+
+•	查看分支 master 上特有的提交
+gitk --branches master --not refs/heads/rel-5.25 refs/heads/rel-5.7
+gitk --branches --not $( git show-ref --heads | cut -d' ' -f2 | grep -v '^refs/heads/master' ) // works in git bash.
+git log master --not --remotes=*/master
+Shows all commits that are in local master but not in any remote repository master branches.
+
+--branches 指定 local branches。
+--not  对后面列出的 branch 取反，直到下一个 not。
+--branches[=<pattern>]
+Pretend as if all the refs in refs/heads are listed on the command line as <commit>. If <pattern> is given, limit branches to ones matching given shell glob. If pattern lacks ?, *, or [, /* at the end is implied.
+
+--not
+Reverses the meaning of the ^ prefix (or lack thereof) for all following revision specifiers, up to the next --not.
+
 
 3.	FAQ
 1)	What’s SHA1?
