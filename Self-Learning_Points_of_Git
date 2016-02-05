@@ -542,6 +542,17 @@ echo HEAD:pom.xml | git cat-file --batch-check
 echo 'HEAD@{5 minutes ago}':pom.xml | git cat-file --batch-check
 Ref: https://github.com/git/git/blob/master/Documentation/git-cat-file.txt 
 
+6)	如何生成树tree
+export GIT_INDEX_FILE=/tmp/index
+git read-tree --prefix=copy1/ 8ba240929c40075a52c820493b3c68942adf4c89
+git read-tree --prefix=copy2/ 8ba240929c40075a52c820493b3c68942adf4c89
+$ git write-tree
+571c685cb1947f78ef3aa44ff00ea269026598fb
+查看树的信息和内容：
+git ls-tree 571c685cb1947f78ef3aa44ff00ea269026598fb
+git cat-file tree 571c685cb1947f78ef3aa44ff00ea269026598fb
+
+
 6.	Training Materials
 http://git.wdf.sap.corp:50002/presentations/git-gerrit-workshop/git-gerrit-workshop.html 
 
