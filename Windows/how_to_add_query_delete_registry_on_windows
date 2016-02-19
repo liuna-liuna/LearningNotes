@@ -1,0 +1,21 @@
+# 
+# how to add a registry key
+#
+	# ref doc https://wiki.wdf.sap.corp/wiki/display/SHSCM/How+to+Remove+MSysGit+Context+Menu
+	# ref doc http://www.ehow.com/how_5180231_add-registry-key.html
+# command:
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Internet Explorer\MAIN\FeatureControl\FEATURE_BFCACHE" /v iexplore.exe /t reg_dword /d 0 /f  
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\0" /v 2500 /t reg_dword /d 0 /f  
+ 
+# add a registry item (a directory)
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\JavaSoft\Java Update\Policy\EnableJavaUpdate2" /v 0 /t reg_dword /d 0 /f
+# add a registry item (a key:value)
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\JavaSoft\Java Update\Policy" /v EnableJavaUpdate2 /t reg_dword /d 0 /f
+reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\JavaSoft\Java Update\Policy" /v EnableJavaUpdate2
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\JavaSoft\Java Update\Policy\EnableJavaUpdate2" /f
+ 
+#
+# how to check value of a registry item
+#
+reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\JavaSoft\Java Update\Policy" /v EnableJavaUpdate
+
