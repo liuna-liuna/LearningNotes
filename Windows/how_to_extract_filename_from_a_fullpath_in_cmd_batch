@@ -1,0 +1,15 @@
+#
+# extract a filename from a full path on windows
+#
+#	in a command line:
+for /f "tokens=1,2,3 delims=:" %i in ("c:\jenkins") do echo %i %j %k	
+for /f "tokens=1,2,3,4 delims=\" %i in ("c:\jenkins\workspace\cvom_html_jenkinsvoter-feat@2") do echo %i %j %k %l
+for /f "tokens=4 delims=\" %i in ("c:\jenkins\workspace\cvom_html_jenkinsvoter-feat@2") do echo %i
+#	in a windows batch:
+@echo off
+for /f "tokens=4 delims=\" %%i in ("c:\jenkins\workspace\cvom_html_jenkinsvoter-feat@2") do echo %%i > log.tmp
+REM for /f "tokens=4 delims=\" %i in ("c:\jenkins\workspace\cvom_html_jenkinsvoter-feat@2") do set t=%i
+REM for /f "tokens=4 delims=\" %i in ("%WORKSPACE%") do set t=%i
+REM for /f "tokens=4 delims=\" %%i in (log.tmp) do echo %%i
+
+	
