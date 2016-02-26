@@ -19,3 +19,6 @@ reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\JavaSoft\Java Update\Policy\
 #
 reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\JavaSoft\Java Update\Policy" /v EnableJavaUpdate
 
+# export:back up a registry sub-tree
+reg export "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" C:\Work\backup\reg_before_enable_WAU.reg 
+ 
