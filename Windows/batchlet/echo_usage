@@ -1,0 +1,22 @@
+
+#
+# usage of echo: echo a blank line in bat script
+#
+@echo off
+echo There will be a blank line below
+echo[
+echo Above line is blank
+echo( 
+echo The above line is also blank.
+echo. 
+echo The above line is also blank.
+
+# don't echo command in STDOUT
+@echo off
+
+# show a variable
+for /f "tokens=1,2,3 delims=:" %i in ("c:\jenkins") do echo %i %j %k	
+
+# show a envrionment variable
+echo %errorlevel%
+echo %COMPUTERNAME%
