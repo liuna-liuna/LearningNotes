@@ -1,0 +1,13 @@
+#
+# Python Usage
+#
+1. difference between is and ==
+the is operator checks for identity and == operator checks for equality.
+
+ex. 
+node_name = "master"
+if node_name is not "master" # True
+if node_name != "master"	 # False
+
+#	ref doc:	http://stackoverflow.com/questions/1504717/why-does-comparing-strings-in-python-using-either-or-is-sometimes-produce
+#	ref tool:	http://www.java2s.com/Code/Python/String/Comparetwostrings.htm
