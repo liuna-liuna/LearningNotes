@@ -1,0 +1,29 @@
+
+# install jenkinsapi
+# installation steps:
+1. change proxy to wdf:8080
+2. C:\Work\4Python\4install\jenkinsapi-0.2.29\setup.py easy_install jenkinsapi
+
+# ref doc: 	https://jenkinsapi.readthedocs.org/en/latest/
+#			https://pypi.python.org/pypi/jenkinsapi
+
+
+# install BeautifulSoup
+C:\Python27\Scripts\pip.exe install BeautifulSoup
+#	ref doc: 	http://stackoverflow.com/questions/12228102/how-to-install-beautiful-soup-4-with-python-2-7-on-windows
+#				https://pypi.python.org/pypi/beautifulsoup4
+
+# upgrade pip from 7.1.2 to 8.0.3 
+python -m pip install --upgrade pip
+
+#
+# ref doc for xpath in xml module
+#
+
+# ref doc:
+#	http://archive.oreilly.com/pub/post/code_respecting_xpath_xml_pyth.html
+#	http://python.readthedocs.org/en/latest/library/xml.etree.elementtree.html
+#	lxml.etree http://panyongzheng.iteye.com/blog/1949272
+#	py-dom-xpath (Pure Python XPath implementation) : https://code.google.com/p/py-dom-xpath/
+
+
