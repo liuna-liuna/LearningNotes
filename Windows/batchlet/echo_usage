@@ -20,3 +20,14 @@ for /f "tokens=1,2,3 delims=:" %i in ("c:\jenkins") do echo %i %j %k
 # show a envrionment variable
 echo %errorlevel%
 echo %COMPUTERNAME%
+
+echo check if the host is back in 1 minutes
+REM find the correct hostname
+%WINDIR%\system32\cscript.exe \\***.corp\script_win_update\win_replace_in_string.vbs //nologo /node:%WindowsNode% > tmp.output
+set /P HOSTNAME=<tmp.output
+REM ping the host for 1 minutes every 5 seconds
+REM ping %HOSTNAME% -n 20 -w 5
+echo.
+echo Please check if the host is pingable after 5 minutes.
+echo    ping %HOSTNAME% -t
+ehco.
