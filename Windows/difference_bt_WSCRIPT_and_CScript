@@ -1,0 +1,35 @@
+#
+# WSCRIPT与CScript区别
+#	ref doc: http://www.jb51.net/article/50712.htm
+
+WSCRIPT 窗口中运行。
+wscript直接用窗口输出，适合调试程序和编写小工具。
+
+CScrip  命令行中运行。
+cscript因为把输出放进了控制台，所以可以对它重定向，方便程序调用。
+在windows下不用cmd的话cscript的输出会一闪而过。
+两者都有的参数：
+//B 批处理模式；隐藏用户提示和脚本错误在命令行中的显示。默认模式是交互模式。
+//D 打开调试程序。
+//E:engine 用指定的脚本引擎执行脚本。
+//nologo 防止在运行时显示执行标题。默认设置是 logo。
+
+Ex. 
+> type twinscript.vbs
+Wscript.Echo "Line 1."
+
+> wscript twinscript.vbs
+> twinscript.vbs
+both pop up a message box with title "Windows Script Host" content "Line 1.".
+
+> cscript twinscript.vbs
+Microsoft (R) Windows Script Host Version 5.8
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Line 1.
+
+> cscript //nologo twinscript.vbs
+Line 1.
+>cscript //nologo //e:vbscript twinscript.vbs
+Line 1.
+REM //e:vbscript sets the script engine vbscript for file extension '.vbs'
