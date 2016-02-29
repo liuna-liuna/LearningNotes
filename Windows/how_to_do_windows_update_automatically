@@ -1,0 +1,90 @@
+#
+# how to enable / disable Windows Update
+#
+Method1. manually: 				Control Panel -> Windows Update -> close it.
+								or
+								IE -> Tools -> Windows Update
+								
+Method2. manually: 				services.msc -> Windows Update : C:\WINDOWS\system32\svchost.exe -k netsvcs
+Method3. manually:				ref doc: http://www.askvg.com/how-to-disable-update-to-windows-8-1-for-free-notification-in-windows-8-store/
+								1. Press "WIN+R" keys together to launch RUN dialog box and type gpedit.msc and press Enter. It'll open Group Policy Editor.
+								2. Now go to:
+									Computer Configuration -> Administrative Templates -> Windows Components -> Store
+								3. In right-side pane, double-click on "Turn off the offer to update to the latest version of Windows" option and set its value to "Enabled".
+
+Method4. using a VB file:
+	C:\WINDOWS\system32\cscript.exe
+	cscript C:\Work\4Tasks\auto_update_windows\WUA_SearchDownloadInstall.vbs
+	# on jenkins master:
+	%windir%\System32\cscript.exe D:\Jenkins\tools\win_update\WUA_SearchDownloadInstall.vbs
+	
+	#	ref doc: https://msdn.microsoft.com/en-us/library/aa387102%28VS.85%29.aspx
+	
+	
+#
+# patch Tuesday
+#
+If you don't use automatic updating, then you should manually check for updates at least once every week.
+Microsoft usually releases important updates on the second Tuesday of every month. Known as patch Tuesday.
+However, updates could be released at any time.
+#	ref doc: http://www.eightforums.com/tutorials/25343-windows-update-check-install-windows-8-a.html 
+
+
+#
+#
+#	for Windows Update: Registry keys for Automatic Update configuration: HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate\AU ,
+#
+meaning of item's value in the registry:	
+AUOptions	Reg_DWORD	Range = 2|3|4|5
+    2 = Notify before download.
+    3 = Automatically download and notify of installation.
+    4 = Automatically download and schedule installation. Only valid if values exist for ScheduledInstallDay and ScheduledInstallTime.
+    5 = Automatic Updates is required and users can configure it.
+
+	
+	
+@echo off
+rem 禁止系统自动更新
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoUpdate /t REG_DWORD /d 1 /f
+REM  TODO: mandatory / optional?
+REM reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsStore" /v DisableOSUpgrade
+
+REM		check if windows update automatic update is enabled
+reg query "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" /v AUOptions
+
+REM		set windows update automatic update: 3 = Automatically download and notify of installation.
+reg add "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" /v AUOptions /t REG_DWORD /d 3 /f
+
+	# ref doc: https://technet.microsoft.com/en-us/library/dd939844%28v=ws.10%29.aspx
+	#
+	
+win 8 update fix.reg
+
+open notepad paste
+-----------------------------------------------------------------------------------
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\Activation]
+"Manual"=dword:00000001
+"NotificationDisabled"=dword:00000001
+
+---------------------------------------------------------------------------------------
+then save as win 8 update fix.reg
+change save as type to all files
+then run it -_-
+
+# double check service is disabled
+	# check current status of a service
+	sc query wuauserv
+	
+net stop wuauserv
+
+	# check configuration of a service
+	sc qc wuauserv
+	
+#	Windows Update Standalone Installer wusa
+#
+@echo off
+wusa /uninstall /kb:2744842 /quiet /forcestart
+	
+# example http://www.msfn.org/board/topic/152020-batch-script-for-windows-software-updates-installation/
