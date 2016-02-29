@@ -1,0 +1,18 @@
+#
+# how to use a jenkins plugin "	Label Linked Jobs Plugin"
+#
+# TODO
+#	ref doc: https://wiki.jenkins-ci.org/display/JENKINS/Label+Linked+Jobs+Plugin 
+# brief usage
+After the plugin's installation, a Labels Dashboard and Node's Linked Jobs Page will be added to the jenkins web. 
+Following information will be given in details:
+	Plugin settings
+	Activate Linked Jobs link
+	Label's Linked Jobs page
+	Labels Dashboard 
+		(Labels and Nodes sections: which label is used in which jobs, 
+									which node carries which jobs etc.)
+									
+		Jobs sections.)
+	Node's Linked Jobs Page
+
