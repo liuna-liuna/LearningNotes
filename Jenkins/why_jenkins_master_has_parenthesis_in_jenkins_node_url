@@ -1,0 +1,7 @@
+2)	Why Jenkins master has a URL like “computer/(master)” while all slaves “computer/slave_name”
+[Could be] By designation.
+What's new in 1.472 (2012/06/24)
+•	Exposed the master's own node properties to be configured in /computer/(master)/configure 
+(whereas /configure controls global node properties that apply to all nodes.) 
+Ref doc: https://jenkins-ci.org/changelog-old.html 
+	Ref doc: https://github.com/RiotGames/jenkins/blob/master/changelog.html
