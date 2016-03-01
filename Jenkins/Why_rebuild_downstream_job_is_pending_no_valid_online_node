@@ -1,0 +1,13 @@
+3)	Why job shows as pending—There are no nodes with the label ‘Job triggered without a valid online node, given where:’ in Rebuild?
+•	Phenomenon: 
+Job1 has downstream job2, either through “Trigger/call builds on other projects” or “Trigger parameterized build on other projects”, 
+job2 has parameters.
+Retrigger Job1 through “Rebuild” works, however retrigger job2 failed. The job pends with status:
+ (pending—There are no nodes with the label ‘Job triggered without a valid online node, 
+	given where:’)
+
+•	Root cause & solution
+Job2 has parameters provided through “Node and Label parameter plugin”.
+“Node and Label parameter plugin” supports “Rebuilder” plugin since version 1.6 (23. Nov. 2015), 
+while “Node and Label parameter plugin” version 1.5.1 is used, so retrigger job2 through “Rebuild” doesn’t work.
+	Update “Node and Label parameter plugin” to version > 1.6.
