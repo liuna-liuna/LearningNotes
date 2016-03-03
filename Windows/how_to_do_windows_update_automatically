@@ -35,8 +35,8 @@ Method5. using a VB file:		#	ref doc: https://msdn.microsoft.com/en-us/library/a
 								cscript C:\Work\4Tasks\auto_update_windows\WUA_SearchDownloadInstall.vbs
 									# on jenkins master:
 								%windir%\System32\cscript.exe D:\Jenkins\tools\win_update\WUA_SearchDownloadInstall.vbs
-									#	job: http://shg-cvom-infra.pgdev.sap.corp:8080/job/scm_update_windows/
-									#	job: http://shg-cvom-infra.pgdev.sap.corp:8080/job/scm_update_windows_manually/									
+									#	job: http://***:8080/job/scm_update_windows/
+									#	job: http://***:8080/job/scm_update_windows_manually/									
 	
 Method to check for updates from command line:						
 								wuauclt /showcheckforupdates
