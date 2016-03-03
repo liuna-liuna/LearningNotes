@@ -21,4 +21,6 @@ reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\JavaSoft\Java Update\Policy" 
 
 # export:back up a registry sub-tree
 reg export "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" C:\Work\backup\reg_before_enable_WAU.reg 
+	# if export destination file exists, use /f to overwrite it.
+reg export "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" C:\Work\backup\reg_before_enable_WAU.reg /y
  
