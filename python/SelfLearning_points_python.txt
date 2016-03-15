@@ -11,3 +11,23 @@ if node_name != "master"	 # False
 
 #	ref doc:	http://stackoverflow.com/questions/1504717/why-does-comparing-strings-in-python-using-either-or-is-sometimes-produce
 #	ref tool:	http://www.java2s.com/Code/Python/String/Comparetwostrings.htm
+
+#
+# modules usage
+#
+# # how to install see https://github.com/liuna-liuna/LearningNotes/blob/master/python/how_to_install_module_in_python.txt
+# module jenkinsapi
+from jenkinsapi 	import jenkins
+
+jenkins_obj = jenkins.Jenkins(jenkinsurl)
+node_names  = jenkins_obj.get_nodes().keys()
+			
+for node_name in node_names:
+	...
+	
+print jenkins_obj.has_node( '{}'.format('Name1(computer1)(stop%20running%20temporary)'.replace('%20', ' ')) )
+print urlopen( '***:8080/computer/{}'.format(urllib2.quote('Name1(computer1)(stop running temporary)')) ).read()
+>>> nodelabels1[nodename1] = [tag.text for tag in soup.findAll("a", {"class": re.compile("tag.*inside")})]
+>>> print nodelabels1[nodename1]
+[u'UT_coverage', u'windows']
+
