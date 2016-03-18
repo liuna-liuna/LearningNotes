@@ -1,0 +1,60 @@
+#
+# Heap size in JVM settings when build a goal which needs big memory
+#
+###############################################################################################			
+MAVEN_OPTS = -Xms512m -Xmx1024m -XX:MaxNewSize=1024m -XX:MaxPermSize=512m # for JDK7
+MAVEN_OPTS = -Xms512m -Xmx1024m -XX:MaxNewSize=1024m -XX:MaxMetaspaceSize=512m # for JDK8
+
+1. better set jvm options such as heap size as MAVEN_OPTS instead of JAVA_OPTS
+2. better set jvm options such as heap size into plugin element $plugin\executions\execution\configuration\extraJvmArgs or argLine etc.
+https://groups.google.com/forum/#!topic/codehaus-mojo-gwt-maven-plugin-users/hOr-4zjJ2sA
+<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>1.1-SNAPSHOT</version>
+
+				<executions>
+					<execution>
+						<phase>process-classes</phase>
+						<configuration>
+							<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>						
+							<gwtHome>${env.GWT_HOME}</gwtHome>
+
+							<output>${gwt.output.directory}</output>
+							<logLevel>DEBUG</logLevel>
+						</configuration>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+
+					</execution>
+				</executions>
+			</plugin>
+
+http://www.srivatsakatta.com/2012/03/maven-and-out-of-memory-permgen-space.html
+	Surefire plugin by default does not inherit the parent processes java options neither does it take the options from the environment variables like JAVA_OPTS or MAVEN_OPTS.
+	To set any jvm option for surefire plugin, it has to be configured in maven pom file.
+	There is a argLine element which helps you do set jvm opts for surefire plugin. 
+	It has to be configured like <argLine> -Xmx512m -XX:MaxPermSize=256m</argLine>  under the configuration section of surefire plugin. This did the trick.
+
+			
+
+    2 options to java:
+    -Xmx maximum heap size
+    -Xms starting heap size
+
+http://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html
+-Xmnsize
+    Sets the initial and maximum size (in bytes) of the heap for the young generation (nursery). 
+	Append the letter k or K to indicate kilobytes, m or M to indicate megabytes, g or G to indicate gigabytes.
+    The young generation region of the heap is used for new objects. GC is performed in this region more often than in other regions. 
+	If the size for the young generation is too small, then a lot of minor garbage collections will be performed. 
+	If the size is too large, then only full garbage collections will be performed, which can take a long time to complete. 
+	Oracle recommends that you keep the size for the young generation between a half and a quarter of the overall heap size.
+    The following examples show how to set the initial and maximum size of young generation to 256 MB using various units:
+    -Xmn256m
+    -Xmn262144k
+    -Xmn268435456
+    Instead of the -Xmn option to set both the initial and maximum size of the heap for the young generation, you can use -XX:NewSize to set the initial size and -XX:MaxNewSize to set the maximum size.
+
+-XX:MaxPermSize=size
+    Sets the maximum permanent generation space size (in bytes). This option was deprecated in JDK 8, and superseded by the -XX:MaxMetaspaceSize option.
