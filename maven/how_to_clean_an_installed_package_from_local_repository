@@ -1,0 +1,19 @@
+#
+# clean an installed package from local repository ex. %USERPROFILE%\.m2
+#
+Method 1. 
+mvn dependency:purge-local-repository -DmanualInclude="G:$A:$V" -DreResolve=false
+mvn dependency:purge-local-repository -DmanualInclude="G:$A" -DreResolve=false
+#	using the Apache Maven Dependency Plugin. 
+#	It includes the dependency:purge-local-repository functionality that removes the project dependencies from the local repository, and optionally re-resolve them.
+#	To clean the local dependencies you just have to used the optional parameter reResolve and set it to false since it is set to true by default.
+
+
+Method 2:
+ for .jars which have been manually installed, I would recommend manually deleting, 
+ because maven creates some weird files like yourjar.jar.lastUpdated and yourjar.pom.lastUpdated 
+ which you may need to manually delete anyway.
+ 
+#	ref doc: http://stackoverflow.com/questions/15358851/how-to-remove-jar-file-from-local-maven-repository-which-was-added-with-install
+#			 http://maven.apache.org/plugins/maven-dependency-plugin/plugin-info.html
+
