@@ -1,0 +1,21 @@
+#
+# why couldn't find a commit in gerrit ui?
+#
+ex. for commit:
+	commit d096ca3f4255e90e75ae81e357163b055a20f1bc
+	Author: ...
+	Date:   Thu Nov 19 08:57:45 2015 +0100
+	
+		Next Development Version 1.3.0-SNAPSHOT
+	
+		Change-Id: I015fe480ef0e1c66e56c5e0ee95d89817adb7178
+		Signed-off-by: ...
+
+	
+Solution:
+Method 1. git show d096ca3f4255e90e75ae81e357163b055a20f1bc
+Method 2. gitk
+#	the UI on $GIT_GERRIT_SERVER only shows changes which have been pushed to gerrit (i.e. to refs/for/). 
+#	The release build commits are directly pushed to refs/heads/. 
+#	You can use the git command line (git show d096ca3f4255e90e75ae81e357163b055a20f1bc) or tools like gitk to inspect your history.
+	
