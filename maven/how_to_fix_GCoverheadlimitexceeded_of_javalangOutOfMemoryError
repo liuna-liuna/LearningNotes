@@ -1,0 +1,45 @@
+#
+#	to fix an issue "java.lang.OutOfMemoryError: GC overhead limit exceeded" :
+#
+Phenomenon:
+https://xmake-ldi-test.wdf.sap.corp:8443/view/cvom.html/job/cvom.docs-Release/2/console 
+	04:15:16 INFO: [INFO] sap.viz.vizdocs .................................... FAILURE [  01:15 h]
+	04:15:16 INFO: [INFO] ------------------------------------------------------------------------
+	04:15:16 INFO: [INFO] BUILD FAILURE
+	04:15:16 INFO: [INFO] ------------------------------------------------------------------------
+	04:15:16 INFO: [INFO] Total time: 01:15 h
+	04:15:16 INFO: [INFO] Finished at: 2016-03-17T03:15:15+00:00
+	04:15:16 INFO: [INFO] Final Memory: 25M/3872M
+	04:15:16 INFO: [INFO] ------------------------------------------------------------------------
+	04:15:16 INFO: [ERROR] GC overhead limit exceeded -> [Help 1]
+	04:15:16 INFO: java.lang.OutOfMemoryError: GC overhead limit exceeded
+
+
+Root cause:
+#	ref doc: https://plumbr.eu/outofmemoryerror/gc-overhead-limit-exceeded
+#	By default the JVM is configured to throw this error if it spends more than 98% of the total time doing GC and when after the GC only less than 2% of the heap is recovered.
+
+Fix solution:
+#	ref doc: http://stackoverflow.com/questions/5839359/java-lang-outofmemoryerror-gc-overhead-limit-exceeded
+Method 1. Increasing the heap size, via "-Xmx1024m" (or more)/
+Method 2. javaw -XX:+UseConcMarkSweepGC
+			The default setting for this option is:
+				javaw -XX:-UseConcMarkSweepGC
+			which means, this option is not active by default. So when you say you used the option "+XX:UseConcMarkSweepGC" I assume you were using this syntax:
+Same as:
+#	ref doc: http://stackoverflow.com/questions/1393486/error-java-lang-outofmemoryerror-gc-overhead-limit-exceeded
+If you are sure there are no memory leaks in your program, try to:
+    1) Increase the heap size, for example -Xmx1g.
+    2) Enable the concurrent low pause collector -XX:+UseConcMarkSweepGC.
+    3) Reuse existing objects when possible to save some memory.
+If necessary, the limit check can be disabled by adding the option -XX:-UseGCOverheadLimit to the command line.
+
+If in Eclipse:
+    1) Open the eclipse.ini file
+    2) Change
+		-Xms40m
+		-Xmx512m
+		to
+		-Xms512m
+		-Xmx1024m
+    3) Restart Eclipse
