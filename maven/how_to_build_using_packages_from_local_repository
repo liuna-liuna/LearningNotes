@@ -1,0 +1,6 @@
+#
+# maven build taking jar from local repository
+#
+mvn clean install -o # -o: offline
+#	ref doc: 	http://stackoverflow.com/questions/20852946/maven-clean-install-not-taking-jar-from-local-repository
+
