@@ -1,0 +1,18 @@
+#
+# expr
+#
+expr evaluates arguments as an expression.
+# ex.
+expr text : '.*'
+#	Performs a regular expression match. 
+#	The regular expression after the colon is matched to the text before the colon. 
+#	The returned output is the number of characters that matched. 
+#	Here, the regular expression '.*' represents "any number of any character", therefore the result is:
+#	4
+
+expr 5 = 5
+#	Returns 1 (true) if the expressions are equivalent, or 0 (false) if they are not. 
+#	Here, the values 5 and 5 are equal, and therefore equivalent, so the output will be:
+#	1
+
+# ref doc: http://www.computerhope.com/unix/uexpr.htm		
