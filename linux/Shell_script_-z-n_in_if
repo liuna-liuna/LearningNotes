@@ -1,0 +1,10 @@
+#
+# Shell scripting: -z and -n options with if
+#
+-n
+   string is not null.
+
+-z
+  string is null, that is, has zero length
+# ref doc: http://unix.stackexchange.com/questions/109625/shell-scripting-z-and-n-options-with-if
+# ref doc: http://tldp.org/LDP/abs/html/comparison-ops.html
