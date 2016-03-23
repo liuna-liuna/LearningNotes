@@ -1,0 +1,9 @@
+#
+# cmd
+#
+  /C      Carries out the command specified by string and then terminates
+  /K      Carries out the command specified by string but remains
+# ex.
+cmd /C exit /B %ERRORCODE%
+
+# ref doc: https://technet.microsoft.com/en-us/library/bb490880.aspx
