@@ -1,0 +1,23 @@
+#
+# .NET Framework 3.5 installation error 0x800F0906
+#
+Phenomena:
+1) Your installation will not occur.
+	Same or higher version of .NET framework 4 has already been installed on this computer.
+2) Windows couldn't complete the requested changes.
+	Windows couldn't connect to the Internet to download necessary files.
+	...
+Root cause:
+	Windows couldn't connect to the Internet to download necessary files.
+
+Solution:
+1) make sure the proxy for your default browser are correct.
+2) enable in group policy.
+	Windows Search -> group policy -> Settings -> Edit group policy
+		-> Computer Configuration -> Administrative Templates -> System
+		-> Specify settings for optional component installation and component repair -> Enabled.
+	-> gpupdate /force
+3) restart the computer.	
+
+# ref doc: https://support.microsoft.com/zh-cn/kb/2734782
+# ref doc: https://support.microsoft.com/en-us/kb/2734782
