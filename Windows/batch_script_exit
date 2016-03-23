@@ -1,0 +1,10 @@
+#
+# exit
+#
+  /B          specifies to exit the current batch script instead of
+              CMD.EXE.  If executed from outside a batch script, it
+              will quit CMD.EXE
+# ex.
+cmd /C exit /B %ERRORCODE%
+
+# ref doc: https://technet.microsoft.com/en-us/library/bb490902.aspx
