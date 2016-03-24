@@ -1,0 +1,26 @@
+#
+# how to set up a jenkins job from scratch
+#
+1. set up a jenkins slave
+	1.1 set up a VM or desktop etc.
+	1.2 install necessary tools:
+		Git, Maven, JDK, Chrome, Notepad++,
+		.Net 3.5 
+		(OS has it already. but disable it and let jenkins-slave.exe intall it from Internet). 
+		others.
+		
+2. add an account ${Jenkins-job-runner-account} into jenkins Credential
+
+3. set up a jenkins slave
+	3.1 ex. install it as a service, ref to https://github.com/liuna-liuna/LearningNotes/blob/master/Jenkins/how_to_install_a_jenkins_slave_or_instance     
+	3.2 set up Tool Locations if needed.
+		goto ${Jenkins-slave-url} -> Configure -> select "Tool Locations".
+		ex. 
+		(Git) Default               = C:\...
+       (Maven) Maven322 			= c:\...
+       (JDK) JDK7                   = c:\...
+	3.3 double check environment variables.
+
+4. set up a test job
+	if test build pass => done.
+
