@@ -22,5 +22,7 @@
 	3.3 double check environment variables.
 
 4. set up a test job
+	ex. through "Job Import Plugin", ref to https://github.com/liuna-liuna/LearningNotes/blob/master/Jenkins/how_to_use_Jenkins_Job_Import_Plugin
 	if test build pass => done.
+
 
