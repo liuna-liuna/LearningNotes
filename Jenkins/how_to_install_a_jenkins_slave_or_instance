@@ -1,0 +1,10 @@
+#
+# commands to manually start a jenkins slave / a jenkins instance
+#	
+1) java -jar slave.jar 
+	java -jar slave.jar -jnlpUrl http://${jenkins-master1}:8080/computer/${jenkins-build1}/slave-agent.jnlp
+	java -jar jenkins.jar --argumentsRealm.passwd.user=password, --argumentsRealm.roles.user=admin
+	# ex. for user/password: jenkins/swordfish, the command is: java -jar jenkins.jar --argumentsRealm.passwd.jenkins=swordfish --argumentsRealm.roles.jenkins=admin
+
+2) install jenkins-slave as a service
+	# ref doc: https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+as+a+Windows+service#InstallingJenkinsasaWindowsservice-InstallSlaveasaWindowsservice%28require.NET2.0framework%29
