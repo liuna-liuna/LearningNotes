@@ -1,0 +1,5 @@
+#
+# Is ssh included in Windows Server 2012 R2
+#
+No.
+#	ref doc: https://social.technet.microsoft.com/Forums/sharepoint/en-US/f72c125d-ef81-4fd2-a230-93589db3c3d1/is-there-a-built-in-ssh-server-in-2012?forum=winserver8gen
