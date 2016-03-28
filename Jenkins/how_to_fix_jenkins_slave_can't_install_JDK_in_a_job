@@ -1,0 +1,24 @@
+##
+## To fix : jenkins slave can't install JDK in a job
+## 		
+Phenomenon:
+	[EnvInject] - Loading node environment variables.
+	Installing c:\jenkins\tools\hudson.model.JDK\JDK-8u45\jdk.exe
+	[JDK-8u45] $ c:\jenkins\tools\hudson.model.JDK\JDK-8u45\jdk.exe /s ADDLOCAL="ToolsFeature" REBOOT=ReallySuppress INSTALLDIR=c:\jenkins\tools\hudson.model.JDK\JDK-8u45 /L c:\jenkins\tools\hudson.model.JDK\install1200914905632943146log
+	FATAL: java.io.IOException: Connection aborted: org.jenkinsci.remoting.nio.NioChannelHub$MonoNioTransport@54a4af63[name=*]
+	hudson.remoting.RequestAbortedException: java.io.IOException: Connection aborted: org.jenkinsci.remoting.nio.NioChannelHub$MonoNioTransport@54a4af63[name=*]
+		at hudson.remoting.Request.abort(Request.java:295)
+		at hudson.remoting.Channel.terminate(Channel.java:814)
+	
+Root cause:
+	The pre-installed JDK was deleted through %JAVA_HOME%
+	-> Jenkins slave service aborted.
+	-> job failed and JDK installation aborted.
+	
+	<= Not necessary to install JDK in a job when JDK already installed on the jenkins slave.
+
+Solution:
+	first, install JDK and set up jenkins slave service.
+	second, set (JDK)JDK-8u45 in "Tools Location".
+	# It doesn't work if set it in "Environment Variables".
+	third, start a test job.
