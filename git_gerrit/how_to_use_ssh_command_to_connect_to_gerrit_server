@@ -1,0 +1,20 @@
+#
+# how to use ssh command to connect to git / gerrit server
+#
+ssh -p 29418 -v ${GERRIT_USER1}@${GERRIT_SERVER}
+#   available git command through ssh are two:
+#            receive-pack
+#            upload-pack
+ssh -p 29418 -v ${GERRIT_USER1}@${GERRIT_SERVER} git receive-pack ${GERRIT_PROJECT1}  | head -50
+#
+# once error in connection, try ssh -T : TERM
+# 	ex. ssh -p 29418 -v ${GERRIT_USER1}@${GERRIT_SERVER} -T
+
+# extra info:
+# 
+# how to fix “WARNING: terminal is not fully functional” error in command console?
+#		ex. git log -1
+#   Solution: http://stackoverflow.com/questions/7949956/why-does-git-diff-on-windows-warn-that-the-terminal-is-not-fully-functional
+#
+add an env. variable : TERM=xterm. # works both as system env. variable and as user env. variable.
+
