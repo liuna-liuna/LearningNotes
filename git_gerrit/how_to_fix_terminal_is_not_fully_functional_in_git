@@ -1,0 +1,7 @@
+# 
+# how to fix “WARNING: terminal is not fully functional” error in command console?
+#		ex. git log -1
+#   Solution: http://stackoverflow.com/questions/7949956/why-does-git-diff-on-windows-warn-that-the-terminal-is-not-fully-functional
+#
+add an env. variable : TERM=xterm. # works both as system env. variable and as user env. variable.
+
