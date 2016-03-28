@@ -1,0 +1,26 @@
+#
+# how to get a patch set which is under Code Review on Gerrit Server
+#
+#	1220 is the ChangeID on Gerrit Server
+git ls-remote | grep 1220
+git pull origin refs/changes/20/1220/2
+git pull origin refs/changes/81/1520981/1
+
+	#	This feature is standard in the Gerrit UI.
+	#	On the top right of the UI for a patch, click Download, and you will see something like:
+	#		Checkout		git fetch ssh://${GERRIT_USER1}@${GERRIT_SERVER}:29418/${GERRIT_PROJECT1} refs/changes/10/1520810/4 && git checkout FETCH_HEAD
+	#		Cherry Pick		git fetch ssh://${GERRIT_USER1}@${GERRIT_SERVER}:29418/${GERRIT_PROJECT1} refs/changes/10/1520810/4 && git cherry-pick FETCH_HEAD
+	#		EGit		refs/changes/10/1520810/4
+	#		Pull		git pull ssh://${GERRIT_USER1}@${GERRIT_SERVER}:29418/${GERRIT_PROJECT1} refs/changes/10/1520810/4
+	#		Patch-File		5219dd1.diff.base64	|	5219dd1.diff.zip
+	#		Archive		tgz	|	tar	|	tbz2	|	txz
+	#	If you do not see the options to download the option to Checkout or Cherry Pick you need to edit the gerrit.config, something like this:
+	#	[download]
+	#		scheme = ssh
+	#		command = checkout
+	#		command = cherry_pick
+	#	in the later version you need to download the downloads-commands plugin. This can be done during the initial setup or by using the following command:
+	#		java -jar gerrit-2.11.4.war init -d review_site --batch --install-plugin download-commands
+	#	
+
+	
