@@ -1,0 +1,24 @@
+#
+# Where can I see which files have been changed between two patch sets?
+#
+Currently the Gerrit WebUI does not provide an overview about which files have been changed between two patch-sets (but there is already a Gerrit issue which requests this feature).
+
+Only for each changed file you can view the diff between two patch sets.
+
+As a workaround it is possible to use the Git command line to get the list of files which have been changed between two patch sets:
+  Copy the checkout command (Anonymous Git) for patch set X from the Change Screen in the Gerrit WebUI and execute it.
+  Copy the checkout command (Anonymous Git) for patch set Y from the Change Screen in the Gerrit WebUI, remove the '&& git checkout FETCH_HEAD' part and execute it.
+  Compare HEAD and FETCH_HEAD in order to see all files which have been changed between the two patch sets:
+          git diff --name-status HEAD FETCH_HEAD
+          
+Example for comparing patch sets 3 and 5 of change 1739 :
+$ git fetch git://${GERRIT_SERVER}/${GERRIT_PROJECT1} refs/changes/39/1739/5 && git checkout FETCH_HEAD
+...
+ 
+$ git fetch git://${GERRIT_SERVER}/${GERRIT_PROJECT1} refs/changes/39/1739/3
+...
+ 
+$ git diff --name-status HEAD FETCH_HEAD
+M       ...
+M       pom.xml
+
