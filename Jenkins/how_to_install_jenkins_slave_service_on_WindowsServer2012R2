@@ -1,0 +1,25 @@
+##
+## to fix Can't install jenkins slave as a service on Windows Server 2012 R2
+## 	
+1) extra support for .Net 4.0 ( possibly 2.0) in jenkins-slave.exe.config :
+<!-- see http://support.microsoft.com/kb/936707 -->
+<configuration>
+  <runtime>
+    <generatePublisherEvidence enabled="false"/>
+  </runtime>
+  <startup>
+	<supportedRuntime version="v4.0" />
+	<supportedRuntime version="v2.0" />
+	<!-- <supportedRuntime version="v4.5" /> -->
+  </startup> 
+</configuration>
+
+# by default jenkins slave service is based on .Net 2.* and runs ok on .Net 3.*
+# ref doc: https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+as+a+Windows+service?focusedCommentId=63145885#comment-63145885
+
+2) double check the java.exe executable is correct and runnable in jenkins-slave.xml :
+	<executable>C:\Program Files\Java\jdk1.8.0_45\bin\java.exe</executable>
+3) double check the settings in jenkins-slave.xml are correct,
+	i.e., same as those in slave-agent.jnlp.
+	  <arguments>-Xrs  -jar "%BASE%\slave.jar" -jnlpUrl http://*:8080/computer/*/slave-agent.jnlp -secret *</arguments>
+  
