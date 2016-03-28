@@ -1,0 +1,25 @@
+##
+#    how to search on ${GERRIT_SERVER} through UI
+#    docu:  https://${GERRIT_SERVER}/Documentation/user-search.html
+#
+method 1: in browser:
+owner:*@* status:merged   # => https://${GERRIT_SERVER}/#/q/owner:*%2540*+status:merged
+change:1377981						   # => https://${GERRIT_SERVER}/#/q/change:1377981
+ref: refs/heads/1297988			   	   # => https://${GERRIT_SERVER}/#/q/ref:+refs/heads/1297988
+file:.gitreview							# => https://${GERRIT_SERVER}p/#/q/file:.gitreview
+
+method 2: in windows command:
+	# to check changes with status:open project:${GERRIT_PROJECT1}
+	ssh -p 29418 *@* gerrit query status:open project:${GERRIT_PROJECT1}
+	
+	# get Change-Id of a commit
+	git log -1 | findstr -i Change-Id
+	
+	# query the info of a patch set of a change: --current-patch-set
+	ssh -p 29418 ${GERRIT_USER1}@${GERRIT_SERVER} gerrit query status:open project:${GERRIT_PROJECT1} change:I565d8ff0ef96fc8cc9a1bf65c755de05241d0b21 --current-patch-set
+	
+	# query the info of all approved patch sets of a change: --current-patch-set --all-approvals
+	ssh -p 29418 ${GERRIT_USER1}@${GERRIT_SERVER} gerrit query status:open project:${GERRIT_PROJECT1} change:I565d8ff0ef96fc8cc9a1bf65c755de05241d0b21 --current-patch-set --all-approvals
+	ssh -p 29418 ${GERRIT_USER1}@${GERRIT_SERVER} gerrit query status:Merged project:${GERRIT_PROJECT1} change:I79a4c065889f5eec33c6cccff06ef2dbbc333ebb --current-patch-set --all-approvals
+
+	
