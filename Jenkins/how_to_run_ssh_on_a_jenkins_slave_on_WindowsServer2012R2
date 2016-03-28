@@ -1,0 +1,17 @@
+##
+##			How to run ssh on a jenkins slave?
+## Info: ssh executable is not installed by default on Windows Server 2012 R2.
+## 
+1)	kick off a job, which installs jenkins git plugin ex. hudson.plugins.git.GitTool.
+	=>	ssh.exe path through git plugin on a jenkins slave:
+			C:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\bin
+	
+2)	copy following 3 files from %USERPROFILE%\.ssh\.
+		to C:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\.ssh
+			config
+			id_rsa
+			id_rsa.pub
+
+3)	run following command:
+	c:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\bin\ssh.exe -p 29418 -v %USERNAME%@${GIT_SERVER} git receive-pack ${GIT_PROJECT}
+	
