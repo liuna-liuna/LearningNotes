@@ -1,7 +1,24 @@
 ##
 ## to fix Can't install jenkins slave as a service on Windows Server 2012 R2
-## 	
+## 
+Phenomena:
+	Error message as shown in the screenshot when installing and later starting the jenkins slave service.
+	# as shown in ../jenkins-slave_service_start_error_NosupportedRuntime_of.Net4.0_in_jenkins-slave.xml.jpg :
+	Windows could not start the Jenkins Slave service on Local Computer.
+	Error 1053: The service did not respond to the start or control request in a timely fashion.
+	
+	# as shown in ../jenkins-slave_service_start_error_because_wrong_java.exe_path.jpg :
+	The Jenkins Slave service on Local Computer started and then stopped.
+	Some services stop automatically if they are not in use by other services or programs.
+	
+Solution:
 1) extra support for .Net 4.0 ( possibly 2.0) in jenkins-slave.exe.config :
+Info: The .Net features installed by default on Windows Server 2012 R2 is shown as in ../Default.NetInstallationStatus_onWinServer2012R2.jpg.
+	.NET Framework 4.5 Features (2 of 7 installed): 
+		.NET Framework 4.5 (Installed)
+		WCF Services (1 of 5 installed)
+			TCP Port Sharing (Installed)
+			
 <!-- see http://support.microsoft.com/kb/936707 -->
 <configuration>
   <runtime>
