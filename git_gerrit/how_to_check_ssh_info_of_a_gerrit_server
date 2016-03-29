@@ -1,0 +1,11 @@
+#
+# check the ssh info of a gerrit server
+#
+method 1: in linux command:
+	curl https://${GERRIT_SERVER}/ssh_info -k
+	# or
+	curl https://${GERRIT_USER1}@${GERRIT_SERVER}/ssh_info -k (account is not necessary since it's default.)
+	
+
+method 2: in browser ex. chrome
+	https://${GERRIT_SERVER}/ssh_info
