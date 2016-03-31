@@ -1,0 +1,68 @@
+#
+# how to use Maven com.github.tntim96:jscover-server-maven-plugin in maven:
+#
+Example 1.
+1) in pom.xml :
+                <plugin>
+                    <groupId>com.github.tntim96</groupId>
+                    <artifactId>jscover-server-maven-plugin</artifactId>
+                    <version>1.0.14</version>
+                    <configuration>
+                        <documentRoot>${project.basedir}</documentRoot>
+                        <includeUnloadedJS>true</includeUnloadedJS>
+                        <includeBranch>true</includeBranch>
+                        <includeFunction>true</includeFunction>
+                        <reportCoberturaXML>true</reportCoberturaXML>
+                        <reportLCOV>true</reportLCOV>
+                        <timeOutSeconds>20</timeOutSeconds>
+                        <webDriverClassName>org.openqa.selenium.chrome.ChromeDriver</webDriverClassName>
+                        <systemProperties>
+							<!-- TODO: update chromedriver.exe to support both Windows and Linux -->
+                            <property>
+                                <name>webdriver.chrome.driver</name>
+                                <value>${driver.path}/chromedriver.exe</value>
+                            </property>
+                            <!--
+                            <property>
+                                <name>phantomjs.binary.path</name>
+                                <value>${project.build.directory}/tp/phantomjs/phantomjs-2.0.0-windows/bin/phantomjs.exe</value>
+                            </property> -->
+                        </systemProperties>
+                    </configuration>
+                </plugin>
+				
+        <profile>
+            <id>unit_test</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.tntim96</groupId>
+                        <artifactId>jscover-server-maven-plugin</artifactId>
+                        <configuration>
+                            <testDirectory>${project.build.testSourceDirectory}/unittest</testDirectory>
+                            <testIncludes>SDKAPIUnitTestRunner.html,ChartUnitTestRunner.html,MapUnitTestRunner.html,HichertUnitTestRunner.html</testIncludes>
+                            <testType>QUnit</testType>
+                            <lineCoverageMinimum>1</lineCoverageMinimum>
+                            <branchCoverageMinimum>1</branchCoverageMinimum>
+                            <functionCoverageMinimum>1</functionCoverageMinimum>
+                            <port>8098</port>
+                            <timeOutSeconds>300</timeOutSeconds>
+                            <timeOutSecondsForSave>60</timeOutSecondsForSave>
+                            <instrumentPathArgs>
+                                <arg>--only-instrument-reg=src/main/js/.*js</arg>
+                            </instrumentPathArgs>
+                            <reportDir>${project.basedir}/target/jscover-reports/unittest</reportDir>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>				
+
+2) Run with mvn -Punit_test jscover-server:jscover
+
+# ref doc:  https://tntim96.github.io/JSCover/manual/manual.xml
+# ref doc:  https://github.com/tntim96/JSCover-maven-plugin
+# ref doc:	https://github.com/tntim96/JSCover-maven-plugin/tree/master/plugin-parent/server
