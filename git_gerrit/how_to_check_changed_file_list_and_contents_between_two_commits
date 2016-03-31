@@ -1,0 +1,14 @@
+# 如何查看一个 commit 中修改的文件列表和修改内容
+Method 1. 	git diff --name-status HEAD~8..HEAD^
+		( git diff --name-status START_COMMIT..END_COMMIT )
+git diff --name-status HEAD~8..HEAD^ | cut -f2 | xargs git diff HEAD~8..HEAD^ > log.diff
+
+Method 2.	git show --pretty="format:" --name-only 73f85e6 
+git show --name-only --oneline HEAD~8..HEAD^
+git reflog | grep -i Linux | awk '{print $1}' | xargs -l echo | git show --pretty="format:" --name-only
+git reflog | grep -i Linux | awk '{print $1}' | xargs git show --pretty="format:" --name-only
+git reflog | grep -i Linux | awk '{print $1}' | xargs git show --pretty="format:" --name-only | grep -v '^$' | sort -u
+
+Method 3.	git diff-tree --no-commit-id --name-only -r 73f85e6
+	
+Ref doc: http://stackoverflow.com/questions/424071/how-to-list-all-the-files-in-a-commit  
