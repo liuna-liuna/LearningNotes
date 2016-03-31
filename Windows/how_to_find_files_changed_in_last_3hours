@@ -1,0 +1,5 @@
+#
+# 查找当前目录所有的最近三个小时内修改过的文件
+#
+$ find . -type f -mmin -180 
+$ find . -type f -mmin -180 | grep -v '.git' | grep -v 'addLinux'
