@@ -8,5 +8,7 @@ Downstream builds are identified by DownStreamRunDeclarer extension point.
 	build-flow plugin is contributing one to render execution as a graph.
 	some Jenkins plugins may later contribute dedicated solutions.
 
-refer to the doc: https://wiki.jenkins-ci.org/display/JENKINS/Build+Graph+View+Plugin
-
+# ref doc: https://wiki.jenkins-ci.org/display/JENKINS/Build+Graph+View+Plugin
+# ref doc: https://github.com/jenkinsci/buildgraph-view
+# TODO: check ${JENKINS_HOME}\plugins\buildgraph-view\.
+#		The views should be generated on the fly.
