@@ -1,0 +1,12 @@
+#
+# how to use a jenkins plugin "Build Graph View Plugin"?
+# 
+This plugin shows a graph of builds that relates together (aka "build pipeline").
+It computes a graph of releated builds starting from the current one, and render it as a graph.
+Downstream builds are identified by DownStreamRunDeclarer extension point.
+	Default one is using Jenkins dependencyGraph and UpstreamCause and as such can detect common build chain.
+	build-flow plugin is contributing one to render execution as a graph.
+	some Jenkins plugins may later contribute dedicated solutions.
+
+refer to the doc: https://wiki.jenkins-ci.org/display/JENKINS/Build+Graph+View+Plugin
+
