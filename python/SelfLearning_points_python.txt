@@ -53,13 +53,67 @@ dic4 = dict(('a',1),('b',2))
 
 # ref doc for dic usage: http://blog.csdn.net/wangran51/article/details/8440848
 
+# reduce usage
+#	official explanation of reduce
+Apply function of two arguments cumulatively to the items of iterable, from left to right, so as to reduce the iterable to a single value. For example, reduce(lambda x, y: x+y, [1, 2, 3, 4, 5]) calculates ((((1+2)+3)+4)+5). The left argument, x, is the accumulated value and the right argument, y, is the update value from the iterable. If the optional initializer is present, it is placed before the items of the iterable in the calculation, and serves as a default when the iterable is empty. If initializer is not given and iterable contains only one item, the first item is returned. 
+
+reduce(function,sequence)
+function接收的参数个数只能为2。
+先把sequence中第一个值和第二个值当参数传给function，
+再把function的返回值和第三个值当参数传给function，然后只返回一个结果。
+
+#	examples
+lst = [1,2,3,4,5]  
+print reduce(lambda x,y:x+y,lst,0)  
 
 
+Given a column title as appear in an Excel sheet, return its corresponding column number.
+For example:
+
+    A -> 1
+    B -> 2
+    C -> 3
+    ...
+    Z -> 26
+    AA -> 27
+    AB -> 28 
+return reduce(lambda x, y : x * 26 + y, [ord(c) - 64 for c in list(s)])
+return reduce(lambda x,y:x*26+y,map(lambda x:ord(x)-ord('A')+1,s))
+
+例子：有一个序列集合，例如[1,1,2,3,2,3,3,5,6,7,7,6,5,5,5],统计这个集合所有键的重复个数，例如1出现了两次，2出现了两次等。大致的思路就是用字典存储，元素就是字典的key,出现的次数就是字典的value。
+第二种：比较取巧的，先把列表用set方式去重，然后用列表的count方法
+def statistics2(lst): 
+  m = set(lst) 
+  dic = {} 
+  for x in m: 
+    dic[x] = lst.count(x) 
+  
+  return dic 
+  
+lst = [1,1,2,3,2,3,3,5,6,7,7,6,5,5,5] 
+print statistics2(lst) 
+
+第三种：用reduce方式
+def statistics(dic,k): 
+  if not k in dic: 
+    dic[k] = 1
+  else: 
+    dic[k] +=1
+  return dic 
+  
+lst = [1,1,2,3,2,3,3,5,6,7,7,6,5,5,5] 
+print reduce(statistics,lst,{})  
+#提供第三个参数，第一次，初始字典为空，作为statistics的第一个参数，然后遍历lst,作为第二个参数，然后将返回的字典集合作为下一次的第一个参数 
+  
+或者 
+d = {} 
+d.extend(lst) 
+print reduce(statistics,d) 
+#不提供第三个参数，但是要在保证集合的第一个元素是一个字典对象，作为statistics的第一个参数，遍历集合依次作为第二个参数
+
+#	ref doc: http://www.jb51.net/article/54527.htm
 
 
-
-
-# ref doc: http://www.jb51.net/article/15716.htm
 
 
 
