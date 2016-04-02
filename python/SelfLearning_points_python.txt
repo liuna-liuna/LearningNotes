@@ -31,3 +31,35 @@ print urlopen( '***:8080/computer/{}'.format(urllib2.quote('Name1(computer1)(sto
 >>> print nodelabels1[nodename1]
 [u'UT_coverage', u'windows']
 
+
+#
+# basic
+#
+# how to initiate a list or multi-list?
+alist = [0] * 5
+multilist = [[0 for col in range(5)] for row in range(3) ]
+
+# ref doc: http://www.jb51.net/article/15716.htm
+
+
+# how to initiate a dictionary?
+dic1 = {}
+
+dic2 = dict()
+dic2['a'] = 1
+
+dic3 = dict(a=1,b=2)
+dic4 = dict(('a',1),('b',2))
+
+# ref doc for dic usage: http://blog.csdn.net/wangran51/article/details/8440848
+
+
+
+
+
+
+
+# ref doc: http://www.jb51.net/article/15716.htm
+
+
+
