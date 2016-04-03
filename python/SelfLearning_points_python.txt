@@ -114,6 +114,19 @@ print reduce(statistics,d)
 #	ref doc: http://www.jb51.net/article/54527.htm
 
 
+# Mapping between True / False and numbers 0 / 1
+True  <=> 1
+False <=> 0
+
+>>> print 1>0
+True
+>>> print [1,2,3][1>0]
+2
+>>> print 1<0
+False
+>>> print [1,2,3][1<0]
+1
+
 
 
 
