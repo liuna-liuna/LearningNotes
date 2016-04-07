@@ -1,0 +1,18 @@
+#
+# work-around to resubmit a "Verified-1" or "Review-2" change on Gerrit
+#
+From process:
+	1) disable the Jenkins voter-job permonently or temporarily
+	2) set limitation in the project 'Access' : 'Label Verified' 'refs/heads/*'
+
+Workaround for the very change:
+	1) git commit --amend --m "new message"
+		or
+	   git rebase --interactive ( with --squash or --fixup ) and git commit --amend --m "new message" when the change is not top.
+	2) do a new commit from the scratch
+	   git add
+	   git commit 
+
+# ref doc: http://stackoverflow.com/questions/34060290/how-to-improve-the-commit-that-gerrit-verified-as-1
+
+
