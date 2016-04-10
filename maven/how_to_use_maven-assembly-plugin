@@ -1,0 +1,113 @@
+#
+# how to use Maven org.apache.maven.plugins:maven-assembly-plugin in maven:
+#
+ex. for org.apache.maven.plugins:maven-assembly-plugin:2.4:single (make-assembly) 
+1) An assembly descriptor is the heart.
+	# ref doc:	for tags, attributes of an assembly descriptor http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html
+
+2) Usage example
+	2.1) http://maven.apache.org/plugins/maven-assembly-plugin/usage.html#Resources
+	2.2) http://maven.apache.org/plugins/maven-assembly-plugin/examples/index.html
+	2.3) https://www.mail-archive.com/users@maven.apache.org/msg115486.html
+		"In these builds, project hierarchy is established through use of the
+		modules  section of the POM, where parent POMs specify their children
+		in a modules  section. Other relationships, like interdependency, also
+		exist within multimodule builds; however, these are beyond the scope
+		of this document."
+	2.4) example for assembly:directory goal 
+	   https://maven.apache.org/plugins/maven-assembly-plugin/examples/multimodule/module-source-inclusion-simple.html
+	2.5) example for dependency in multi module assembly descriptor
+		http://stackoverflow.com/questions/24072384/how-to-use-maven-assembly-plugin-with-multi-module-maven-project
+	2.6) example for assembly:single goal
+		https://maven.apache.org/guides/mini/guide-assemblies.html
+
+3) Properties can be used in the outputFileNameMapping parameter. 
+	# ref doc: http://maven.apache.org/plugins/maven-assembly-plugin/faq.html
+
+4) to run maven-assembly-plugin only on the top level pom and not in the pom of each modules
+	 put this into the configuration of the maven-assembly-plugin, in the parent pom.
+		<runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+	to disable maven-assembly-plugin: set its phase to none	
+		<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-assembly-plugin</artifactId>
+		<version>2.5</version>
+		<executions>
+			<execution>
+			<phase>none</phase>
+			<goals>
+				<goal>single</goal>
+			</goals>
+			</execution>
+		</executions>
+		</plugin>
+		
+5) Must pay attention to the order of <module> in the parent pom:
+	Maven can not calculate the reactor build order in the right manner. The root cause of this is that the dependencies between the modules are not defined at all. The solution of the problem can be simply achieved by defining the appropriate dependencies to the modules you would like to pack into your distribution package like this
+	
+	<dependencies>
+		<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>package-one</artifactId>
+		<version>${project.version}</version>
+		</dependency>
+		<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>package-two</artifactId>
+		<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+	
+	# ref doc: http://blog.soebes.de/blog/2013/09/28/build-smells-maven-assembly-plugin/
+	
+6) better to use <execution> to create two excutable jars instead of two profiles:
+	<plugin>
+		<artifactId>maven-assembly-plugin</artifactId>
+		<version>2.4</version>
+		<executions>
+			<execution>
+				<id>build-publisher</id>
+				<configuration>
+					<appendAssemblyId>false</appendAssemblyId>
+					<archive>
+						<manifest>
+							<mainClass>fully.qualified.path.Publisher</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<finalName>${project.artifactId}</finalName>
+				</configuration>
+				<phase>package</phase>
+				<goals>
+					<goal>single</goal>
+				</goals>
+			</execution>
+			<execution>
+				<id>build-logReader</id>
+				<configuration>
+					<appendAssemblyId>false</appendAssemblyId>
+					<archive>
+						<manifest>
+							<mainClass>fully.qualified.path.LogReader</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<finalName>${project.artifactId}-logReader</finalName>
+				</configuration>
+				<phase>package</phase>
+				<goals>
+					<goal>single</goal>
+				</goals>
+			</execution>
+		</executions>
+	</plugin>
+
+	# ref doc: http://stackoverflow.com/questions/15798936/creating-two-executable-jars-using-maven-assembly-plugin
+
+
+7) Further info
+	https://maven.apache.org/plugins/maven-assembly-plugin/advanced-descriptor-topics.html
