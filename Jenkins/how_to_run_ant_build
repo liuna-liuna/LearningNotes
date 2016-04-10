@@ -1,0 +1,6 @@
+#
+# how to run ant build
+#
+# ref doc: http://ant.apache.org/manual/index.html // ant tasks
+
+add task <exec ... os="linux" #or osfamily="unix" />
