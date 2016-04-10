@@ -1,0 +1,137 @@
+
+#
+# how to use nodejs-maven-plugin
+#
+1) install "NodeJS Plugin" to Jenkins
+2) on Jenkins master, add NodeJS auto installer
+	-> Manage Jenkins -> NodeJS installations
+3) in root pom.xml and ex. ${Submodule1}\pom.xml , 
+		in root pom.xml :
+                <plugin>
+                    <groupId>com.github.skwakman.nodejs-maven-plugin</groupId>
+                    <artifactId>nodejs-maven-plugin</artifactId>
+                    <version>1.0.4</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>extract</goal>
+                            </goals>
+                            <phase>initialize</phase>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <!-- extract nodejs to defined path -->
+                        <targetDirectory>${project.build.directory}/tp/nodejs</targetDirectory>
+                    </configuration>
+                </plugin>
+
+		in ${Submodule1}\pom.xml :
+	<nodejs.path>${project.build.directory}/tp/nodejs</nodejs.path>
+	<plugin>
+                <groupId>com.github.skwakman.nodejs-maven-plugin</groupId>
+                <artifactId>nodejs-maven-plugin</artifactId>
+                <version>1.0.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>extract</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- extract nodejs to defined path -->
+                    <targetDirectory>${nodejs.path}</targetDirectory>
+                </configuration>
+            </plugin>
+				
+	later used in ex. ${Submodule1}\build.xml and ${Submodule1}\pom.xml :
+		in ${Submodule1}\pom.xml :
+	<nodejs.path>${project.build.directory}/tp/nodejs</nodejs.path>
+	<plugin>
+                <groupId>com.github.bringking</groupId>
+                <artifactId>requirejs-maven-plugin</artifactId>
+                <version>2.0.4</version>
+                <!-- https://github.com/bringking/requirejs-maven-plugin -->
+                <executions>
+                    <execution>
+                        <id>build ***.js</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>optimize</goal>
+                        </goals>
+                        <configuration>
+                            <!-- path to optimizer json config file -->
+                            <configFile>${basedir}/src/main/config/***.profile.js</configFile>
+                            <!-- optional parameters to optimizer executable -->
+                            <optimizerParameters>
+                                <parameter>optimize=none</parameter>
+                                <parameter>out=${build.path}/***-amdbuild.js</parameter>
+                                <parameter>baseUrl=${project.build.sourceDirectory}</parameter>
+                            </optimizerParameters>
+                            <filterConfig>true</filterConfig>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build ***.bundleloader.js</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>optimize</goal>
+                        </goals>
+                        <configuration>
+                            <!-- path to optimizer json config file -->
+                            <configFile>${basedir}/src/main/config/***.profile.js</configFile>
+                            <!-- optional parameters to optimizer executable -->
+                            <optimizerParameters>
+                                <parameter>optimize=none</parameter>
+                                <parameter>out=${build.path}/***.bundleloader.js</parameter>
+                                <parameter>baseUrl=${basedir}/src/main/config/***</parameter>
+                            </optimizerParameters>
+                            <filterConfig>true</filterConfig>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- optional path to a nodejs executable -->
+                    <nodeExecutable>${nodejs.path}/node</nodeExecutable>
+                </configuration>
+            </plugin>
+
+		in ${Submodule1}\build.xml :
+            <exec executable="cmd" logError="true" dir="${bundles}" osfamily="windows">
+                <env key="Path" path="${nodejs.path}" />
+                <arg value="/c"/>
+                <arg value="temp.run-node-js.bat"/>
+                <!--Next arg: forces node's stderror and stdout to a temporary file-->
+                <arg line=" &gt; .\temp.log 2&lt;&amp;1"/>
+
+                <!--Next arg: If command exits with an error, then output the temporary file to stdout, -->
+                <!--delete the temporary file and finally exit with error level 1 so that    -->
+                <!--the apply task can catch the error if @failonerror="true"                -->
+                <arg line=" || (type temp.log &amp; del temp.log &amp; exit /b 1)"/>
+
+                <!--Next arg: Otherwise, just type the temporary file and delete it-->
+                <arg line=" &amp; type temp.log &amp; del temp.log &amp;"/>
+            </exec>
+            <exec executable="${nodejs.path}/node" logError="true" dir="${bundles}" os="Mac OS X">
+                <arg line="${***Command} --clean --config @{config.path} --version @{config.version}"/>
+            </exec>
+            <exec executable="${nodejs.path}/node" logError="true" dir="${bundles}" os="Linux">
+                <arg line="${***Command} --clean --config @{config.path} --version @{config.version}"/>
+            </exec>
+4) only for reference:
+	com.sap.bi.framework.tools.framework-maven-plugin-1.21.0 has dependency of both nodejs-plugin and nodejs-binaries:
+		<dependency>
+		<groupId>com.github.skwakman.nodejs-maven-plugin</groupId>
+		<artifactId>nodejs-maven-plugin</artifactId>
+		<type>jar</type>
+		<version>1.0.4</version>
+		</dependency>
+		<dependency>
+		<groupId>com.github.skwakman.nodejs-maven-binaries</groupId>
+		<artifactId>nodejs-maven-binaries</artifactId>
+		<type>zip</type>
+		<version>0.10.17</version>
+		</dependency>
+	
+<= No extra installation of NodeJS on build slave of Jenkins is needed.
