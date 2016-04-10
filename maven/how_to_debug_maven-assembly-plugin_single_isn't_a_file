@@ -1,0 +1,58 @@
+#
+# debug build failure in cvom.html-release job
+#
+# cause of "Failed to create assembly: Error adding file to archive: *** isn't a file." 
+  in execute goal org.apache.maven.plugins:maven-assembly-plugin:2.4:single (make-assembly) in maven build
+
+#
+Phenomenon:
+in Jenkins build console output:
+23:36:27 INFO: [INFO] --- yuicompressor-maven-plugin:1.3.0:compress (compress s*** by YUI) @ *** ---
+23:36:27 INFO: [INFO] nb warnings: 0, nb errors: 0
+23:36:27 INFO: [INFO] 
+23:36:27 INFO: [INFO] --- maven-assembly-plugin:2.4:single (make-assembly) @ *** ---
+23:36:27 INFO: [INFO] Reading assembly descriptor: src/assembly/main.xml
+...
+23:36:27 INFO: [INFO] Building zip: /data/jenkins/workspace/***/gen/tmp/src/info/target/***-**-main.zip
+23:36:27 INFO: [INFO] ------------------------------------------------------------------------
+23:36:27 INFO: [INFO] Reactor Summary:
+23:36:27 INFO: [INFO] 
+23:36:27 INFO: [INFO] *** .................................... SUCCESS [1.126s]
+...
+23:36:27 INFO: [INFO] 3rd generation *** library ...................... FAILURE [3:10.329s]
+23:36:27 INFO: [INFO] *** ................................. SKIPPED
+...
+23:36:27 INFO: [INFO] ------------------------------------------------------------------------
+23:36:27 INFO: [INFO] BUILD FAILURE
+23:36:27 INFO: [INFO] ------------------------------------------------------------------------
+23:36:27 INFO: [INFO] Total time: 3:25.516s
+23:36:27 INFO: [INFO] Finished at: Wed Mar 23 22:36:27 UTC 2016
+23:36:27 INFO: [INFO] Final Memory: 43M/503M
+23:36:27 INFO: [INFO] ------------------------------------------------------------------------
+23:36:27 INFO: [ERROR] Failed to execute goal org.apache.maven.plugins:maven-assembly-plugin:2.4:single (make-assembly) on project ***: Failed to create assembly: 
+Error adding file to archive: /data/jenkins/workspace/***/gen/tmp/src/info/target/bin/build/bundles/***.js isn't a file. -> [Help 1]
+23:36:27 INFO: org.apache.maven.lifecycle.LifecycleExecutionException:
+Failed to execute goal org.apache.maven.plugins:maven-assembly-plugin:2.4:single (make-assembly) on project ***:
+Failed to create assembly: Error adding file to archive: /data/jenkins/workspace/***/gen/tmp/src/info/target/bin/build/bundles/***.js isn't a file.
+23:36:27 INFO: 	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:216)
+23:36:27 INFO: 	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:153)
+23:36:27 INFO: 	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:145)
+
+Command:
+C:\maven\apache-maven-3.0.5\bin\mvn -Dtycho.mode=maven -DeffectivePomFile=E:\release\root\workspace\*\build-root\.\target\effective-pom.xml
+--file E:\release\root\workspace\*\build-root\.\pom.xml --settings E:\release\root\workspace\*\m2-settings\settings.xml
+-e --batch-mode --show-version clean deploy -Dmaven.repo.local=E:\release\root\workspace\*\m2-repository-releasetools 
+
+Root Cause:
+# case-insensitive on Windows while case-sensitive on Linux.
+
+<= # ll /var/jenkins/workspace/***/info/src/main/js/***/components/file1.js
+	ls: cannot access /var/jenkins/workspace/***/info/src/main/js/***/components/file1.js: No such file or directory
+<= # ll /var/jenkins/workspace/***/info/src/main/js/***/components/File1.js
+	-rw-rw-r--. 1 jenkins jenkins 742 Apr  5 08:38 /var/jenkins/workspace/***/info/src/main/js/***/components/File1.js
+
+Solution:
+# change the file name to correct case.
+#
+ex. https://leanditst.wdf.sap.corp:8443/#/c/1548447/
+
