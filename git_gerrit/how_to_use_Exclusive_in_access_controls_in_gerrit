@@ -1,0 +1,9 @@
+#
+# access controls in gerrit
+#
+meaning of Exclusive:
+	It is possible to configure Gerrit to grant an exclusive ref level
+	access control so that only users of a specific group can perform
+	an operation on a project/reference pair.
+
+# ref doc: https://code.google.com/p/gerrit/source/browse/Documentation/access-control.txt?r=520d2972a0fa6a0ebded980bc176341139f857ca
