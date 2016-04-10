@@ -1,0 +1,17 @@
+#
+# how to search for strings in a file and count its total by findstr
+#
+find "failures" SDKAPIUnitTestRunner.xml /c
+findstr /n /r "failures" SDKAPIUnitTestRunner.xml | find /c "failures"
+findstr /n /r "failures=.*0.*" SDKAPIUnitTestRunner.xml | find /c "failures"
+findstr /n /r "failures=\"0\"" * | find /c "failures"
+findstr /n /r "failures=\"3\"" C:\tools\maven_bin_from167A\SDKAPIUnitTestRunner.xml
+findstr /n /r "<failure.*>" C:\tools\maven_bin_from167A\SDKAPIUnitTestRunner.xml
+findstr /n  /C:"[INFO] --- maven" consoleText1.txt | cut -d" " -f3,4,5,6,7,8
+
+
+# in batch:
+#	ref doc: http://rickardnobel.se/counting-lines-in-windows-command-prompt/
+PING 192.168.100.77 | FIND /v /c “” > tmp1.txt
+SET /P lines=<tmp1.txt
+ECHO There are %lines% lines
