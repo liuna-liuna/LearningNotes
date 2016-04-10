@@ -1,0 +1,114 @@
+#
+# build flow in "mvn deploy"
+#
+#    examples
+1) taking *.js as an example
+	1.1) definition: pom.xml ( *.parent )
+				-> extension\pom.xml ( *.extension )
+						<modules>
+							<module>extension</module>
+							<module>viz</module>
+							...
+						</modules>
+						
+						  <modules>
+								<module>assembly</module>
+							</modules>
+						
+				  -> assembly\pom.xml  ( *.extension.descriptor )
+						  <artifactId>*.extension.descriptor</artifactId>
+						  <name>Extension Assembly Descriptor</name>
+						
+						->  in C:\git\*\extension\assembly\src\main\resources\assemblies\
+  								extension-bundle-mini.xml
+								  extension-bundle.xml
+								  	<assembly>
+									  	<id>extension-bundle</id>
+										  ...
+									  </assembly>
+						
+	1.2) run order:
+			org.apache.maven.plugins:maven-assembly-plugin:2.4:single (make-assembly)
+			->
+			
+			maven-antrun-plugin:1.7:run (build by Ant) @ ${submodule1.target}
+			-> ant : build.xml -> ${build_target1}: create *.js
+					# [exec] Create assembly:  C:\git\*\info\target\bin\build\bundles\sdk\*.js
+
+		
+			yuicompressor-maven-plugin:1.3.0:compress (compress *.js by YUI) @ ${submodule1.target} 
+			-> 
+					# [INFO] *.js (3107488b) -> *-mini.js (1309312b)[42%]
+	done
+
+#
+# correct usage in pom.xml
+#
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.4</version>
+          <executions>
+            <execution>
+              <id>make-assembly</id>
+              <phase>package</phase>
+              <goals>
+                <goal>single</goal>
+              </goals>
+              <configuration>
+                <descriptorRefs>
+                  <descriptorRef>extension-bundle</descriptorRef>
+                </descriptorRefs>
+                <appendAssemblyId>false</appendAssemblyId>
+              </configuration>
+            </execution>
+            <execution>
+              <id>make-mini-assembly</id>
+              <phase>package</phase>
+              <goals>
+                <goal>single</goal>
+              </goals>
+              <configuration>
+                <descriptorRefs>
+                  <descriptorRef>extension-bundle-mini</descriptorRef>
+                </descriptorRefs>
+              </configuration>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>*</groupId>
+              <artifactId>*.extension.descriptor</artifactId>
+              <version>*-SNAPSHOT</version>
+              <scope>compile</scope>
+            </dependency>
+          </dependencies>
+        </plugin>
+		
+		
+2) taking src/info/target/${submodule1.target}-*.0-main.zip as an example
+	2.1) definition: pom.xml ( *.parent )
+						<- through org.apache.maven.plugins:maven-assembly-plugin
+						<- through <descriptor>src/assembly/main.xml</descriptor>
+						
+						
+				-> assembly\pom.xml  ( *.extension.descriptor )
+					in C:\git\*\extension\assembly\src\main\resources\assemblies\
+						extension-bundle-mini.xml
+						extension-bundle.xml
+							<assembly>
+								<id>extension-bundle</id>
+								...
+							</assembly>
+						
+	2.2) run order:
+			org.apache.maven.plugins:maven-assembly-plugin:2.4:single (make-assembly)
+			->
+			
+			maven-antrun-plugin:1.7:run (build by Ant) @ ${submodule1.target}
+			-> ${build_target1}:
+				# [exec] Create assembly:  C:\git\*\info\target\bin\build\bundles\*.js
+				
+			<- 	<*.path>${project.basedir}/src/main/config/*</*.path>
+				<property name="*Command" value="${*.path}/node_modules/custombuilder/bin/cb"/>
+				<config-* config.path="${*.path}/config.js" config.version="${build-ver}"/>
+
