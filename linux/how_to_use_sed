@@ -1,0 +1,10 @@
+# sed 
+$ echo "bar embarassment" | sed "s/\<bar\>/no bar/g"
+no bar embarassment
+
+$ echo "bar embarassment"|awk '{for(o=1;o<=NF;o++)if($o=="bar")$o="no bar"}1'
+no bar embarassment
+
+# to replace multiple words use sed
+cut -d" " -f1 log.gitlog  | sed -e 's/Failed//g;s/Success//g;s/Aborted//g p' | sort -u
+# ref doc: http://stackoverflow.com/questions/26568952/how-to-replace-multiple-patterns-at-once-with-sed
