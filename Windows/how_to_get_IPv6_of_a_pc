@@ -1,0 +1,8 @@
+#
+# get IPv6 of a computer
+#
+ping -6 ${hostname}
+ipconfig /all
+# ref doc:	https://msdn.microsoft.com/en-us/library/ms899868.aspx
+# ref doc:  http://www.cyberciti.biz/faq/windows-vista-server-xp-pingexe-ipv6-command/
+
