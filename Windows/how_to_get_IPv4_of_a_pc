@@ -1,0 +1,4 @@
+#
+# get IPv4 of a computer
+#
+ping -4 ${hostname}
