@@ -1,0 +1,19 @@
+#
+# how to check if the network of a computer is locked
+#
+Phenomenon:
+	ping didn't work
+	rdp didn't work
+	ex. can't ping file server from this computer.
+	
+Root cause:
+	The computer's network is locked.
+	And it falls out of domain.
+	
+Fix:
+	call IT hotline.
+	make sure the SCCM is green:
+		McAfee is running ok (VirusScan Enterprise + AntiSpyware, McAfee Agent. )
+		Windows update is running ok.
+		...
+	
