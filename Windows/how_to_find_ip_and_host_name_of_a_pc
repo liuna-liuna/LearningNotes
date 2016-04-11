@@ -1,0 +1,35 @@
+#
+# how to find a computer's ip address and host name
+#
+Method 1). ping -a *.*.*.*
+			>ping -a *.*.*.*
+			Pinging hostname.*.*.* [*.*.*.*] with 32 bytes of data:
+			Reply from *.*.*.*: bytes=32 time=1ms TTL=128
+			Reply from *.*.*.*: bytes=32 time<1ms TTL=128
+			Reply from *.*.*.*: bytes=32 time=1ms TTL=128
+			Reply from *.*.*.*: bytes=32 time=1ms TTL=128
+
+
+Method 2). nslookup *.*.*.* or nbtstat -a *.*.*.*
+			>nslookup *.*.*.*
+			Server:  accad.pvgl.sap.corp
+			Address:  10.*.*.*
+			
+			Name:    hostname.*.*.*
+			Address:  *.*.*.*
+			
+			>nbtstat -a *.*.*.*
+			
+			Ethernet:
+			Node IpAddress: [*.*.*.*] Scope Id: []
+			
+					NetBIOS Remote Machine Name Table
+			
+				Name               Type         Status
+				---------------------------------------------
+				hostname <20>  UNIQUE      Registered
+				GLOBAL         <00>  GROUP       Registered
+				hostname <00>  UNIQUE      Registered
+			
+				MAC Address = *-*-*-3C-93-49
+# ref doc:  http://serverfault.com/questions/74042/resolve-host-name-from-ip-address 
