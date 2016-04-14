@@ -1,0 +1,96 @@
+#
+# how to set up a Windows workstation for Jenkins jobs
+#
+Steps	Item Name						Source Location	  		Status	Output
+				
+1	"order two MSDN professional licenses"						done before hand-in	
+
+2	"OS Microsoft Windows Server 2012 R2 (64-bit)
+
+   McAfee is installed by default.
+   Update policy is defined by org."							done before hand-in	
+   
+3	"install all hardware drivers
+      * Workstation"										done before hand-in		"Host:                 ${workstation_name}
+																						+ Domain:       ${workstation_name}.${domain_name1}
+																						
+																						actual name:  ${workstation_name}.${domain_name2}"
+4	"install 2 features:
+      Remote Differential Compression
+      Windows Server Backup Features
+      IIS needed(Not needed.)"												done	
+	  
+5	"add  Global/service.tip.cvom to 
+          Windows administrator group"										done	
+		  
+6	"setup .ssh for ${domain_name}/${jenkins_service_account1}"				done	
+
+7	"install JAVA JDK
+         jdk1.8.0_45
+          > jdk1.8.0_40 
+       configure Java
+       set JAVA_HOME"
+																done	"in slave configure Tools Location: JAVA_HOME = C:\Progra~1\Java\jdk1.8.0_45"
+																
+8	"disable java auto-update"									done	"https://wiki.wdf.sap.corp/wiki/display/SHSCM/Trouble+Shooting"
+
+9	"setup the jenkins-slave service"	
+				"file://shgprvmwin01.dhcp.pgdev.sap.corp/builds/jenkins/ "
+																done	"http://${jenkins_master1}:8080/computer/${workstation_name}/"
+																
+10	"double check jenkins plugins are installed"	
+				"4 under jenkins\tools\:
+				1) hudson.model.JDK 
+				( for automatic-installing jdk ex. jdk-win-1.7_25 from master)
+				(NOT needed when JDK installed and %JAVA_HOME% set in Tools Location.)
+				
+				2) hudson.plugins.git.GitTool                               (mandatory) 
+							(<= git )
+				3) hudson.tasks.Maven_MavenInstallation  (mandatory) 
+							(<= maven)
+				4) jenkins.plugins.nodejs.tools.NodeJSInstallation
+					(NOT needed since it's done through com.github.skwakman.nodejs-maven-plugin:nodejs-maven-plugin:1.0.4)
+				
+				5) Ant is done through org.apache.maven.plugins:maven-antrun-plugin:1.7 ."
+																done	"no manual step is necessary."
+																
+11	"double check sso is enabled"
+	"certificates in jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\ssl\."
+	not needed.	
+	
+12	"install Chrome
+   disable Chrome auto-update"									done
+				
+				
+13	"double check if Selenium  needed / configured correctly"			not needed (included in Jenkins plugins).	
+
+14	"double check if InstallShield  needed / configured correctly"		not needed (included in Jenkins plugins).	
+
+15	"install git extension"										done	
+
+16	"install other tools:
+     Bcompare
+     Notepad++
+     .Net >4.0  (already included in WindowsServer2012R2 )
+     P4   (optional)
+     Python  (optional)
+     Fortify (optional) (Most likely not needed.)"				done	
+	 
+17	"configure Bginfo" 											done	
+		(to show the computer info as background on the desktop ex. CPU, Memory etc.)
+		
+18	"double check environment variables are complete"			done	
+19	"test:
+      jenkins jobs work
+     (git, gerrit, maven / ant, nexus)
+      os backup works
+      perfmon works"											done	"Job pass:    http://${jenkins_master1}:8080/job/${jenkins_job1}/"
+	  
+20	"move jobs to it.
+     ${jenkins_job1}
+     ${jenkins_job2}
+ 				"From 
+					http://${jenkins_master1}:8080/computer/${workstation_name_old}/
+					to 
+					http://${jenkins_master1}:8080/computer/${workstation_name}/"
+																done	
