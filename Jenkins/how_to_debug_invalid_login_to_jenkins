@@ -1,0 +1,517 @@
+
+#
+# debug Jenkins can NOT login issue
+#	Invalid login information. Please try again. 
+#
+Two possible root causes now.
+
+1. LDAP server is down.
+Phenomenon:
+	When logging in to Jenkins server:
+		Invalid login information. Please try again. 
+		Try again
+		If you are a system administrator and suspect this to be a configuration problem, see the server console output for more details.
+
+debug steps used:
+[didn't work] 	1) check Service -> Jenkins -> LogON account
+[didn't work] 	2) check if ssh* plugins are right version. ex. ssh-slaves current is 1.10, on 09.27.2015 is 1.9.
+					change back to 1.9 in config.xml, credentials.xml.
+				#		go to d:\jenkins\config.xml, check       <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.10">
+				#	
+				#	current @1.10
+				#		<launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.10">
+				#			<host>10.59.156.168</host>
+				#			<port>22</port>
+				#			<credentialsId>70fe205c-135a-47b6-b2c5-45868334cdf9</credentialsId>
+				#			<maxNumRetries>0</maxNumRetries>
+				#			<retryWaitTime>0</retryWaitTime>
+				#		</launcher>
+				#	
+				#	on 09.27.2015:
+				#		<launcher class="hudson.slaves.JNLPLauncher"/>	  
+
+[didn't work] 	3) check if the used LDAP account / password is correct.
+			call IT hot-line.
+			or
+			re-set LDAP connection in "Configure Global Security" in Jenkins.
+				#	https://www.mail-archive.com/builds@apache.org/msg03195.html
+				#		You are using the wrong password.
+				#		Your LDAP account has now been locked.
+				#		Go to id.apache.org/reset/enter to set a new one.
+
+[didn't work] 	4) run jenkins in command line
+					go to D:\Jenkins
+					in cmd, java -jar jenkins
+
+[didn't work] 	5) testing using another jenkins server instance
+
+					
+[didn't work] 	6) double check LDAP connection info is correct.
+					<securityRealm class="hudson.security.LDAPSecurityRealm" plugin="ldap@1.6">
+						<server>***</server>
+						<rootDN>DC=*,DC=*,DC=*</rootDN>
+						<inhibitInferRootDN>false</inhibitInferRootDN>
+						<userSearchBase></userSearchBase>
+						<userSearch>sAMAccountName={0}</userSearch>
+						<groupSearchBase>OU=*,OU=*,OU=*,OU=*,OU=*,OU=*</groupSearchBase>
+						<groupSearchFilter>(&amp;(objectclass=group)(cn={0}))</groupSearchFilter>
+						<managerDN>CN=*,OU=*,OU=*,OU=*,DC=*,DC=*,DC=*</managerDN>
+						<managerPassword>***</managerPassword>
+						<disableMailAddressResolver>false</disableMailAddressResolver>
+						<cache>
+						<size>100</size>
+						<ttl>3600</ttl>
+						</cache>
+					</securityRealm>
+
+[work!] 		7) check if there is a LDAP outage
+				call IT hot-line.
+				or
+				using IT monitoring portal.
+	  
+# root cause
+#
+LDAP server is down.
+#
+see How to test if a LDAP server is on-line from a Windows client on wiki:
+
+	Method 1 : ping
+	•             ping ${LDAP_Server1}
+	Expected output:
+		c:\temp>ping ${LDAP_Server1}
+		Pinging ${LDAP_Server1} 10.*.*.* with 32 bytes of data:
+		Reply from 10.*.*.*: bytes=32 time=23ms TTL=124
+		Reply from 10.*.*.*: bytes=32 time=23ms TTL=124
+		Reply from 10.*.*.*: bytes=32 time=24ms TTL=124
+		Reply from 10.*.*.*: bytes=32 time=23ms TTL=124
+		Ping statistics for 10.*.*.*:
+		Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+		Approximate round trip times in milli-seconds:
+		Minimum = 23ms, Maximum = 24ms, Average = 23ms
+	
+	Method 2 : ldp.exe
+	•             Download ldp.exe. It's an executable ldp.exe, can be used without installation.
+	•             Start ldp.exe
+	•             Connection/ Server: ${LDAP_Server1}
+	•             Connection/ Bind/ Simple Bind
+	•             User: ${account1}@${domain1}, Password: ******
+	Expected output:
+		res = ldap_simple_bind_s(ld, '${account1}@${domain1}', <unavailable>); // v.3
+		Authenticated as: '${account1}@${domain1}'.
+
+# solution
+rdp to ${Jenkins_server1}
+go to services -> Jenkins ->
+	double check to make sure it runs under name Global\***.
+	stop
+	switch to another LDAP server.
+		# 	in D:\jenkins\config.xml, 
+		#
+	start
+
+
+
+
+2. credential of manager account, which is used to connect to LDAP server, is invalid.
+Phenomenon:
+	When logging in to Jenkins server:
+		Invalid login information. Please try again. 
+		Try again
+		If you are a system administrator and suspect this to be a configuration problem, see the server console output for more details.
+
+# debug
+[NOT work.]	Step 1. switch to LDAP: ds2wdf0001.global.corp.sap 
+[NOT work.]	Step 2. update PATH and GOPATH on jenkins master
+					PATH  	C:\Program Files\Common Files\VSL Utils;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;D:\tools\Git\cmd;D:\tools\Git\bin;C:\Program Files\Perforc;C:\Python27;%JAVA_HOME%\bin
+							C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;D:\tools\Git\cmd;D:\tools\Git\bin;C:\Program Files\Perforc;C:\Python27;%JAVA_HOME%\bin;C:\Program Files\Common Files\VSL Utils
+					
+					GoPATH  C:\Program Files\Common Files\VSL Utils;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;D:\tools\Git\cmd;D:\tools\Git\bin;C:\Program Files\Perforce
+							C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;D:\tools\Git\cmd;D:\tools\Git\bin;C:\Program Files\Perforce;C:\Program Files\Common Files\VSL Utils
+
+[Get the Error Msg]	Step 3. in ldp.exe, use this account ASA1_BIT_BI_VIZ@global.corp.sap to connect
+					[Failed]		res = ldap_simple_bind_s(ld, 'ASA1_BIT_BI_VIZ@global.corp.sap', <unavailable>); // v.3
+									Error <49>: ldap_simple_bind_s() failed: Invalid Credentials
+									Server error: 80090308: LdapErr: DSID-0C0903D0, comment: AcceptSecurityContext error, data 52e, v2580
+					
+Step 4.  disable Authorization in Jenkins.
+		# how to: # ref doc:	https://wiki.jenkins-ci.org/display/JENKINS/Disable+security
+		
+[Get the Error Msg]	Step 5.  re-configure Authorization on Jenkins
+							http://shg-cvom-infra.pgdev.sap.corp:8080/configureSecurity/
+
+	[Error Msg 1]
+		Unable to connect to DS3DLC0000.global.corp.sap : javax.naming.NamingException: [LDAP: error code 1 - 000004DC: LdapErr: DSID-0C090749, 
+		comment: In order to perform this operation a successful bind must be completed on the connection., data 0, v2580]; remaining name ''
+		javax.naming.NamingException: [LDAP: error code 1 - 000004DC: LdapErr: DSID-0C090749, 
+		comment: In order to perform this operation a successful bind must be completed on the connection., data 0, v2580]; remaining name ''
+			at com.sun.jndi.ldap.LdapCtx.mapErrorCode(Unknown Source)
+			at com.sun.jndi.ldap.LdapCtx.processReturnCode(Unknown Source)
+			at com.sun.jndi.ldap.LdapCtx.processReturnCode(Unknown Source)
+			at com.sun.jndi.ldap.LdapCtx.c_getAttributes(Unknown Source)
+			at com.sun.jndi.toolkit.ctx.ComponentDirContext.p_getAttributes(Unknown Source)
+			at com.sun.jndi.toolkit.ctx.PartialCompositeDirContext.getAttributes(Unknown Source)
+			at com.sun.jndi.toolkit.ctx.PartialCompositeDirContext.getAttributes(Unknown Source)
+			at javax.naming.directory.InitialDirContext.getAttributes(Unknown Source)
+			at javax.naming.directory.InitialDirContext.getAttributes(Unknown Source)
+			at hudson.security.LDAPSecurityRealm$DescriptorImpl.doServerCheck(LDAPSecurityRealm.java:756)
+			at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+			at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+			at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+			at java.lang.reflect.Method.invoke(Unknown Source)
+			at org.kohsuke.stapler.Function$InstanceFunction.invoke(Function.java:298)
+			at org.kohsuke.stapler.Function.bindAndInvoke(Function.java:161)
+			at org.kohsuke.stapler.Function.bindAndInvokeAndServeResponse(Function.java:96)
+			at org.kohsuke.stapler.MetaClass$1.doDispatch(MetaClass.java:121)
+			at org.kohsuke.stapler.NameBasedDispatcher.dispatch(NameBasedDispatcher.java:53)
+			at org.kohsuke.stapler.Stapler.tryInvoke(Stapler.java:746)
+			at org.kohsuke.stapler.Stapler.invoke(Stapler.java:876)
+			at org.kohsuke.stapler.MetaClass$6.doDispatch(MetaClass.java:249)
+			at org.kohsuke.stapler.NameBasedDispatcher.dispatch(NameBasedDispatcher.java:53)
+			at org.kohsuke.stapler.Stapler.tryInvoke(Stapler.java:746)
+			at org.kohsuke.stapler.Stapler.invoke(Stapler.java:876)
+			at org.kohsuke.stapler.Stapler.invoke(Stapler.java:649)
+			at org.kohsuke.stapler.Stapler.service(Stapler.java:238)
+			at javax.servlet.http.HttpServlet.service(HttpServlet.java:848)
+			at org.eclipse.jetty.servlet.ServletHolder.handle(ServletHolder.java:686)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1494)
+			at hudson.util.PluginServletFilter$1.doFilter(PluginServletFilter.java:96)
+			at net.bull.javamelody.MonitoringFilter.doFilter(MonitoringFilter.java:202)
+			at net.bull.javamelody.MonitoringFilter.doFilter(MonitoringFilter.java:180)
+			at net.bull.javamelody.PluginMonitoringFilter.doFilter(PluginMonitoringFilter.java:85)
+			at org.jvnet.hudson.plugins.monitoring.HudsonMonitoringFilter.doFilter(HudsonMonitoringFilter.java:89)
+			at hudson.util.PluginServletFilter$1.doFilter(PluginServletFilter.java:99)
+			at hudson.util.PluginServletFilter.doFilter(PluginServletFilter.java:88)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at hudson.security.csrf.CrumbFilter.doFilter(CrumbFilter.java:48)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:84)
+			at hudson.security.ChainedServletFilter.doFilter(ChainedServletFilter.java:76)
+			at hudson.security.HudsonFilter.doFilter(HudsonFilter.java:168)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at org.kohsuke.stapler.compression.CompressionFilter.doFilter(CompressionFilter.java:49)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at hudson.util.CharacterEncodingFilter.doFilter(CharacterEncodingFilter.java:81)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at org.kohsuke.stapler.DiagnosticThreadNameFilter.doFilter(DiagnosticThreadNameFilter.java:30)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1474)
+			at org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:499)
+			at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:137)
+			at org.eclipse.jetty.security.SecurityHandler.handle(SecurityHandler.java:533)
+			at org.eclipse.jetty.server.session.SessionHandler.doHandle(SessionHandler.java:231)
+			at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1086)
+			at org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:428)
+			at org.eclipse.jetty.server.session.SessionHandler.doScope(SessionHandler.java:193)
+			at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1020)
+			at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:135)
+			at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:116)
+			at org.eclipse.jetty.server.Server.handle(Server.java:370)
+			at org.eclipse.jetty.server.AbstractHttpConnection.handleRequest(AbstractHttpConnection.java:489)
+			at org.eclipse.jetty.server.AbstractHttpConnection.headerComplete(AbstractHttpConnection.java:949)
+			at org.eclipse.jetty.server.AbstractHttpConnection$RequestHandler.headerComplete(AbstractHttpConnection.java:1011)
+			at org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:644)
+			at org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:235)
+			at org.eclipse.jetty.server.AsyncHttpConnection.handle(AsyncHttpConnection.java:82)
+			at org.eclipse.jetty.io.nio.SelectChannelEndPoint.handle(SelectChannelEndPoint.java:668)
+			at org.eclipse.jetty.io.nio.SelectChannelEndPoint$1.run(SelectChannelEndPoint.java:52)
+			at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+			at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+			at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+			at java.lang.Thread.run(Unknown Source)
+
+	[Error Msg 2]
+		Unable to connect to DS3DLC0000.global.corp.sap : javax.naming.AuthenticationException: [LDAP: error code 49 - 80090308: LdapErr: DSID-0C0903D0, 
+		comment: AcceptSecurityContext error, data 52e, v2580]
+		javax.naming.AuthenticationException: [LDAP: error code 49 - 80090308: LdapErr: DSID-0C0903D0, comment: AcceptSecurityContext error, data 52e, v2580]
+			at com.sun.jndi.ldap.LdapCtx.mapErrorCode(Unknown Source)
+			at com.sun.jndi.ldap.LdapCtx.processReturnCode(Unknown Source)
+			at com.sun.jndi.ldap.LdapCtx.processReturnCode(Unknown Source)
+			at com.sun.jndi.ldap.LdapCtx.connect(Unknown Source)
+			at com.sun.jndi.ldap.LdapCtx.<init>(Unknown Source)
+			at com.sun.jndi.ldap.LdapCtxFactory.getUsingURL(Unknown Source)
+			at com.sun.jndi.ldap.LdapCtxFactory.getUsingURLs(Unknown Source)
+			at com.sun.jndi.ldap.LdapCtxFactory.getLdapCtxInstance(Unknown Source)
+			at com.sun.jndi.ldap.LdapCtxFactory.getInitialContext(Unknown Source)
+			at javax.naming.spi.NamingManager.getInitialContext(Unknown Source)
+			at javax.naming.InitialContext.getDefaultInitCtx(Unknown Source)
+			at javax.naming.InitialContext.init(Unknown Source)
+			at javax.naming.InitialContext.<init>(Unknown Source)
+			at javax.naming.directory.InitialDirContext.<init>(Unknown Source)
+			at hudson.security.LDAPSecurityRealm$DescriptorImpl.doServerCheck(LDAPSecurityRealm.java:755)
+			at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+			at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+			at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+			at java.lang.reflect.Method.invoke(Unknown Source)
+			at org.kohsuke.stapler.Function$InstanceFunction.invoke(Function.java:298)
+			at org.kohsuke.stapler.Function.bindAndInvoke(Function.java:161)
+			at org.kohsuke.stapler.Function.bindAndInvokeAndServeResponse(Function.java:96)
+			at org.kohsuke.stapler.MetaClass$1.doDispatch(MetaClass.java:121)
+			at org.kohsuke.stapler.NameBasedDispatcher.dispatch(NameBasedDispatcher.java:53)
+			at org.kohsuke.stapler.Stapler.tryInvoke(Stapler.java:746)
+			at org.kohsuke.stapler.Stapler.invoke(Stapler.java:876)
+			at org.kohsuke.stapler.MetaClass$6.doDispatch(MetaClass.java:249)
+			at org.kohsuke.stapler.NameBasedDispatcher.dispatch(NameBasedDispatcher.java:53)
+			at org.kohsuke.stapler.Stapler.tryInvoke(Stapler.java:746)
+			at org.kohsuke.stapler.Stapler.invoke(Stapler.java:876)
+			at org.kohsuke.stapler.Stapler.invoke(Stapler.java:649)
+			at org.kohsuke.stapler.Stapler.service(Stapler.java:238)
+			at javax.servlet.http.HttpServlet.service(HttpServlet.java:848)
+			at org.eclipse.jetty.servlet.ServletHolder.handle(ServletHolder.java:686)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1494)
+			at hudson.util.PluginServletFilter$1.doFilter(PluginServletFilter.java:96)
+			at net.bull.javamelody.MonitoringFilter.doFilter(MonitoringFilter.java:202)
+			at net.bull.javamelody.MonitoringFilter.doFilter(MonitoringFilter.java:180)
+			at net.bull.javamelody.PluginMonitoringFilter.doFilter(PluginMonitoringFilter.java:85)
+			at org.jvnet.hudson.plugins.monitoring.HudsonMonitoringFilter.doFilter(HudsonMonitoringFilter.java:89)
+			at hudson.util.PluginServletFilter$1.doFilter(PluginServletFilter.java:99)
+			at hudson.util.PluginServletFilter.doFilter(PluginServletFilter.java:88)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at hudson.security.csrf.CrumbFilter.doFilter(CrumbFilter.java:48)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:84)
+			at hudson.security.UnwrapSecurityExceptionFilter.doFilter(UnwrapSecurityExceptionFilter.java:51)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+			at jenkins.security.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:117)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+			at org.acegisecurity.providers.anonymous.AnonymousProcessingFilter.doFilter(AnonymousProcessingFilter.java:125)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+			at org.acegisecurity.ui.rememberme.RememberMeProcessingFilter.doFilter(RememberMeProcessingFilter.java:142)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+			at org.acegisecurity.ui.AbstractProcessingFilter.doFilter(AbstractProcessingFilter.java:271)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+			at jenkins.security.BasicHeaderProcessor.doFilter(BasicHeaderProcessor.java:93)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+			at org.acegisecurity.context.HttpSessionContextIntegrationFilter.doFilter(HttpSessionContextIntegrationFilter.java:249)
+			at hudson.security.HttpSessionContextIntegrationFilter2.doFilter(HttpSessionContextIntegrationFilter2.java:67)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+			at hudson.security.ChainedServletFilter.doFilter(ChainedServletFilter.java:76)
+			at hudson.security.HudsonFilter.doFilter(HudsonFilter.java:168)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at org.kohsuke.stapler.compression.CompressionFilter.doFilter(CompressionFilter.java:49)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at hudson.util.CharacterEncodingFilter.doFilter(CharacterEncodingFilter.java:81)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at org.kohsuke.stapler.DiagnosticThreadNameFilter.doFilter(DiagnosticThreadNameFilter.java:30)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1474)
+			at org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:499)
+			at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:137)
+			at org.eclipse.jetty.security.SecurityHandler.handle(SecurityHandler.java:533)
+			at org.eclipse.jetty.server.session.SessionHandler.doHandle(SessionHandler.java:231)
+			at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1086)
+			at org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:428)
+			at org.eclipse.jetty.server.session.SessionHandler.doScope(SessionHandler.java:193)
+			at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1020)
+			at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:135)
+			at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:116)
+			at org.eclipse.jetty.server.Server.handle(Server.java:370)
+			at org.eclipse.jetty.server.AbstractHttpConnection.handleRequest(AbstractHttpConnection.java:489)
+			at org.eclipse.jetty.server.AbstractHttpConnection.headerComplete(AbstractHttpConnection.java:949)
+			at org.eclipse.jetty.server.AbstractHttpConnection$RequestHandler.headerComplete(AbstractHttpConnection.java:1011)
+			at org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:644)
+			at org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:235)
+			at org.eclipse.jetty.server.AsyncHttpConnection.handle(AsyncHttpConnection.java:82)
+			at org.eclipse.jetty.io.nio.SelectChannelEndPoint.handle(SelectChannelEndPoint.java:668)
+			at org.eclipse.jetty.io.nio.SelectChannelEndPoint$1.run(SelectChannelEndPoint.java:52)
+			at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+			at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+			at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+			at java.lang.Thread.run(Unknown Source)
+
+[Error Msg 3] when ManagerPassword is set to empty:
+
+		A problem occurred while processing the request. Please check our bug tracker to see if a similar problem has already been reported. 
+		If it is already reported, please vote and put a comment on it to let us gauge the impact of the problem. 
+		If you think this is a new issue, please file a new issue. 
+		When you file an issue, make sure to add the entire stack trace, along with the version of Jenkins and relevant plugins. 
+		The users list might be also useful in understanding what has happened.
+		
+		Stack trace
+		
+		javax.servlet.ServletException: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ldapUserSearch': 
+		Cannot resolve reference to bean 'initialDirContextFactory' while setting constructor argument; 
+		nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'initialDirContextFactory': 
+		Error setting property values; nested exception is org.springframework.beans.PropertyBatchUpdateException; nested PropertyAccessExceptions (1) are:
+		PropertyAccessException 1: org.springframework.beans.MethodInvocationException: Property 'managerPassword' threw exception; 
+		nested exception is java.lang.IllegalArgumentException: Manager password must not be empty or null.
+			at org.kohsuke.stapler.Stapler.tryInvoke(Stapler.java:796)
+			at org.kohsuke.stapler.Stapler.invoke(Stapler.java:876)
+			at org.kohsuke.stapler.MetaClass$12.dispatch(MetaClass.java:391)
+			at org.kohsuke.stapler.Stapler.tryInvoke(Stapler.java:746)
+			at org.kohsuke.stapler.Stapler.invoke(Stapler.java:876)
+			at org.kohsuke.stapler.Stapler.invoke(Stapler.java:649)
+			at org.kohsuke.stapler.Stapler.service(Stapler.java:238)
+			at javax.servlet.http.HttpServlet.service(HttpServlet.java:848)
+			at org.eclipse.jetty.servlet.ServletHolder.handle(ServletHolder.java:686)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1494)
+			at hudson.util.PluginServletFilter$1.doFilter(PluginServletFilter.java:96)
+			at net.bull.javamelody.MonitoringFilter.doFilter(MonitoringFilter.java:202)
+			at net.bull.javamelody.MonitoringFilter.doFilter(MonitoringFilter.java:180)
+			at net.bull.javamelody.PluginMonitoringFilter.doFilter(PluginMonitoringFilter.java:85)
+			at org.jvnet.hudson.plugins.monitoring.HudsonMonitoringFilter.doFilter(HudsonMonitoringFilter.java:89)
+			at hudson.util.PluginServletFilter$1.doFilter(PluginServletFilter.java:99)
+			at hudson.util.PluginServletFilter.doFilter(PluginServletFilter.java:88)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at hudson.security.csrf.CrumbFilter.doFilter(CrumbFilter.java:48)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:84)
+			at hudson.security.UnwrapSecurityExceptionFilter.doFilter(UnwrapSecurityExceptionFilter.java:51)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+			at jenkins.security.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:117)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+			at org.acegisecurity.providers.anonymous.AnonymousProcessingFilter.doFilter(AnonymousProcessingFilter.java:125)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+			at org.acegisecurity.ui.rememberme.RememberMeProcessingFilter.doFilter(RememberMeProcessingFilter.java:142)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+			at org.acegisecurity.ui.AbstractProcessingFilter.doFilter(AbstractProcessingFilter.java:271)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+			at jenkins.security.BasicHeaderProcessor.doFilter(BasicHeaderProcessor.java:93)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+			at org.acegisecurity.context.HttpSessionContextIntegrationFilter.doFilter(HttpSessionContextIntegrationFilter.java:249)
+			at hudson.security.HttpSessionContextIntegrationFilter2.doFilter(HttpSessionContextIntegrationFilter2.java:67)
+			at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+			at hudson.security.ChainedServletFilter.doFilter(ChainedServletFilter.java:76)
+			at hudson.security.HudsonFilter.doFilter(HudsonFilter.java:168)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at org.kohsuke.stapler.compression.CompressionFilter.doFilter(CompressionFilter.java:49)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at hudson.util.CharacterEncodingFilter.doFilter(CharacterEncodingFilter.java:81)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1482)
+			at org.kohsuke.stapler.DiagnosticThreadNameFilter.doFilter(DiagnosticThreadNameFilter.java:30)
+			at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1474)
+			at org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:499)
+			at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:137)
+			at org.eclipse.jetty.security.SecurityHandler.handle(SecurityHandler.java:533)
+			at org.eclipse.jetty.server.session.SessionHandler.doHandle(SessionHandler.java:231)
+			at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1086)
+			at org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:428)
+			at org.eclipse.jetty.server.session.SessionHandler.doScope(SessionHandler.java:193)
+			at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1020)
+			at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:135)
+			at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:116)
+			at org.eclipse.jetty.server.Server.handle(Server.java:370)
+			at org.eclipse.jetty.server.AbstractHttpConnection.handleRequest(AbstractHttpConnection.java:489)
+			at org.eclipse.jetty.server.AbstractHttpConnection.content(AbstractHttpConnection.java:960)
+			at org.eclipse.jetty.server.AbstractHttpConnection$RequestHandler.content(AbstractHttpConnection.java:1021)
+			at org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:865)
+			at org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:240)
+			at org.eclipse.jetty.server.AsyncHttpConnection.handle(AsyncHttpConnection.java:82)
+			at org.eclipse.jetty.io.nio.SelectChannelEndPoint.handle(SelectChannelEndPoint.java:668)
+			at org.eclipse.jetty.io.nio.SelectChannelEndPoint$1.run(SelectChannelEndPoint.java:52)
+			at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+			at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+			at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+			at java.lang.Thread.run(Unknown Source)
+		Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ldapUserSearch': 
+		Cannot resolve reference to bean 'initialDirContextFactory' while setting constructor argument; nested exception is org.springframework.beans.factory.BeanCreationException: 
+		Error creating bean with name 'initialDirContextFactory': Error setting property values; 
+		nested exception is org.springframework.beans.PropertyBatchUpdateException; nested PropertyAccessExceptions (1) are:
+		PropertyAccessException 1: org.springframework.beans.MethodInvocationException: Property 'managerPassword' threw exception; 
+		nested exception is java.lang.IllegalArgumentException: Manager password must not be empty or null.
+			at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:275)
+			at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:104)
+			at org.springframework.beans.factory.support.ConstructorResolver.resolveConstructorArguments(ConstructorResolver.java:495)
+			at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:162)
+			at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:925)
+			at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:835)
+			at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:440)
+			at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory$1.run(AbstractAutowireCapableBeanFactory.java:409)
+			at java.security.AccessController.doPrivileged(Native Method)
+			at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:380)
+			at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:264)
+			at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+			at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:261)
+			at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:185)
+			at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:164)
+			at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:429)
+			at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:728)
+			at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:380)
+			at hudson.util.spring.DefaultRuntimeSpringConfiguration.getApplicationContext(DefaultRuntimeSpringConfiguration.java:94)
+			at hudson.util.spring.BeanBuilder.createApplicationContext(BeanBuilder.java:390)
+			at hudson.security.LDAPSecurityRealm.createSecurityComponents(LDAPSecurityRealm.java:479)
+			at hudson.security.SecurityRealm.getSecurityComponents(SecurityRealm.java:448)
+			at hudson.security.HudsonFilter.reset(HudsonFilter.java:135)
+			at jenkins.model.Jenkins.setSecurityRealm(Jenkins.java:2133)
+			at hudson.security.GlobalSecurityConfiguration.configure(GlobalSecurityConfiguration.java:95)
+			at hudson.security.GlobalSecurityConfiguration.doConfigure(GlobalSecurityConfiguration.java:79)
+			at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+			at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+			at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+			at java.lang.reflect.Method.invoke(Unknown Source)
+			at org.kohsuke.stapler.Function$InstanceFunction.invoke(Function.java:298)
+			at org.kohsuke.stapler.Function.bindAndInvoke(Function.java:161)
+			at org.kohsuke.stapler.Function.bindAndInvokeAndServeResponse(Function.java:96)
+			at org.kohsuke.stapler.MetaClass$1.doDispatch(MetaClass.java:121)
+			at org.kohsuke.stapler.NameBasedDispatcher.dispatch(NameBasedDispatcher.java:53)
+			at org.kohsuke.stapler.Stapler.tryInvoke(Stapler.java:746)
+			... 67 more
+		Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'initialDirContextFactory': 
+		Error setting property values; nested exception is org.springframework.beans.PropertyBatchUpdateException; nested PropertyAccessExceptions (1) are:
+		PropertyAccessException 1: org.springframework.beans.MethodInvocationException: Property 'managerPassword' threw exception; 
+		nested exception is java.lang.IllegalArgumentException: Manager password must not be empty or null.
+			at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1279)
+			at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1010)
+			at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:472)
+			at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory$1.run(AbstractAutowireCapableBeanFactory.java:409)
+			at java.security.AccessController.doPrivileged(Native Method)
+			at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:380)
+			at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:264)
+			at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+			at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:261)
+			at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:185)
+			at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:164)
+			at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:269)
+			... 102 more
+		Caused by: org.springframework.beans.PropertyBatchUpdateException; nested PropertyAccessExceptions (1) are:
+		PropertyAccessException 1: org.springframework.beans.MethodInvocationException: Property 'managerPassword' threw exception; 
+		nested exception is java.lang.IllegalArgumentException: Manager password must not be empty or null.
+			at org.springframework.beans.AbstractPropertyAccessor.setPropertyValues(AbstractPropertyAccessor.java:104)
+			at org.springframework.beans.AbstractPropertyAccessor.setPropertyValues(AbstractPropertyAccessor.java:59)
+			at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1276)
+			... 113 more
+
+Root Cause:
+		credential of manager account, which is used to connect to LDAP server, is invalid. 
+		or
+		the account has expired.
+
+
+#
+[Info 1]
+	1) Error code 49 is the equivalent of bad credentials at login. 
+		If you are trying to connect to AD the best method is to bind using sAMAccountName@corp.XXX.com as the user instead of the standard full DN
+	2) I am getting the same error. Please let me explain what i have encountered.
+		In the active directory (version 2003), the administrator can actually limit the access of a particular user to a certain workstation. 
+		This can be set by putting the workstation host name or IP (which is allowed to accessed by the user) into a "log on to" list (at the user level). 
+		If the administrator wants the user to be able to log on to any workstation, then he / she can check on the "log on to all computer" in the same screen.
+
+		When my user has been set to "log on to all computer", i don't encounter the error message i.e. error code 49, as mentioned in the subject of this topic. 
+		However, when a particular user has been limited to only access to his own workstation, the error appears. 
+		However, if the Active Directory server host name or IP has been added into the "log on to" list, the authentication is successful.
+
+		My web application is actually running on an application server and the user is using Internet Explorer to login to my application. 
+		The application server has been joined to the same domain as the Active Directory server. 
+		My question is, is it a must that the Active Directory server name be added to the "log on to" list of that particular user in order for it to be authenticated by Active Directory. 
+		I have been cracking my head for this but still i can't think of any solution for this. 
+		I definitely don't want to add the AD server name into the list as this will give the user rights to login to the AD server. 
+		Any advise would be of great help. Thanks a million in advance. 
+
+	#  ref doc: 	http://forums.devshed.com/ldap-programming-76/javax-naming-authenticationexception-ldap-error-code-49-80090308-ldaperr-dsid-121363.html
+	
+[Info 2]
+	Data Code 		Description
+	701				account expired
+	# ref doc:		https://confluence.atlassian.com/confkb/user-directory-sync-fails-with-ldap-error-code-49-223217565.html 
+	# ref doc:		https://confluence.atlassian.com/display/CROWD/Troubleshooting+LDAP+User+Management
+	
+	
+[Info 3]
+	settings in jenkins to connect to LDAP server:
+		go to ${jenkins_master1} -> "Manage Jenkins" -> "Configure Global Security" -> "Enable security" -> "LDAP" -> "Advanced" :
+			Server: ${LDAP_Server1} ${LDAP_Server2}
+			root DN: DC=*,DC=*,DC=*
+			User search base: OU=Identities
+			User search filter: sAMAccountName={0}
+			Group search base: OU=*,OU=*,OU=*,OU=*,OU=*,OU=* (filter specific OU=* to accelerate login speed)
+			Group search filter: (&(objectclass=group)(cn={0}))
+			Manager DN: CN=*,OU=*,OU=*,OU=*,DC=*,DC=*,DC=*
+			Manager Password: ***
+		-> "Save".
