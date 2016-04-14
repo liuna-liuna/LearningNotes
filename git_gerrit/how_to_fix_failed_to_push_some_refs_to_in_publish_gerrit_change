@@ -1,0 +1,36 @@
+#
+# Publish Gerrit Change failure: error: failed to push some refs to 'ssh://*@*:29418/*.git'
+#
+Phenomenon:
+
+	"C:\Program Files (x86)\Git\bin\git.exe" push --progress "origin" HEAD:refs/publish/rel-*
+	Counting objects: 86, done.
+	Delta compression using up to 8 threads.
+	Total 10 (delta 7), reused 0 (delta 0)
+	remote: 
+	remote: Processing changes: refs: 1
+	remote: Processing changes: refs: 1, done    
+	remote: ERROR: missing Change-Id in commit message footer
+	remote: 
+	remote: Hint: A potential Change-Id was found, but it was not in the footer (last paragraph) of the commit message.
+	remote: 
+	remote: Hint: To automatically insert Change-Id, install the hook:
+	remote:   gitdir=$(git rev-parse --git-dir); scp -p -P 29418 ssh://${account}@${gerrit_server1}:hooks/commit-msg ${gitdir}/hooks/
+	remote: And then amend the commit:
+	remote:   git commit --amend
+	remote: 
+	To ssh://${account}@${gerrit_server1}:29418/*/*.git
+	! [remote rejected] HEAD -> refs/publish/rel-5.27 (missing Change-Id in commit message footer)
+	error: failed to push some refs to 'ssh://${account}@${gerrit_server1}:29418/*/*.git'
+	Done
+
+Root Cause:
+	Change-Id is missing.
+	or
+	Change-Id is not at the footer. (There was other info behind Change-Id in this case.)
+	
+	
+Fix:
+	install the commit-msg hook.
+	update the commit message:
+		git commit --amend -m "change file name to fix build issue: ... Change-Id:..."
