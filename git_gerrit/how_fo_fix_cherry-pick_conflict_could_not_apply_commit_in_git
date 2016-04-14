@@ -1,0 +1,19 @@
+#
+# git cherry-pick conflict : error: could not apply 5a8b7fd...
+#
+Phenomenon:
+
+	"C:\Program Files (x86)\Git\bin\git.exe" cherry-pick -x "${commit_id}"
+	error: could not apply 5a8b7fd... ${commit_msg}.
+	hint: after resolving the conflicts, mark the corrected paths
+	hint: with 'git add <paths>' or 'git rm <paths>'
+	hint: and commit the result with 'git commit'
+	Done
+	
+Root Cause:
+	conflict in the changed file in this commit.
+	
+Fix:
+	resolve the conflict in merge tool ex. BCompare.
+	continue with commit.
+	
