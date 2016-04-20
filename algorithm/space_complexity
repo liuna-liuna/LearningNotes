@@ -1,0 +1,48 @@
+#
+# space complexity
+#
+# example: to check if a number isPalindrome
+#
+
+# Method 1:
+# compare the highest digit and lowest digit in each iteration.
+
+class Solution {
+public:
+    bool isPalindrome(long long x) {
+        if (x < 0) return false;
+        long long d = 10, e = 10;
+        while (x / d) d *= 10;
+        while (d > e)
+        {
+            if ((x % d) / (d / 10) != (x % e) / (e / 10))
+                return false;
+            d /= 10;
+            e *= 10;
+        }
+        return true;
+    }
+};
+
+# Method 2:
+# compare half of the digits in x, so don't need to deal with overflow.
+
+public boolean isPalindrome(int x) {
+    if (x<0 || (x!=0 && x%10==0)) return false;
+    int rev = 0;
+    while (x>rev){
+        rev = rev*10 + x%10;
+        x = x/10;
+    }
+    return (x==rev || x==rev/10);
+}
+
+
+In general space complexity is measured relative to the input size.
+The space complexity of an algorithm depends on the number of local variables used but also their sizes relative to n.
+Above program requires one unit of space for function parameter i.e, x 
+  and two units of space for local variables d and e 
+  and this allocated space is constant as it never changes 
+  and relative to input 
+  and it takes only a constant space hence O(1). 
+So, it is safe to assume that "without extra space" refers to constant space complexity.
