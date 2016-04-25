@@ -1,0 +1,25 @@
+#
+# Puppet
+#
+Puppet是一个用来管理计算机系统配置的开源框架和工具集合。Puppet是一个基于Ruby，并使用GPLv2协议授权的开源软件，它既能以客户端—服务端的方式运行，也能独立运行。
+它主要由Luke Kanies和他的公司Puppet Labs（以前称为Reductive Labs）开发。Kanies从1997年开始涉足Unix和系统管理，然后基于这些经验开发了Puppet。
+因为对已经存在的配置管理工具不满意，Kanies在2001年开始了这一新工具的开发，并于2005年创立了一家专注于自动化工具的开源软件开发公司：Puppet Labs。
+不久之后，Puppet Labs发布了他们的旗舰产品Puppet。 
+
+Puppet可以用来管理UNIX（包括OSX）和Linux平台，并且最近又添加了针对Microsoft Windows的支持。
+Puppet通常可以用来管理一台主机的整个生命周期：从初始化到安装、升级、维护以及最后将服务迁移并下架。
+Puppet被设计为能够持续与主机进行交互，而不是仅仅提供一个只负责搭建主机却并不管理它们的工具。
+
+puppet是一个开源的软件自动化配置和部署工具，它使用简单且功能强大，正得到了越来越多地关注，
+现在很多大型IT公司均在使用puppet对集群中的软件进行管理和部署，如google利用puppet管理超过6000台地mac桌面电脑（2007年数据）。
+
+两个特性:
+    提供一个简洁的但是强大的框架来完成系统管理任务
+    系统管理任务可以描述成puppet语言,因此可以相互分享代码,就像分享其他语言的代码一样,比如python, c等
+
+#	ref doc:
+	#	http://dongxicheng.org/cluster-managemant/puppet/
+	#	http://puppet.wikidot.com/intro	
+	#	https://book.douban.com/reading/18182671/
+	
+
