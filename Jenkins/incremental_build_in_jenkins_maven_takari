@@ -1,0 +1,47 @@
+5)	Incremental build in Jenkins, maven, takari.
+Pre-requisite:
+i.	For maven project.
+The job should be a Maven project type job.
+Maven project
+ 		Build a maven project. Jenkins takes advantage of your POM files and drastically reduces the configuration.
+In “Configure” of the job, enable it:
+
+Incremental build - only build changed modules	 
+	If checked, Jenkins will only build any modules with changes from SCM and any modules which depend on those changed modules, using Maven's "-amd -pl group1:artifact1,group1:artifact2" command-line options. If the SCM reports no changes to any modules, however, all modules will be built. See http://docs.codehaus.org/display/MAVEN/Make+Like+Reactor+Mode for more information on the Maven behavior this utilizes.
+This functionality requires Maven 2.1 or later, and will not have any impact if "Build modules in parallel" is selected.	
+	
+	If checked, Jenkins will only build any modules with changes from SCM and any modules which depend on those changed modules, using Maven's "-amd -pl group1:artifact1,group1:artifact2" command-line options. If the SCM reports no changes to any modules, however, all modules will be built. See http://docs.codehaus.org/display/MAVEN/Make+Like+Reactor+Mode for more information on the Maven behavior this utilizes.
+This functionality requires Maven 2.1 or later, and will not have any impact if "Build modules in parallel" is selected.	
+	
+
+	Status quo:
+A.	Maven supports building subsets of multi module projects using the command line arguments -pl, -am and -amd to specify modules to build, also build dependencies and also build dependents, respectively. It will also only compile changed source files in any given module (not really a Maven feature so much as a javac feature).
+
+B.	As stated by Maven documentation incremental builds are not very reliable at least until 3.0.4:
+Currently (3.0.4) Apache Maven doesn't support incremental builds very well.
+https://cwiki.apache.org/confluence/display/MAVEN/Incremental+Builds (first line)
+Instead, I would strongly suggest using any of these two approaches for speeding up your build:
+•	Using parallel builds. In my experience in large projects this works great and can greatly reduce the build time with minimum (if any) risk. Just execute something like mvn -T 1.5C clean install https://cwiki.apache.org/confluence/display/MAVEN/Parallel+builds+in+Maven+3
+(NOT recommended though, since it breaks build repeatability.)
+
+•	If your modules are independent you can rather move them to different projects and glue them together by using maven dependencies.
+
+# ref doc: http://stackoverflow.com/questions/12369233/incremental-build-in-jenkins 
+# ref doc: http://frommyworkshop.blogspot.hk/2011/05/apache-maven-incremental-build.html 
+
+Info:
+I.	useIncrementalCompilation is supported in maven-compiler-plugin in compiler:compile since version 3.1.
+# Ref doc: https://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html#useIncrementalCompilation 
+II.	How to do incremental build in Eclipse?
+# Ref doc:
+http://stackoverflow.com/questions/12987596/eclipse-incremental-builder-plugin-does-not-work 
+http://www.eclipse.org/articles/Article-Builders/builders.html 
+
+III.	What is java incremental compilation?
+# Ref doc: http://takari.io/2014/10/16/incremental-compilation.html 
+
+IV.	Use Takari lifecycle instead of maven-incremental-compilation
+# Ref doc https://blogs.oracle.com/geertjan/entry/takari_maven_incremental_build
+Need to double check.
+V.	Use net.java.incremental-build-plugin:maven-incremental-build
+# ref doc: https://maven-incremental-build.java.net/site/usage.html 
