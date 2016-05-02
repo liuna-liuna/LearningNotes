@@ -2,6 +2,21 @@
 # best practice for jenkins users
 # 	
 1. use Jenkins Plugins productively
+ ex.
+ JobConfigHistory	:	see who changed the job and how.
+ Disk Usage		:	How much space is that job taking up on the slave? how large are the archived artifacts etc.
+ Build Timeout		:	if timeout, abort the job and mark it as failed. To prevent hanging jobs.
+ Email-ext		:	send emails to who in which format etc.
+ Parameterized Trigger	:	kick off downstream builds with information from upstream.
+ Build Pipeline Plugin	:	good at build workflow: initial job, sub-jobs.
+ 				Ex. trigger different sub-jobs based on the result of a build.
+ EnvInject Plugin	:	inject environment variables.
+ Timestamper		:	output timestamp in the console output.
+ Copy Artifact Plugin	:	copy artifacts from a build to another.
+ Config File Provider Plugin:	archive configuration files ex. maven settings etc.
+ Monitoring		:	show the resource usage ex. CPU, Memory etc.
+ Safe Restart Plugin	:	restart jenkins after current running jobs end.
+ Cobertura		:	show the result of tests ex. test coverage.
 
 2. standarize Jenkins slaves
 	install same toolsets, and doing download and installation job automatically ex. through a script.
