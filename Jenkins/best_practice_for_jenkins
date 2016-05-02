@@ -70,8 +70,14 @@
 
 6. stick with stable releases of Jenkins itself
 	use Jenkins core LTS releases. LTS = Long Term Support
+		jenkins releases weekly and LTS every ~3 months.
+	upgrade plugins carefully.
+	
+	# details ref doc:
+	#   https://wiki.jenkins-ci.org/display/JENKINS/LTS+Release+Line
 	
 7. join Jenkins community
+	submit bug through https://issues.jenkins-ci.org/
 
 8. back up the jenkins home regularly
 
