@@ -1,0 +1,33 @@
+
+#
+# Chef introduction
+#
+官方的介绍是这样的：
+Automation for Web-Scale IT.
+Chef delivers fast, scalable, flexible IT automation.
+简单来说Chef就是IT自动化工具，它把服务器的环境（软件、依赖库、网络等）进行抽象，
+以特有的配置语法（Ruby语言）对其进行管理，可以自动的进行服务器环境的初始化工作。
+Chef也是实践DevOps和Continuous Integration的重要工具，同类的工具还有puppet。
+
+Chef基本上做两件事：
+    环境管理
+    以自动化的方式进行服务器环境初始化或变更工作
+
+Chef环境由三个部分组成：Chef server，Workstation, Node（此Node非Node.js）。
+    Chef server是Chef环境的中枢，其中存储了基础设施环境的信息。
+      你可以使用开源Chef server，也可以使用Chef官方提供的商业服务：Enterprise Chef。
+
+    Workstation是你的工作台，一般情况下就是你的开发机器。
+      你会在Workstation中创建cookbook，并且上传到Chef server，以及其他与Chef相关的工作。
+
+    一个Node就是你基础设施环境中的一台服务器，也就是你用Chef来管理的机器。
+      一个Node可以是一台物理机器，一个虚拟机，也可以是cloud环境中的一个instance，
+      甚至是你网络环境中的一个交换机或路由器。
+      如果你想要在Node上部署环境，那么Node会与Chef server进行交互获取信息，并在Node上执行环境初始化操作。
+
+
+# ref doc: 
+# Chef入门（一）      http://weizhifeng.net/learn-chef-01.html
+# 使用容器还是使用类似Chef、Puppet这类的配置管理工具？  http://dockone.io/article/717
+# 官方网站            https://www.chef.io/
+
