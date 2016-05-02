@@ -42,9 +42,21 @@
 		for incremental builds.
 	
 4. integrate with other tools 
-	(ex. Gerrit, Jira, Sonar, 
-		 Artifacts-Staging ex. through Maven / Groovy / Ivy etc.
-		 Chat/IM notifications
+	(ex. Gerrit, Jira, Sonar,
+			Gerrit		: code review
+			Jira		: update bug tracker when a fix gets built, automatically
+			Sonar		: code metrics, code coverage, unit test results, etc, all in one place.
+					
+		 Artifacts-Staging     	: control staging of release candidates, report on dependencies.
+		 			ex. through Maven / Groovy / Ivy etc.
+		 			# details ref doc:
+		 			#   https://www.jfrog.com/blog/jenkins-new-maven-gradle-release-management-look/
+		 			
+		 Mylyn			: all from within Eclipse:
+		 			see build and test results, launch new builds and more.
+		 			
+		 Chat/IM notifications 	: notify commits when builds break
+		 			ex. Jabber, IRC, Campfire, etc.
 		 )
 		 
 5. balance the jenkins sytem (masters, slaves, builds, etc.)	
