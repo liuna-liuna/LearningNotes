@@ -19,7 +19,9 @@
  Cobertura		:	show the result of tests ex. test coverage.
 
 2. standarize Jenkins slaves
-	install same toolsets, and doing download and installation job automatically ex. through a script.
+	install same toolsets, and doing download and installation job automatically
+	ex. through a script
+	ex. for Maven, Ant, JDK, etc.
 	for slaves created from an image in Could or VMs: 
 		better: spin a slave up from a pre-configured image;
 				update the image when slave confiurations need to be updated;
@@ -29,7 +31,15 @@
 	
 3. 	use incremental builds when possible for daily and development purpose,
 	use full builds for release, and ex. quality build to generate code coverage reports.
-	<= maven project type has built-in support for incremental builds. (TODO: need to be updated?)
+	<= maven project type has built-in support for incremental builds.
+		in Advanced Options in the Maven configuration section.
+		when incremnetal build is enabled, maven checks the changelist for the build
+		and compares to Maven module layout,
+		any modules containing changed files are built.
+		as are modules depending on changed modules,
+		and any modules with failures in the previous build.
+	<= while freestyle project may require custom work to determine what needs to be run
+		for incremental builds.
 	
 4. integrate with other tools 
 	(ex. Gerrit, Jira, Sonar, 
@@ -87,4 +97,4 @@
 22. tag, label, or baseline the codebase after the successful build.
 
 # ref doc: https://wiki.jenkins-ci.org/display/JENKINS/Jenkins+Best+Practices
-
+# ref doc: http://www.slideshare.net/andrewbayer/7-habits-of-highly-effective-jenkins-users
