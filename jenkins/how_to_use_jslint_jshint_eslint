@@ -1,0 +1,68 @@
+#
+# jslint, jshint, eslint
+#
+1) example in jenkins job:
+		http://*:8080/jenkins/view/*/job/*_JSHINT
+	Build: Invoke top-level Maven targets: 
+			clean validate jshint:lint
+		POM:	*/pom.xml
+	Post-build Actions:
+		Publish Checkstyle analysis results
+			Checkstyle results **/jshint.xml
+
+	in build console,
+	ex.	http://*:8080/jenkins/view/Viz_Autrement/job/*/*/consoleFull
+		[WARNING] Excluding c:\.jenkins\jobs\*\.js
+		[INFO]   c:\.jenkins\jobs\*\*.js
+		[ERROR]    2,5: Expected a string and instead saw appDir.
+		[ERROR]    3,5: Expected a string and instead saw baseUrl.
+		...
+		JSHint found problems with 123 files
+		c:\.jenkins\jobs\*\*.js
+			69,21: Unreachable 'break' after 'return'.
+			83,17: Bad line breaking before '?'.
+			145,17: Bad line breaking before '?'.
+		...
+		[INFO]   c:\.jenkins\jobs\*\*.js
+		[INFO] Generating "JSHint" report. reporter=checkstyle, reportFile=c:\.jenkins\jobs\*\target\jshint.xml.
+		...
+		[CHECKSTYLE] Collecting checkstyle analysis files...
+		[CHECKSTYLE] Finding all files that match the pattern **/jshint.xml
+		[CHECKSTYLE] Parsing 1 files in c:\.jenkins\jobs\*_JSHINT\wrk
+		[CHECKSTYLE] Successfully parsed file cc:\.jenkins\jobs\*\*.js\target\jshint.xml of module  with 3037 warnings.
+		[CHECKSTYLE] Computing warning deltas based on reference build #1583
+		Finished: SUCCESS
+
+
+
+	
+2) jenkins has plugins to support it:
+		JSLint plugin 					 	https://wiki.jenkins-ci.org/display/JENKINS/JSLint+plugin
+		or:
+		Checkstyle Plugin + Analysis-core  	https://wiki.jenkins-ci.org/display/JENKINS/Checkstyle+Plugin
+		or:
+		Violations plugin					https://wiki.jenkins-ci.org/display/JENKINS/Violations
+								
+		
+		
+		
+3) in maven */:
+	maven jshint:lint
+	
+	
+4) jshint doc:  
+JSHint is even a fork of JSLint.
+
+	ref doc:
+		official site : http://www.jshint.com/
+		options list : 	http://www.jshint.com/docs/options/
+		error codes : 	http://jslinterrors.com/
+		source code:	https://github.com/jshint/jshint
+		
+					
+	
+5) jslint doc:
+	https://raw.githubusercontent.com/douglascrockford/JSLint/master/jslint.js
+	
+	
+	
