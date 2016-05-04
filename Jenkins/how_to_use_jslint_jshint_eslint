@@ -83,7 +83,17 @@ JSHint is even a fork of JSLint.
 	https://raw.githubusercontent.com/douglascrockford/JSLint/master/jslint.js
 	
 
-6) how to install / configure / use eslint 
+6) eslint doc:
+	mvn -Peslint.sonar eslint:eslint | tee log.eslint
+	mvn -Peslint.sonar sonar:sonar | tee log.sonar
+
+	for ESLint rules 	http://eslint.org/docs/rules/
+	official website 	http://eslint.org/index.html
+	configuration    	http://eslint.org/docs/user-guide/configuring
+
+
+
+7) how to install / configure / use eslint 
 	# on Windows, as root/Administrator:
 
 	# after nodejs v5.0.0 is installed:
