@@ -1,0 +1,65 @@
+#
+
+# how to create a linux jenkins slave to a windows jenkins master
+#
+
+0. set proxy
+	
+System -> Preferences -> Network Proxy:
+ Manual proxy configuration: proxy.*:8080
+
+1. add ssh pubkey, i.e. id_rsa.pub of root on that jenkins slave to credentials of ${Gerrit_user} on gerrit
+
+ssh-keygen -t rsa
+
+git clone ssh://${Gerrit_user}@${Git_server1}:29418/${Git_project1}
+ssh -p 29418 -v ${Gerrit_user}@${Git_server1}
+
+2. install git, jdk
+
+yum list updates | grep -i git
+yum info git
+yum install git
+
+yum info java-1.7.0-openjdk.x86_64
+yum update java-1.7.0-openjdk.x86_64
+
+3. copy plugins and slave.jar to /jenkins/ 
+
+4. config settings on jenkins master
+   
+# add root/pwd into Jenkins credential http://${Jenkins_master1}:8080/credentials/: 
+	Username with password: Global, root/pwd.
+   
+   1) create local account on Jenkins -> Crendentials:
+        
+	User name with password: root/pwd
+
+
+   2) config by http://${Jenkins_master1}:8080/computer/${linux_jenkins_slave1}/configure :
+       Remote root directory = /jenkins
+       COMPUTERNAME = ${linux_jenkins_slave1}
+
+       Tool locations = (JDK) JDK-8u45 = /usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/
+     
+   3) run cmd:
+
+       java -jar /jenkins/slave.jar -jnlpUrl http://${Jenkins_master1}:8080/computer/${linux_jenkins_slave1}/slave-agent.jnlp
+       
+	# or
+
+
+       click Run Jenkins Slave on http://${Jenkins_master1}:8080/computer/${linux_jenkins_slave1}/
+
+
+
+<= Above steps verify that using root / passwd connection between jenkins master and slave works.
+
+5. switch to a specific account designated only for jenkins running ex. jenkins/jenkins
+	add the public key of jenkins account on master ~jenkins/.ssh/id_rsa.pub
+		to ~jenkins/.ssh/authorized_keys on that linux slave.
+	
+	select "SSH Username with private key", add master ~jenkins/.ssh/id_rsa to it.
+	create a linux jenkins slave, set it to "Launch slave agents on Unix machines via SSH".
+
+<= done.
