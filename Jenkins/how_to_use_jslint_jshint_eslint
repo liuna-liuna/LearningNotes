@@ -1,6 +1,22 @@
 #
 # jslint, jshint, eslint
 #
+jslint, jshint 信息：
+A） 联系
+    一样的用途
+    均拥有大量的用户
+    相同的 JavaScript 代码检查和分析内核
+    均已成功用于多个知名的 JavaScript 项目
+
+	都不易扩展，不容易直接根据报错定位到具体的规则配置等.
+	
+B） 区别
+    JSLint 对代码的合规要求极为严格, JSLint 可配置的选项很少
+    JSHint 对代码的合规要求可以很宽松, JSHint 可配置的选项很多
+	
+# ref doc: 	http://www.ithao123.cn/content-10907624.html   
+		http://ju.outofmemory.cn/entry/224489
+			
 1) example in jenkins job:
 		http://*:8080/jenkins/view/*/job/*_JSHINT
 	Build: Invoke top-level Maven targets: 
