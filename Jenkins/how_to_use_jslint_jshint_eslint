@@ -58,11 +58,53 @@ JSHint is even a fork of JSLint.
 		options list : 	http://www.jshint.com/docs/options/
 		error codes : 	http://jslinterrors.com/
 		source code:	https://github.com/jshint/jshint
-		
+		in Chinese:	https://github.com/mytcer/jshint-docs-cn
+				https://github.com/mytcer/jshint-docs-cn/blob/master/enforcing_options.md
+	
 					
 	
 5) jslint doc:
 	https://raw.githubusercontent.com/douglascrockford/JSLint/master/jslint.js
 	
+
+6) how to install / configure / use eslint 
+	# on Windows, as root/Administrator:
+
+	# after nodejs v5.0.0 is installed:
+npm get global
+npm set global=true
+npm config ls -l | findstr -i global	
+
+npm install -g eslint
+# Output	
+# Output	c:\temp>npm install -g eslint
+# Output	C:\nodejs\node_modules\npm\eslint -> C:\nodejs\node_modules\npm\node_modules\eslint\bin\eslint.js
+# Output	npm@3.3.6 C:\nodejs\node_modules\npm
+# Output	└── eslint@2.9.0
+# Output	
+
+=> C:\nodejs\node_modules\npm\eslint
+
+eslint --init 
+( not enable JSX)
+
+eslint ***.js
+# Output	c:\temp>eslint C:\git\*\src\main\js\*\*.js
+# Output	
+# Output	C:\git\*\src\main\js\*\*.js
+# Output	    1:1   error    Rule 'no-comma-dangle' was removed and replaced by: comma-dangle  no-comma-dangle
+# Output	   35:30  warning  Redundant double negation                                         no-extra-boolean-cast
+# Output	   75:4   warning  'com' is not defined                                              no-undef
+# Output	  221:25  warning  'com' is not defined                                              no-undef
+# Output	
+# Output	✖ 4 problems (1 error, 3 warnings)
+
+# ref doc: https://www.qianduan.net/jslint-to-eslint/
+
+
+
+
+
+
 	
 	
