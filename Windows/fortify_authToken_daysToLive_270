@@ -1,0 +1,11 @@
+#
+# for authToken in fortify
+#
+#	how to apply an authToken in fortify
+	#	This step is only required if you upload results for the first time or if the authentication token has expired 
+	#	(default expiration period is 90 days, max 270 days can be specified via parameter -daysToLive 270).
+	#	Execute the command:
+			fortifyclient token -gettoken AnalysisUploadToken -url https://fortify1.*/ssc -user <d-user>
+			fortifyclient token -gettoken AnalysisUploadToken -url https://fortify1.*/ssc -user <d-user> -daysToLive 270
+	
+	When asked, enter your SAP GLOBAL password and save the received token for later use.
