@@ -1,0 +1,9 @@
+1) What is XLIFF?
+	XLIFF = XML Localization Interchange File Format
+	XLIFF是由软件开发商、本地化服务提供商、本地化工具提供商等团体共同倡议和设计，由OASIS标准组织发布的用于本地化数据交换的格式标准。
+	它基于XML技术制定软件资源文件格式的转换规格，其目的在于提高软件的本地化作业效率。
+
+	# ref doc: 
+		http://baike.baidu.com/link?url=v8KsFJTeomt7NKFRIFSVHsbPdUQKTwP0rjge0b1Zx9v21486MjsB8C5457d_yIYdFTS0Hx8xXwDBlXJ8ZUVM_a
+		https://en.wikipedia.org/wiki/XLIFF
+	
