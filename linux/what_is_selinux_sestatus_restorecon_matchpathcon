@@ -1,0 +1,38 @@
+#
+# restorecon
+#
+This program is primarily used to reset the security context (type) (extended attributes) on one or more files.
+
+       It  can be run at any time to correct errors, to add support for new policy, 
+	   or with the -n option it can just check whether the
+       file contexts are all as you expect.
+
+       If a file object does not have a context, restorecon will write the default context to the file object's extended attributes.
+	   If a  file  object has a context, restorecon will only modify the type portion of the security context.
+
+       -R -r  change files and directories file labels recursively
+       -v     show changes in file labels.
+
+# 	check the setting of security context on CentOS
+		sestatus
+		
+# 	check the security context of files / directories
+		ls -Z /home/jenkins/.ssh /root/.ssh
+		matchpathcon /home/jenkins/.ssh /root/.ssh
+		
+		ls --lcontext /home/jenkins/.ssh /root/.ssh
+		ls --scontext /home/jenkins/.ssh /root/.ssh /jenkins/tools/
+ 
+
+#	verify if the security context is correct
+		matchpathcon -V /home/jenkins/.ssh /root/.ssh
+
+	
+	# ref doc:
+		https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Security-Enhanced_Linux/sect-Security-Enhanced_Linux-Maintaining_SELinux_Labels_-Checking_the_Default_SELinux_Context.html
+		http://www.cyberciti.biz/faq/howto-display-selinux-security-context-using-ls/
+		
+
+# ref doc:
+	什么是 SELinux https://wiki.centos.org/zh/HowTos/SELinux
+
