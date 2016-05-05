@@ -1,0 +1,27 @@
+#
+# how to use fortify cmds
+#
+# get token
+fortifyclient token -gettoken AnalysisUploadToken -url https://fortify1..*/ssc -user ${account}
+## correct output:
+Enter Password:
+Authorization Token: ***
+
+# list project
+fortifyclient listprojects -url https://fortify1..*/ssc -authtoken *
+## correct output:
+projects ...
+
+
+#
+# use fortify in a jenkins job
+#
+set JAVA_HOME=c:\jenkins\tools\hudson.model.JDK\JDK-8u45
+mvn -f fortify/pom.xml -Dfortify.f360.projectVersion=SP27 -Dfortify.f360.authToken=*** "-Dmvn.target.list=clean fortify:translate fortify:scan  fortify:upload" "-Xms2048m -Xmx4096m -XX:MaxPermSize=1024M" clean fortify:translate fortify:scan  fortify:upload
+
+cmd.exe /X /C "sourceanalyzer -Xmx4096m -64 @c:\jenkins\workspace\${workspace1}\fortify\target\fortify-translate.txt"
+cmd.exe /X /C "fortifyupdate"
+cmd.exe /X /C "sourceanalyzer -Xmx4096m -64 -scan @c:\jenkins\workspace\${workspace1}\fortify\target\fortify-scan.txt"
+cmd.exe /X /C "fortifyclient uploadFPR -f c:\jenkins\workspace\${workspace1}\fortify\target\result.fpr -project "*" -version * -authtoken * -url https://fortify1..*/ssc"
+
+
