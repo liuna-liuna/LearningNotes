@@ -1,0 +1,74 @@
+#
+# what is fortify SCA
+#
+Fortify Source Code Analysis (SCA)
+软件原代码安全测试和分析工具
+Fortify SCA是发现软件安全漏洞隐患最全面和分析最完整的产品。
+已经被证实最广泛使用的原代码安全分析器。 
+
+					 
+低false positives.
+	Fortify SCA提供精确的分析结果，她成熟的分析技术和精确的安全代码规则一起递交给客户以不同级别和不同类别的安全问题。
+	安全的代码规则能被自动更新，以安全专家的经验和意见去分析您的原代码，并且可以依照你特有应用、组件或者web service的特性去调整。
+
+支持多种不同的语言、架构和操作系统，
+	支持SOA架构,多层次的应用, Web 接口, XP极限编程,传统的瀑布开发, 新的和老的开发语言。
+	
+并交付给使用者极深度和精确度都极高的分析结果。
+快速而又高效辅助修复安全问题。
+	Fortify SCA以按照问题的严重级别和问题的影响深度的方式呈现分析结果的，
+	它提供详细的数据流的跟踪图，定位安全问题于具体的文件和代码行，
+	并建议以不同的方式去修复代码的问题。
+	多种filtering, 查询和排序选项将辅助安全人员去调查和理解安全问题和当时的环境。
+	审计人员和开发人员也可以评注有关问题的审计状态，风险和更进一步的努力需要。
+	
+可调整分析结果满足不同的分析需求
+	可以在开发过程中去调整以满足特定项目目标的需要，从而使得安全人员在区分安全问题的优先级、不同范围的审计和补救方面更快和更有效.
+  
+集成Fortify Manager
+      可以通过集成Fortify Manager获得有价值的有关项目安全的宝贵信息。
+	  比如分析结果的报表、安全策略的通过情况、安全评分的高低，安全问题的审计和状态。 
+
+集成自动化安全渗透测试工具
+	Fortify SCA的分析结果能够和自动化的黑盒渗透测试工具结果相关联，
+	以便于更进一步区分那些已经在自动化测试过程中暴露的问题的严重级别和更好的修复方法。 
+
+包含：
+	全面而精确的源代码分析引擎
+		数据流分析器（Data Flow Analyzer）: 使用Fortify公司的专利技术- X-Tier 数据流分析技术跟踪被感染的、可疑的输入点，并跨越整个应用软件的各个层次和编程语言的边界。
+		语义分析器（Semantic Analyzer）: 发现易于遭受攻击的语言涵数或者过程，并理解它们使用的上下文环境，并标识出使用特定涵数或者过程带来的软件安全的隐患。
+		控制流分析器（Control Flow Analyzer）: 精确地跟踪业务操作的先后顺序，发现因代码构造不合理而带来的软件安全隐患。
+		配置流分析器（Configuration Analyzer）:分析软件的配置和代码的关系，发现在软件配置和代码之间，配置丢失或者不一致而带来的安全隐患。
+		结构分析器（Structural Analyzer）: 从代码的结构方面分析代码，识别代码结构不合理而带来的安全弱点和问题。
+		最大的最全面的安全代码规则集
+		全面支持主流的编程语言和操作系统
+			Fortify SCA 支持混合语言的分析，包括 ASP.NET, C/C++, C#, Java™, JSP, PL/SQL, T-SQL, VB.NET, XML and other .NET languages.
+		集成软件开发环境，提供安全代码开发的插件
+			Fortify SCA对主流的集成开发环境（ＩＤＥ）提供安全代码的插件，比如Microsoft&reg; Visual Studio&reg;, IBM&reg; RAD, and Eclipse。
+		
+		易于集成产品构建环境
+			Fortify SCA提供与集成开发环境以插件的方式集成，也同时提供命令行接口，
+			可以使用多种编译和自动构建工具，比如：Ａnt, make…..等。从而使得Fortify SCA与开发环境集成简单化。
+		
+		规则构建器（Rules Builder）延伸规则和自定义规则  
+			Fortify SCA Rules Builder能够加强和延伸Fortify分析器的能力，可以使用Rules Builder去定制特定的规则满足特别需求。 
+		
+		多种特性审计平台 （Audit Workbench）
+		集成Fortify security manager
+		集成黑盒安全测试工具包括Watchfire’s AppScan
+		集成 Findbugs 便于集中管理和分析质量问题和安全问题
+
+Fortify SCA静态分析分两个阶段：
+　　1.Translation:
+　　　　把各种语言的源代码转为一种统一的中间语言代码。
+　　2.Analysis:
+　　　　根据中间代码分析代码漏洞，并得出报告
+
+
+on 2009-2-11, 大概1个license的公开报价为100万，实际成交价在80万左右
+on 2015-7-2, 69万买了一个license
+		
+# ref doc: 		http://bbs.51testing.com/thread-109512-1-1.html
+# ref doc:		http://www.cnblogs.com/astwish/articles/3700467.html
+# ref doc:		official	http://www.fortifysoftware.com/products/sca/scaHowItWorks.jsp
+
