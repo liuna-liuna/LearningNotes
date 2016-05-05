@@ -1,0 +1,14 @@
+#
+# generate / add / delete certificate in fortify
+#
+"C:\HP_Fortify\HP_Fortify_SCA_and_Apps_4.30\jre\bin\keytool.exe" -delete -trustcacerts -alias rootCA -file C:\fortify\SAPNetCA.der
+-keystore "C:\HP_Fortify\HP_Fortify_SCA_and_Apps_4.10\jre\lib\security\cacerts" -storepass changeit
+
+"C:\HP_Fortify\HP_Fortify_SCA_and_Apps_4.10\jre64\bin\keytool" -delete -trustcacerts -alias rootCA -file C:\fortify\SAPNetCA.der
+-keystore "C:\HP_Fortify\HP_Fortify_SCA_and_Apps_4.10\jre64\lib\security\cacerts" -storepass changeit
+\\*\Fortify\Installation\SAPNetCA.der
+
+"C:\HP_Fortify\HP_Fortify_SCA_and_Apps_4.30\jre\bin\keytool.exe" -import -trustcacerts -alias rootCA 
+  -file C:\fortify\SAPNetCA.der -keystore "C:\HP_Fortify\HP_Fortify_SCA_and_Apps_4.30\jre\lib\security\cacerts" -storepass changeit
+#no jre64 for 4.30:  "C:\HP_Fortify\HP_Fortify_SCA_and_Apps_4.30\jre64\bin\keytool" -import -trustcacerts -alias rootCA
+-file C:\fortify\SAPNetCA.der -keystore "C:\HP_Fortify\HP_Fortify_SCA_and_Apps_4.30\jre64\lib\security\cacerts" -storepass changeit
