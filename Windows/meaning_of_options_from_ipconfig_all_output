@@ -1,0 +1,37 @@
+#
+# meaning of options from "ipconfig /all" output
+#
+Connection-specific DNS Suffix 	具体连接的DNS后缀
+primary dns suffix 				      主DNS后缀
+DNS Suffix search list          DNS后缀搜索列表
+
+221.229.54.191:38566 是你对外的唯一识别IP地址，就像你的门牌号。
+而192.168.1.102 ，是虚拟网段，相当于你家的房间，可以是厨房，可以是卧室。是内部你随便更改和划分的。而上一行的IP是不可变更的。
+
+简要说下意思：
+Host Name . . . . . . . . . . . . : lovelong （主机名字）
+IP Routing Enabled. . . . . . . . : No （路由功能 可用）
+
+Ethernet adapter 本地连接: 
+
+Connection-specific DNS Suffix . : domain （成员域）
+Description . . . . . . . . . . . : Realtek RTL8168/ （设备描述，瑞昱8168网卡）
+Physical Address. . . . . . . . . : 00-18-F3-4D-D8-E  （物理地址，即可mac地址，这个出厂都是唯一的）
+Dhcp Enabled. . . . . . . . . . . : （静态分配地址 可用）
+Autoconfiguration Enabled . . . . : （自动配置网络环境  可用） 
+IP Address. . . . . . . . . . . . : 192.168.1.102 （本地网 IP，即虚拟网段，相当于家里的某个空间）
+Subnet Mask . . . . . . . . . . . : 255.255.255.0 （子网掩码，你的网段里前3块是不允许动的，即192.168.1.是固定的）
+就是说在你家的这个网段里最多放253台（192.168.1.2-192.168.1.254）电脑同时上网。）
+Default Gateway . . . . . . . . . : 192.168.1.1 （默认网关）
+DHCP Server . . . . . . . . . . . : 192.168.1.1 （静态服务器地址）
+DNS Servers . . . . . . . . . . . : 61.147.37.1 （动态服务器地址）
+61.177.7.1 （备用动态服务器地址）这两个是网络服务提供商设定，即要通过他们获得上网权限。
+Lease Obtained. . . . . . . . . . : 2008年4月9日 22: 
+Lease Expires . . . . . . . . . . : 2008年4月9日 22: 这两个是你192.168.1.102这个地址获得使用租期，不用管，DHCP Server 会自动再分配的。
+
+以下的类似，没猜错的话，你电脑支持 ipv4 和 ipv6两种使用协议，适应能力更强！
+
+# ref doc:	http://zhidao.baidu.com/question/50705541.html?si=3&qbpn=1_3&tx=&wtp=wk&word=%E7%94%A8ipconfig%E5%BE%97%E5%88%B0%E7%9A%84Connection-specific+DNS+Suffix%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%9F%E8%A1%A8%E7%A4%BA%E4%BB%80%E4%B9%88%EF%BC%9F%E8%A7%A3%E9%87%8A%E4%B8%80%E4%B8%8B%E3%80%82&fr=solved&from=qb&ssid=&uid=bd_1422945961_0&pu=sz%40224_240%2Cos%40&step=2&bd_page_type=1&init=middle
+
+
+
