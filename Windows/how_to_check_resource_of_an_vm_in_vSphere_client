@@ -1,0 +1,14 @@
+##
+## open vSphere Client to manage all vms and templates
+##
+venter.*.*.*
+$domain\$account
+
+## vm: ex. 
+## windows: ex.  $vm1.*.*.*
+
+## check resources assigned to an vm
+##	ex. memory, disk etc.
+你直接右击那台虚拟机，然后选择edit settings
+进去就可以看到 Resource 了
+在hardware那个选项里面。
