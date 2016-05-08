@@ -1,0 +1,109 @@
+#
+# Jenkins REST API 
+#
+http://${Jenkins_master}:8080/api/ 
+
+# examples:
+http://${Jenkins_master}:8080/api/json?tree=jobs[name]
+http://${Jenkins_master}:8080/api/json?tree=jobs[name]{0,3}
+ => {"jobs":[{"name":"111111"},{"name":"${Jenkins_project1}_jenkinsvoter"},{"name":"${Jenkins_project1}_deploy"}]}
+
+http://${Jenkins_master}:8080/api/json?tree=jobs[url]{0,3}
+
+#
+#	a python script to get the configure urls of all jobs on jennkins
+#   works only when anonymous has authentication permission.
+      Otherwise failed with error:
+      Authentication required
+<!--
+You are authenticated as: anonymous
+Groups that you are in:
+
+Permission you need to have (but didn't): hudson.model.Item.ExtendedRead
+ ... which is implied by: hudson.model.Item.Configure
+ ... which is implied by: hudson.security.Permission.GenericConfigure
+ ... which is implied by: hudson.security.Permission.GenericUpdate
+ ... which is implied by: hudson.security.Permission.GenericWrite
+ ... which is implied by: hudson.model.Hudson.Administer
+-->
+#
+#
+import contextlib
+import urllib
+import json
+topurl  = 'http://${Jenkins_master1_ip}:8080/api/json?tree=jobs[url]'
+url1 = 'http://${Jenkins_master1_ip}:8080/job/voter-master/config.xml'
+disabledPattern = r'<disabled>false</disabled>'
+gitrepoPattern  = r'.*https://.*SV/.*'
+
+with contextlib.closing( urllib.urlopen( topurl ) ) as j:
+    jjobs = json.loads( j.read() )
+    urls  = jjobs['jobs']
+    for url in urls:
+		configFilePath = url.values()[0] + 'config.xml'	
+		configFilePath = configFilePath.replace( r'${Jenkins_master1}', r'${Jenkins_master1_ip}' )
+		with contextlib.closing( urllib.urlopen( configFilePath ) ) as config:
+			configContent = config.read();
+			if ( re.search(disabledPattern, configContent) == None ):
+				continue
+			searchResult = re.search( gitrepoPattern, configContent )
+			if searchResult:
+				print 'for file: ' + configFilePath
+				print searchResult.group(0)
+
+#Output:
+#	for file: http://${Jenkins_master1_ip}:8080/job/111111/config.xml
+#	      <url>https://${git_sever1}:50000/git/?p=${git_repo1}.git</url>
+...
+#	for file: http://${Jenkins_master1_ip}:8080/job/voter-master/config.xml
+#	      <url>https://${git_sever1}:50000/git/?p=${git_repo1}.git</url>
+#	
+	  
+				
+
+>>> print re.search( r'gitweb', 'https://${git_sever1}:29418/${git_repo1}.git')
+None
+>>> print re.findall( r'\d', 'https://${git_sever1}:29418/${git_repo1}.git')
+['2', '9', '4', '1', '8']
+>>> print re.search( r'SV/', 'https://${git_sever1}:29418/${git_repo1}.git').group(0)
+SV/
+
+		
+		
+		
+		
+#	<=> NOT update all jobs any more.
+#		
+#	<= 1) need to tell disabled / obsolete jobs from active jobs	
+#	<= 1) need to grant anonymous permissions to read / update the configure of jobs. 
+#
+#	output from urlopen() in python:	>>> url1 = 'http://${Jenkins_master1}:8080/job/voter-master/configure'
+#	output from urlopen() in python:	>>> with contextlib.closing( urllib.urlopen( url1) ) as j1:
+#	output from urlopen() in python:	...     print j1.read()
+#	output from urlopen() in python:	...	    
+#	output from urlopen() in python:		    
+#	output from urlopen() in python:		    
+#	output from urlopen() in python:		    
+#	output from urlopen() in python:		    
+#	output from urlopen() in python:		    
+#	output from urlopen() in python:	    <!DO<html><head><meta http-equiv='refresh' content='1;url=/login?from=%2Fjob%2Fvoter-master%2Fconfigure'/><script>window.location.replace('/login?from=%2Fjob%2Fvoter-master%2Fconfigure'
+#	output from urlopen() in python:	);</scribody style='background-color:white; color:white;'>
+#	output from urlopen() in python:		    
+#	output from urlopen() in python:		    
+#	output from urlopen() in python:	Authentication required	
+#	output from urlopen() in python:	<!--	
+#	output from urlopen() in python:	You are authenticated as: anonymous	
+#	output from urlopen() in python:	Groups that you are in:	
+#	output from urlopen() in python:		    
+#	output from urlopen() in python:	Permission you need to have (but didn't): hudson.model.Item.ExtendedRead
+#	output from urlopen() in python:	 ... whied by: hudson.model.Item.Configure
+#	output from urlopen() in python:	 ... whied by: hudson.security.Permission.GenericConfigure
+#	output from urlopen() in python:	 ... whied by: hudson.security.Permission.GenericUpdate
+#	output from urlopen() in python:	 ... whied by: hudson.security.Permission.GenericWrite
+#	output from urlopen() in python:	 ... whied by: hudson.model.Hudson.Administer
+#	output from urlopen() in python:	-->
+#	output from urlopen() in python:	
+#	output from urlopen() in python:	</body></html>
+
+
+
