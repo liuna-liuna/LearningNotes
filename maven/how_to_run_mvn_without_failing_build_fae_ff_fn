@@ -1,0 +1,13 @@
+#
+# how to run mvn build without failing the whole build
+# 
+mvn -fae jshint:lint | tee log.jshint_lint	
+
+						mvn --help :	
+						-fae,--fail-at-end                     Only fail the build afterwards;
+																allow all non-impacted builds to
+																continue
+						-ff,--fail-fast                        Stop at first failure in
+																reactorized builds
+						-fn,--fail-never                       NEVER fail the build, regardless
+																of project result
