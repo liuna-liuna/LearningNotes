@@ -1,0 +1,16 @@
+#
+# difference between mvn jshint:lint and mvn -Pjshint jshint:lint
+#
+1) mvn jshint:lint works 
+	when:
+	1.1) jshint:lint is defined in project -> build -> plugins -> plugin -> com.cj.jshintmojo:jshint-maven-plugin
+	or
+	1.2) project -> profiles -> profile is defined and profile is set:
+		(id="jshint") and (activeByDefault="true")
+	
+2) mvn -Pjshint jshint:lint works
+	when:
+		project -> profiles -> profile is defined and profile is set:
+		(id="jshint") and (activeByDefault="true") or (activeByDefault="false") (default value.)
+
+
