@@ -127,7 +127,76 @@ eslint ***.js
 
 # ref doc: https://www.qianduan.net/jslint-to-eslint/
 
+# in cli:
+8) how to install / configure / use jshint 
 
+# ref doc:	http://www.hyjiacan.com/javascript-jshint/
+	
+# on Windows,
+	npm install jshint -g
+	jshint -v
+	
+	jshint file.js # 备注：目标文件可以有多个，文件名之间以空格分开
+	
+jshint --verbose c:\git\${jenkins_workspace1}\..\${js1} --reporter=jslint
+jshint --verbose c:\git\${jenkins_workspace1}\..\${js1} --reporter=checkstyle
+jshint --verbose --reporter=jslint c:\git\${jenkins_workspace1}\..\${js1} --config c:\git\${jenkins_workspace1}\..\jshint.conf.js
+
+
+	
+#Output	c:\temp>jshint c:\git\${jenkins_workspace1}\..\${js1}
+#Output	c:\git\${jenkins_workspace1}\..\${js1}: line 28, col 113, Missing semicolon.
+#Output	
+#Output	1 error
+
+		例子
+		
+		// 目标文件test.js的内容
+		/* jshint unused: true */
+		var a = 1;
+		var b = 2;
+		alert(b);
+		
+		// 命令行下检查test.js
+		$ jshint test.js
+		
+		// 命令行下输出的检查结果
+		test.js: line 2, col 6, "a" is defined but never used.
+		
+		1 error
+
+
+in plugin:
+9) com.cj.jshintmojo:jshint-maven-plugin	
+ex.
+	com.cj.jshintmojo:jshint-maven-plugin:1.3.0:lint (default-cli)
+# ref doc: 	http://mvnrepository.com/artifact/com.cj.jshintmojo/jshint-maven-plugin/1.3.0
+# 			parameters refer to jshint-maven-plugin-1.3.0.tar\META-INF\maven\plugin.xml	
+#		parameters:
+				failOnError :	 	Controls whether the plugin fails the build when JSHint is unhappy. 
+									Setting this to false is discouraged, as it removes most of the benefit of using this plugin.
+									Instead, if you have problem files that you can't fix disable/override JSHint on a per-file basis, 
+									or tell the plugin to specifically exclude them in the excludes section.
+									Default = true
+									
+				reporter:			This flag also supports two pre-defined reporters: 
+										jslint, to make output compatible with JSLint, 
+										and checkstyle, to make output compatible with CheckStyle XML.
+									Allows you to modify JSHint's output by replacing its default output function
+										with your own implementation.
+									
+									# supported in both "jshint command line" and "jshint-maven-plugin parameters".
+									
+						
+				reportFile:			
+				# 			parameters refer to jshint-maven-plugin-1.3.0.tar\META-INF\maven\plugin.xml	
+							<parameter>
+							<name>reportFile</name>
+							<type>java.lang.String</type>
+							<required>false</required>
+							<editable>true</editable>
+							<description></description>
+							</parameter>	
 
 
 
