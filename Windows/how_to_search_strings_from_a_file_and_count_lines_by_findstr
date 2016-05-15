@@ -15,3 +15,9 @@ findstr /n  /C:"[INFO] --- maven" consoleText1.txt | cut -d" " -f3,4,5,6,7,8
 PING 192.168.100.77 | FIND /v /c “” > tmp1.txt
 SET /P lines=<tmp1.txt
 ECHO There are %lines% lines
+
+#
+# find and replace in windows cli
+#
+# replace / \
+echo viz/src/main/config/geo/jshint.conf.js | sed -n 's/\//\\\\/g p'
