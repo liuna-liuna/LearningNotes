@@ -1,0 +1,7 @@
+#
+# how to run 2 configurations in a same plugin?
+#
+Method 1. 
+<= 2 profiles.
+mvn -X -Pjshint_geo clean jshint:lint | tee log.jshint_lint_jshint.conf.js.test2configurations_jshint_geo
+mvn -X -Pjshint_chart jshint:lint | tee log.jshint_lint_jshint.conf.js.test2configurations_jshint_chart
