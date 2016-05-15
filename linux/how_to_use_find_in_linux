@@ -1,0 +1,33 @@
+#
+# how to use find
+#
+#
+# 查找文件大小
+find . -size +1000k -exec ls -lh {} \;
+
+#
+# 查看子目录大小
+du -h --max-depth=1 work/testing
+find . -type d  -mindepth 3 -maxdepth 3
+find . -type d  -mindepth 3 -maxdepth 3 -exec du -hs {} \;
+#
+# 查看第三级目录大小并从大到小排序
+find . -type d  -mindepth 3 -maxdepth 3 | xargs du -s | sort -rn
+
+#
+# 查找 c:\git\*\ 所有的含有 dependency的 pom 文件
+#
+find . -iname "pom*.xml" | xargs grep -r -iwl dependency
+ # or
+grep -ir create .git\hooks
+ # or
+find . -name "pom.xml" -exec grep -n activeByDefault {} \;
+find . -name "pom.xml" -exec grep -nH activeByDefault {} \; # -H with file names
+
+
+#
+# 查找 c:\git\testGit_cvom-html\ 所有的最近三个小时内修改过的文件
+#
+$ find . -type f -mmin -180 | grep -v '.git' | grep -v 'addLinux'
+./*/pom.xml
+
