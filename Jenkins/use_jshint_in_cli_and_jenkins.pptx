@@ -1,0 +1,102 @@
+#
+# use_jshint_in_cli_and_jenkins.pptx
+#
+
+Content
+
+What is JSHint? (5’)
+Why use JSHint? (15’)
+JSHint Basics (10’)
+How to use JSHint in cli (20’)
+How to use JSHint in a Jenkins job (15’)
+Upload JSHint reports into Sonar (15’)
+QA (15’)
+
+
+What is JSHint?
+JSHint is a program that flags suspicious usage
+				in programs written in JavaScript.
+The core project consists of
+a library itself 
+a CLI program distributed as a Node module.
+
+Alternatives: JSLint, ESLint
+
+Why use JSHint?
+	JSHint	JSLint
+Advantages	•	More options than JSLint
+•	Less  stricter as JSLint
+•	Supports basic ES6
+•	Can be used in
+	CLI
+	Jenkins build
+	IDE (Eclipse etc.)	•	2002
+•	Out-of-box configuration
+•	Stricter 
+Disadvantages	•	Does NOT locate an error to a rule automatically
+•	Does NOT support self-defined rules	•	Does NOT locate an error to a rule automatically
+•	Does NOT support self-defined rules
+•	Does NOT support ES6
+
+
+JSHint Basics (1)
+Install:		
+		npm install jshint -g
+
+Configuration:	
+		Method1: 	-config ${configFile}
+		Method2: 	.jshintrc
+		Method3: 	package.json -> jshintConfig
+
+		Ex:
+		{ “undef”:true, “unused”:true, “globals”:{“MY_GLOBAL”:false } }
+
+JSHint Basics (2)
+Options:	
+		Type1:	enforcing
+		Type2:	relaxing
+		ex.
+		/*jshint unused:true, eqnull:true */
+		function main(a,b) { return a == null; }
+Switch statements:
+		switch (cond) {
+		case “one”:
+			doSomething();
+			/* fall through */
+		case “two”:
+			doSomething();
+		}
+		
+		
+How to use JSHint in CLI
+Use:		
+		jshint file1.js file2.js
+Inline comment:
+		Directives:
+		jshint, jslint, globals, exported, ignore
+		ex.
+		/* jshint strict: true */
+		/* jslint vars: true */
+		/* globals MY_GLOBAL: false */
+
+
+
+How to use JSHint in a Jenkins job
+Define options and / or globals in a configFile:
+			src/main/config/libs/jshint.conf.js
+Configure 2 plugins:
+			com.cj.jshintmojo:jshint-maven-plugin:1.3.0 , org.codehaus.mojo:sonar-maven-plugin:2.6
+Set up a Jenkins job:
+			Build -> Goals: -fn -Pjshint clean generate-sources,  POM:	viz/pom.xml
+Kick off a build:		
+			Result:
+			in workspace:	**/target/jshint.xml
+			in sonar: 		http://${SonarServer1}:8080/sonar/dashboard/index/${IndexNo} 
+
+
+Upload JSHint reports into Sonar
+Set up a Jenkins job:
+			Build -> Goals: -fn -Pjshint sonar:sonar
+
+QA
+Thank you! ^▽^
