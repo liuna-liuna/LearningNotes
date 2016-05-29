@@ -1,0 +1,6 @@
+#
+# show Files menu on Win8 in Windows Explorer
+# 
+go to "Windows Explorer" -> context menu -> Properties
+	-> Folder options -> select "Always Show Menus"
+
