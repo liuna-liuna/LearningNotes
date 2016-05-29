@@ -77,7 +77,9 @@ http://docs.oracle.com/javaee/5/api/javax/persistence/package-summary.html
 	
 	
 
-6. jar command : jar - the java archive tool
+6. java, jar command : 
+
+1) jar - the java archive tool
 create jar file :                     jar c jarfile
 update jar file :                     jar u jarfile
 extract jar file :                    jar x jarfile
@@ -86,6 +88,28 @@ add index to jar file:                jar i jarfile
   examples:
     jar tf 1.jar
 # ref doc: http://docs.oracle.com/javase/7/docs/technotes/tools/windows/jar.html
+
+2) java cmd
+#
+# java command line options
+#
+-cp -cp, -classpath <directories and compressed or .jar files separated by : (; on Windows)>
+    Sets the search path for application classes and resources.
+	If -classpath and -cp are not used, and the CLASSPATH environment variable is not set,
+	the user classpath is, by default, the current directory (.).
+
+-D<name>=<value>
+    Sets a system property. 
+	
+# JVM command-line options
+	-X
+	Displays help on nonstandard options.
+		
+	-Xrs
+	Disables signal handling in the JVM.
+
+#	ref doc:	http://www.ibm.com/support/knowledgecenter/SSYKE2_8.0.0/com.ibm.java.win.80.doc/diag/appendixes/cmdline/cmdline_general.html
+
 
 
 7. java code snippet analysis
