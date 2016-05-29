@@ -1,0 +1,29 @@
+
+# 
+# 	check the connection mechanism between Jenkins master and slave
+#
+# when "Launch slave agents via Java Web Start" :
+	connection mechanism is:
+		slave name + security key
+			from http://${jenkins_master1}:8080/computer/${jenkins_slave1}/systemInfo
+					<= sun.java.command
+						c:\jenkins\slave.jar -jnlpUrl http://${jenkins_master1}:8080/computer/${jenkins_slave1}/slave-agent.jnlp
+						-secret ${secret1}
+
+					<= SERVICE_ID		jenkinsslave-c__jenkins
+					<= WINSW_EXECUTABLE	c:\jenkins\jenkins-slave.exe
+
+		# ref doc:	https://en.wikipedia.org/wiki/Java_Web_Start
+
+# TODO: when other Launch method?
+
+
+[NOT allowed]	same name: 
+					<= ${jenkins_slave1} is defined more than once
+
+[NOT allowed]	same name + secret in jenkins-slave.xml: 
+					<= java.io.IOException: An existing connection was forcibly closed by the remote host
+
+	#	further ref doc:	refer to Jenkins Master/slave 使用问题汇总及解决方案 through http://blog.csdn.net/achang21/article/details/45153199.
+
+
