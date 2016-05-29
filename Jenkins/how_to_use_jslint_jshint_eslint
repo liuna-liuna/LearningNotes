@@ -300,7 +300,7 @@ http://${jenkins_master}:8080/job/tmp_bychk_test_jshint/
 	<= configuration can be set inside of executions.
 	<= invoke the bound-to lifecycle phase correctly.
 		mvn
-		-fn -Pjshint validate jshint:lint
+		-fn -Pjshint validate
 		${module1}/pom.xml
 		build.context=$JOB_NAME.$BUILD_NUMBER
 
@@ -310,6 +310,106 @@ http://${jenkins_master}:8080/job/tmp_bychk_test_jshint/
 		Goals:	-fn -Pjshint jshint:lint
 		POM:	${module1}/pom.xml
 		
+
+#
+# upload to sonar:
+#
+	mvn -Peslint.sonar sonar:sonar | tee log.sonar
+	mvn -Pjshint sonar:sonar -gs C:\.m2\settings.xml | tee log.sonar.deletedProjectsinSonar.reportPathmeta
+	mvn sonar:help -Ddetail=true -Dgoal=sonar
+#
+# plugin org.codehaus.mojo:sonar-maven-plugin:2.6
+#
+	sonar:sonar is short form for org.codehaus.mojo:sonar-maven-plugin:LATEST:sonar
+
+# sonar effective-pom: 
+	# check c:\git\${workspace1}\...\target\sonar\sonar-pom.xml
+#
+
+process:
+
+[INFO] --- sonar-maven-plugin:2.6:sonar (default-cli) @ ${module1} ---
+[INFO] SonarQube version: 4.5.1
+INFO: Default locale: "en_US", source code encoding: "GBK" (analysis is platform dependent)
+INFO: Work directory: c:\git\${workspace1}\target\sonar
+INFO: SonarQube Server 4.5.1
+[INFO] [10:44:13.462] Load global referentials...
+[INFO] [10:44:13.802] Load global referentials done: 342 ms
+[INFO] [10:44:13.811] User cache: C:\Users\${use1}\.sonar\cache
+[INFO] [10:44:13.817] Install plugins
+[INFO] [10:44:14.717] Install JDBC driver
+[INFO] [10:44:14.941] Create JDBC datasource for jdbc:mysql://${Sonar_Server1}:3306/sonar?useUnicode=true&characterEncoding=utf8
+[INFO] [10:44:27.924] Initializing Hibernate
+[INFO] [10:44:29.868] Load project referentials...
+[INFO] [10:44:30.769] Load project referentials done: 901 ms
+[INFO] [10:44:30.769] Load project settings
+[INFO] [10:44:31.017] Loading technical debt model...
+[INFO] [10:44:31.679] Loading technical debt model done: 662 ms
+[INFO] [10:44:31.696] Apply project exclusions
+[INFO] [10:44:36.142] -------------  Scan ${module1}
+[INFO] [10:44:36.144] Load module settings
+[INFO] [10:49:20.771] Loading rules...
+[INFO] [10:49:25.787] Loading rules done: 5016 ms
+[INFO] [10:49:25.804] Configure Maven plugins
+[INFO] [10:49:27.256] Compare to previous analysis (2015-07-22)
+[INFO] [10:49:27.486] Compare over 30 days (2015-07-06, analysis of 2015-06-30 18:23:31.0)
+[INFO] [10:49:27.715] Compare to previous version (2015-07-22)
+[INFO] [10:49:27.716] No quality gate is configured.
+[INFO] [10:49:29.049] Initializer FindbugsMavenInitializer...
+[INFO] [10:49:29.050] Initializer FindbugsMavenInitializer done: 1 ms
+[INFO] [10:49:29.050] Initializer MqrInitializer...
+[INFO] [10:49:29.050] Skipping non-aggregator project
+[INFO] [10:49:29.050] Initializer MqrInitializer done: 0 ms
+[INFO] [10:49:29.050] Base dir: c:\git\${workspace1}
+[INFO] [10:49:29.050] Working dir: c:\git\${workspace1}\target\sonar
+[INFO] [10:49:29.052] Source paths: pom.xml, src/main/js
+[INFO] [10:49:29.053] Test paths: src/test/js
+[INFO] [10:49:29.053] Source encoding: GBK, default locale: en_US
+[INFO] [10:49:29.053] Index files
+[INFO] [10:49:30.057] 37 files indexed
+[INFO] [10:51:11.621] Quality profile for js@${ns1}: ${QualityProfile1}
+[INFO] [10:51:11.621] Quality profile for mqr: ${QualityProfile1}
+[INFO] [10:51:11.661] Sensor QProfileSensor...
+[INFO] [10:51:11.668] Sensor QProfileSensor done: 7 ms
+[INFO] [10:51:11.668] Sensor InitialOpenIssuesSensor...
+[INFO] [10:51:18.363] Sensor InitialOpenIssuesSensor done: 6695 ms
+[INFO] [10:51:18.364] Sensor ProjectLinksSensor...
+[INFO] [10:51:19.033] Sensor ProjectLinksSensor done: 669 ms
+[INFO] [10:51:19.662] Sensor VersionEventsSensor...
+[INFO] [10:51:20.934] Sensor VersionEventsSensor done: 1272 ms
+[INFO] [10:51:20.934] Sensor FileHashSensor...
+[INFO] [10:51:20.940] Sensor FileHashSensor done: 6 ms
+[INFO] [10:51:20.940] Sensor com.sap.ldi.sonar.plugins.mqr.MqrSensor...
+[INFO] [10:51:20.942] MQR report contains 0 violation(s).
+[INFO] [10:51:20.942] Sensor com.sap.ldi.sonar.plugins.mqr.MqrSensor done: 2 ms
+[INFO] [10:51:20.942] Sensor Maven dependencies...
+[INFO] [10:51:55.464] Sensor Maven dependencies done: 34522 ms
+[INFO] [10:51:56.093] Sensor CoverageSensor...
+[INFO] [10:51:56.093] Sensor CoverageSensor done: 0 ms
+[INFO] [10:51:56.093] Sensor LintSensor...
+[INFO] [10:51:56.093] Found configuration in POM:
+[INFO] [10:51:56.093]  - sonar.javascript.eslint.reportPath=target/eslint/jslint.xml
+[INFO] [10:51:56.093]  - sonar.javascript.eslint.overrideSeverity=false
+[INFO] [10:51:56.093] parsing c:\git\${workspace1}\target\eslint\jslint.xml
+[INFO] [10:51:56.277] Sensor LintSensor done: 184 ms
+[INFO] [10:51:56.277] Sensor CPD Sensor (wrapped)...
+[INFO] [10:51:56.277] DefaultCpdEngine is used for js@${ns1}
+[INFO] [10:51:56.278] Cross-project analysis disabled
+[INFO] [10:51:56.283] DefaultCpdEngine is used for mqr
+[INFO] [10:51:56.284] Cross-project analysis disabled
+[INFO] [10:51:56.285] Sensor CPD Sensor (wrapped) done: 8 ms
+[INFO] [10:51:56.399] Execute decorators...
+[INFO] [10:53:05.185] Store results in database
+[INFO] [10:57:00.417] ANALYSIS SUCCESSFUL, you can browse http://${Sonar_Server1}:8080/sonar/dashboard/index/${parent_module1}:${module1}
+[INFO] [10:57:00.948] Executing post-job class org.sonar.plugins.core.issue.notification.SendIssueNotificationsPostJob
+[INFO] [10:57:00.982] Executing post-job class org.sonar.plugins.core.batch.IndexProjectPostJob
+[INFO] [10:57:06.086] Executing post-job class org.sonar.plugins.dbcleaner.ProjectPurgePostJob
+[INFO] [10:57:06.948] -> Keep one snapshot per day between 2015-07-08 and 2015-08-04
+[INFO] [10:57:06.949] -> Keep one snapshot per week between 2014-08-06 and 2015-07-08
+[INFO] [10:57:06.949] -> Keep one snapshot per month between 2010-08-11 and 2014-08-06
+[INFO] [10:57:06.949] -> Delete data prior to: 2010-08-11
+[INFO] [10:57:07.584] -> Clean ${module1} [id=${id1}]
+[INFO] [10:57:08.010] <- Clean snapshot ${snapthost_id1}
 
 			
 			
