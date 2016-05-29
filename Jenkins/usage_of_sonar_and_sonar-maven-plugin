@@ -1,0 +1,55 @@
+#
+# Sonar usage
+#
+#	What is Sonar?
+1)      dashboard to manage code quality;
+		acts as an umbrella for PMD (Project Mess Detector); 
+		available on demand via URL on Jenkins build server.
+		
+2)		url ex. http://${sonar_server1}:8080/sonar/dashboard/index/${g}:${a}
+		
+3)		maven cmd:	
+		
+		mvn -Peslint.sonar sonar:sonar | tee log.sonar
+		mvn sonar:help -Ddetail=true -Dgoal=sonar
+		mvn -Pjshint sonar:sonar -gs C:\.m2\settings.xml | tee log.sonar.deletedProjectsinSonar.reportPathmeta
+		# sonar effective-pom: 
+			Line 566: 	# check c:\git\cvom-html-feat\${module1}\viz.ext.crosstab\target\sonar\sonar-pom.xml
+
+4)		plugin in jenkins:	ex.org.codehaus.mojo:sonar-maven-plugin:2.6
+		Line 463: 	sonar:sonar is short form for org.codehaus.mojo:sonar-maven-plugin:LATEST:sonar					
+		
+5)		sonar is using cache, ex. ${%USERPROFILE%}\.sonar\cache\
+		[INFO] [15:28:46.748] User cache: C:\Users\${user_account1}\.sonar\cache	
+
+			!! Need to clean cache after deleted project or other actions !!
+		
+6)		in pom.xml:
+		<properties>
+			<sonar.jdbc.username>sonar</sonar.jdbc.username>
+			<sonar.jdbc.password>sonar</sonar.jdbc.password>
+			<sonar.jdbc.url>jdbc:mysql://${sonar_server1}:3306/sonar?useUnicode=true&amp;characterEncoding=utf8</sonar.jdbc.url>
+			<sonar.jdbc.driver>com.mysql.jdbc.Driver</sonar.jdbc.driver>
+			<sonar.host.url>http://${sonar_server1}:8080/sonar</sonar.host.url>
+		</properties>
+  
+7)		sonar cmd and options in mvn cmd:
+
+		11:32:02.063 INFO  Execute: /home/travis/build/SonarSource/sonar-flex/its/plugin/target/sonar-runner-2.4/bin/sonar-runner
+		-e
+		-Dsonar.host.url=http://localhost:20001/sonar -Dsonar.projectVersion=1.0 -Dsonar.embeddedDatabase.port=20000 
+		-Dsonar.jdbc.username=sonar 
+		-Dsonar.flex.cobertura.reportPath=/home/travis/build/SonarSource/sonar-flex/its/plugin/projects/coverage/reports/coverage/coverage.xml
+		-Dsonar.sourceEncoding=UTF-8 
+		-Dsonar.sources=src/main/flex 
+		-Dsonar.jdbc.password=sonar 
+		-Dsonar.scm.disabled=true 
+		-Dsonar.jdbc.dialect=h2 
+		-Dsonar.jdbc.url=jdbc:h2:tcp://localhost:20000/sonar;USER=sonar;PASSWORD=sonar 
+		-Dsonar.projectKey=project 
+		-Dsonar.jdbc.driverClassName=org.h2.Driver 
+		-Dsonar.projectName=project
+		SonarQube Runner 2.4		
+
+
+		
