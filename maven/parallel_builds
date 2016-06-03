@@ -1,0 +1,8 @@
+#
+# Parallel builds in Maven 3
+#
+mvn -T4 clean package
+mvn -TC1 clean package
+However, the speed improvement depends on the module structure, and the number of threads depends on your CPU and computer infrastructure.
+
+  # Ref doc https://cwiki.apache.org/confluence/display/MAVEN/Parallel+builds+in+Maven+3.
