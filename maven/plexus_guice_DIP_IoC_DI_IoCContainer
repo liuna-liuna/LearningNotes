@@ -1,0 +1,26 @@
+#
+# plexus, guice used in maven
+#
+1) before maven 3.0, maven is based on Plexus. 
+   after maven 3.0 on 24/Aug/10, maven is using Google Guice.
+   
+   Maven uses plexus under the hood to inject the components/elements from the maven project/pom.xml into a plugin project, 
+     so you must make sure you include the relevant dependencies.
+     
+   # ref doc: http://stackoverflow.com/questions/27647368/mavensession-not-populated
+   # ref doc: https://issues.apache.org/jira/browse/MNG-4749
+   
+2)  Google Guice introduction
+    Google Guice 是一个轻量级的依赖注入框架.
+    
+    
+   # ref doc in Chinese: http://www.cnblogs.com/youngC/archive/2012/12/21/2828419.html
+   
+3) concepts of DIP, IoC, DI, IoC Container
+   DIP 依赖倒置原则，是一种软件架构设计原则，是抽象概念。
+   IoC 控制反转，    是一种反转流、依赖和接口的方式，一种软件设计模式，DIP的具体实现方式。
+   DI  依赖注入，    是用来反转依赖的一种方式，是IoC的具体实现方式。
+   IoC Container     是依赖注入的框架，用来映射依赖，管理对象创建和生存周期（DI框架）。
+   
+   # ref doc in Chinese: 
+     http://mp.weixin.qq.com/s?__biz=MzAxMTMxMDQ3Mw==&mid=2660099253&idx=1&sn=60e2b6ed17a98394909fafc10acf75f1&scene=0#wechat_redirect  
