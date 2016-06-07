@@ -1,0 +1,39 @@
+@echo off
+REM
+REM copy a set of files from one path to another
+REM
+
+setlocal EnableDelayedExpansion
+
+:: Method1 hard code files into a multiline variable
+::
+REM how to set a multiline variable
+REM 	ref doc: http://stackoverflow.com/questions/6379619/explain-how-dos-batch-newline-variable-hack-works
+REM		ref doc: http://stackoverflow.com/questions/16291479/store-multiline-string-in-batch-variable
+REM
+SET flist= container\pom.xml^
+ $file1^
+ $file2^
+ $file3
+
+SET from_path=C:\git\cvom-html-all
+SET to_path=C:\git\testGit_cvom-html
+
+REM echo name: !flist!
+REM echo.
+for %%F in ( !flist! ) do (
+REM	echo copy file from %from_path%\%%F to %to_path%\%%F
+REM	echo.
+	xcopy /Y "%from_path%\%%F" "%to_path%\%%F"
+)
+
+:: Method2 using a temp file as input
+::	1) input files list into inputFile.txt
+::	2) change for loop to as below:
+::		REM for /f "delims= " %%F in ( 'type inputFile.txt' ) do (
+::		for /f %%F in ( 'type inputFile.txt' ) do (
+::			echo copy file from %from_path%\%%F to %to_path%\%%F
+::			echo.
+::		REM	xcopy /Y "%from_path%\%%F" "%to_path%\%%F"
+::		)
+
