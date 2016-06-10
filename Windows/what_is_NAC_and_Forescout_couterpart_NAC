@@ -1,0 +1,33 @@
+#
+# NAC = Network Access Control, 网络接入控制
+#
+1) what is NAC
+英文全称：（NAC，Network Access Control），它是一种保护计算机终端安全的技术（如防病毒，阻止主机入侵访问等）。
+
+Network Access control,网络准入控制思科网络准入控制(NAC)是一项由思科发起、多家厂商参加的计划，
+	其宗旨是防止病毒和蠕虫等新兴黑客技术对企业安全造成危害。
+	借助NAC，客户可以只允许合法的、值得信任的端点设备(例如Pc 、服务器、PDA )接入网络，
+	而不允许其它设备接入。
+	在初始阶段，当端点设备进入网络时，NAC 能够帮助思科路由器实施访问权限。
+	此项决策可以根据端点设备的信息制定，例如设备的当前防病毒状况以及操作系统补丁等。
+
+网络接入控制（NAC）能确保等待接入网络的系统符合一定级别的安全标准。
+	它会检测病毒防护软件的升级版本、当前可用补丁、浏览器设置限定，以及有效的个人防火墙。
+	Network Admission Control会首先检测系统是否符合上述要求，然后决定是否准允其接入网络。
+
+https://en.wikipedia.org/wiki/Network_Access_Control 
+
+#
+# forescount counterpart NAC
+#
+1) ForeScout的抵消网络访问控制是一个自动化的安全控制平台，
+	可以让你看到，监视和控制网络的所有设备，所有的操作系统，所有的应用程序，所有用户的一切。
+	ForeScout的对抗，让员工，承包商，和客人保持高效率的网络上的，而你保护重要的网络资源和敏感数据。
+
+	基于第三代网络访问控制（NAC）技术，ForeScout的对抗是很容易安装，
+	因为它需要没有软件，没有代理，无需硬件升级或重新配置。
+	所有内容都包含在一个单一的设备或虚拟设备。
+	
+	
+#	ref doc: http://baike.baidu.com/view/9833514.htm
+#	ref doc: company homepage https://www.forescout.com/products/specifications/
