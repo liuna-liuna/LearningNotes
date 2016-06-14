@@ -1,0 +1,33 @@
+
+#
+# how to check git tags
+#
+[only for check]	git show-ref --tags
+[only for check]	git ls-remote --tags origin
+[only for check]	git -c core.askpass=true fetch --tags --progress ssh://git.wdf.sap.corp:29418/SV/cvom.html.git +refs/heads/*:refs/remotes/origin/*
+[only for check]	git -c core.askpass=true pull --tags --progress ssh://git.wdf.sap.corp:29418/SV/cvom.html.git
+[works]		git fetch -fup origin +refs/tags/*:refs/tags/*
+
+						git fetch -fup origin +refs/*:refs/*
+						In my case I wanted these features
+						
+							Grab all heads and tags from the remote so use refspec refs/*:refs/*
+							Overwrite local branches and tags with non-fast-forward + before the refspec
+							Overwrite currently checked out branch if needed -u
+							Delete branches and tags not present in remote -p
+							And force to be sure -f
+					# ref doc: http://stackoverflow.com/questions/1204190/does-git-fetch-tags-include-git-fetch
+
+[works]		Thus you need to type two lines in order:			
+			git tag -l | xargs git tag -d
+			git fetch
+					These:
+						Delete all tags from the local repo. FWIW, xargs places each tag output by "tag -l" onto the command line for "tag -d". Without this, git won't delete anything because it doesn't read stdin (silly git).
+						Fetch all active tags from the remote repo.
+					This even works a treat on Windows.
+					# ref doc: http://stackoverflow.com/questions/1841341/remove-local-tags-that-are-no-longer-on-the-remote-repository
+					
+[NOT work]	git fetch --tags --prune
+[work]		git fetch --prune origin +refs/tags/*:refs/tags/*
+				--prune removes any remote-tracking references that no longer exist on the remote.	
+
