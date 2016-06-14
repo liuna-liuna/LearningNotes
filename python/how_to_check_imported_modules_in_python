@@ -1,0 +1,25 @@
+#
+# how to check imported modules in python
+#
+1) using sys.modules.keys()
+import sys
+sys.modules.keys()​​​
+
+2) An approximation of getting all imports for the current module only would be to inspect globals() for modules:
+
+import types
+def imports():
+    for name, val in globals().items():
+        if isinstance(val, types.ModuleType):
+            yield val.__name__
+list(imports())			
+
+
+3)  frozenset(itertools.imap(lambda name:sys.modules[name], frozenset(sys.modules) & frozenset(globals())))
+
+	#	ref doc: http://stackoverflow.com/questions/4858100/how-to-list-imported-modules
+	
+4)	 for g in globals().get('modules'):
+		    print g
+	
+	
