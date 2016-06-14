@@ -1,0 +1,69 @@
+
+#
+# how to produce a python package using .egg
+#
+1) install setuptools
+	download setuptools package from http://pypi.python.org/pypi/setuptools
+	install it:
+		python setup.py
+
+2) create setup.py
+	(see example at the end)
+	
+	if package a module, create a directory ${name_in_setup.py},
+		put all sources under it.
+	ex. create a function test() in ${name_in_setup.py}\__init__.py, 
+		after python setup.py install,
+		python -c "from eggtest import test; test()"
+		could ex. output "Hello, I'm Liu Na.".
+	
+3) python setup.py bdist_egg
+4) install it
+	%PYTHON_HOME%/Lib/site-packages/easy_install.py dist\eggtest-0.1-py2.7.egg
+	# on windows too: 	%PYTHON_HOME%/Scripts/easy_install.exe dist\eggtest-0.1-py2.7.egg
+	# or
+	python setup.py install
+	
+5) uninstall it
+	remove c:\python27\lib\site-packages\eggtest-0.1-py2.7.egg
+	rm "./eggtest-0.1-py2.7.egg" from %PYTHON_HOME%/Lib/site-packages/easy-install.pth
+	
+	#	ref doc: http://blog.csdn.net/hong201/article/details/4219035
+	#	ref doc: http://www.ibm.com/developerworks/cn/linux/l-cppeak3.html
+	#	ref doc: http://www.worldhello.net/2010/12/08/2178.html
+	#	ref doc: http://www.cnblogs.com/kungfupanda/p/3343113.html
+	
+6) egg format
+	"Eggs are to Pythons as Jars are to Java..."
+	#	ref doc: http://peak.telecommunity.com/DevCenter/PythonEggs
+	
+	"Egg" is a single-file importable distribution format for Python-related projects. 
+	"The Quick Guide to Python Eggs" aptly notes that "Eggs are to Pythons as Jars are to Java..."
+	Eggs actually are richer than jars; 
+	they hold interesting metadata such as licensing details, release dependencies, ... 
+	
+	
+	
+# setup.py example:
+    ##-.- coding : utf8 -*-
+    #
+    #from setuptools import setup, find_packages
+    #
+    #setup(
+    #	name 			= "eggtest",
+    #	version 		= "0.1",
+    #	packages 		= find_packages(),
+    #	
+    #	description 	= "egg test demo",
+    #	long_description = "egg test demo long_description",
+    #	author			= "Na Liu",
+    #	author_email	= "na.liu01@sap.com",
+    #	
+    #	license 		= "GPL",
+    #	keywords 		= ("tests", "egg"),
+    #	platforms 		= "Independant",
+    #	url 			= "https://github.com/liuna-liuna/LearningNotes",
+    #
+    #)
+	
+	
