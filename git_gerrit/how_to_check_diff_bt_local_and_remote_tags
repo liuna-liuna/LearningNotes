@@ -1,0 +1,5 @@
+#
+#  Show the difference between local and remote tags
+#
+diff <(git tag | sort) <( git ls-remote --tags origin | cut -f2 | grep -v '\^' | sed 's#refs/tags/##' | sort)
+
