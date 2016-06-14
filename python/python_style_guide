@@ -1,0 +1,12 @@
+
+#
+# python style guide 编码规范
+#
+	#	ref doc: http://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/python_style_rules/
+	#	ref doc: https://github.com/ee0703/python-style-guide/tree/master/style-guide
+
+
+#
+# on Linux:		#!/bin/env python
+# on Windows:	"%GIT_HOME%"\bin\env.exe
+
