@@ -1,0 +1,7 @@
+#
+# get content of a webpage
+#
+	# curl is for Linux, can be implemented in cygwin ex. C:\Program Files (x86)\Git\bin\curl.exe
+	# wget is for Linux
+curl http://localhost:8080/simple-webapp/simple
+curl -sf -D /dev/stderr http://shg-cvom-infra.pgdev.sap.corp:8080/ 2>&1 > /dev/null
