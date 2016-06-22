@@ -1,7 +1,7 @@
 #
 # mozilla rhino
 #
-Rhino 是一个纯 Java 的开源的 JavaScript 实现。
+1. Rhino 是一个纯 Java 的开源的 JavaScript 实现。
 Rhino 是 JavaScript 的一种基于Java的实现，原先由Mozilla开发，现在被集成进入JDK 6.0。
 下面这两行代码恰好说明了这一点。
 　　import sun.org.mozilla.javascript.internal.Context;
@@ -19,6 +19,27 @@ Rhino是一个介于Java与JavaScript之间的语言。
 它的基础是 Java 语言，这使得它简单易学，但相比于JavaScript脚本语言来说，它又太过复杂。
 不过，Rhino 的主要缺点也正是它的强大之处，Rhino 是一种轻量级的、功能强大的脚本语言。
 Rhino 使用原型而不是类，这使它比很多脚本语言更适合开发 GUI 应用程序，在考虑性能和风格等因素时更是如此。
-　　
+
+2. Rhino执行代码的过程
+1)   先设置环境，生成各种javascript的本地对象，如：Object，Function
+2)   使用语法分析对字符串进行分析生成ast。
+3)   然后再使用IRFactory类将ast转换中间表示形式。
+4)   然后再将该中间表示形式转换为二进制代码。
+5)   然后执行该代码得出结果。
+
+ Rhino的包结构
+org.mozilla.javascript包：该包内的对象是实现javascript的主要对象。
+org.mozilla.javascript.ast包：rhino中语法分析器生成的ast表示类都在该包内。
+org.mozilla.javascript.debug包：该包实现了javascript的debug功能。
+org.mozilla.javascript.optimizer包：该包实现了javascipt生成代码的代码优化。
+org.mozilla.javascript.regexp包：该包实现了javascript正侧表达式的功能。
+
+3. 使用
+下载 .jar 包，将js.jar放入classpath中，在cmd中键入java org.mozilla.javascript.tools.shell.Main后进入运行交互界面（js〉），
+而后在js〉提示符下输入 load( “文件路径”)，注意次数的目录间隔是“/”。
+而后输入要运行的js的函数名称即可运行js脚本。
+Ex. java -cp rhino-js-14-1.7R4.jar org.mozilla.javascript.tools.shell.Main
+js>
+
 # ref doc: http://blog.csdn.net/ycyangcai/article/details/6452143
 # ref doc: http://tech.it168.com/a2011/1110/1271/000001271695_all.shtml
