@@ -66,3 +66,22 @@ Example 1.
 # ref doc:  https://tntim96.github.io/JSCover/manual/manual.xml
 # ref doc:  https://github.com/tntim96/JSCover-maven-plugin
 # ref doc:	https://github.com/tntim96/JSCover-maven-plugin/tree/master/plugin-parent/server
+
+3) plugin info:
+2 modes: server mode, file mode.
+3 goals:
+mvn jscover-file:instrument
+mvn jscover-file:jscover
+mvn jscover-server:jscover
+
+To merge reports generated from both server and file, run:
+mvn jscover-report:merge
+mvn jscover-report:format
+
+# ref doc:  https://github.com/tntim96/JSCover-maven-plugin
+# ref doc:  https://github.com/tntim96/JSCover-Samples
+
+4) how to use jscover:
+2 ways: in jscover*.jar , or plugin ex. jscover*.maven.plugin.
+# ref doc:  http://www.cnblogs.com/reach296/p/4293885.html
+
