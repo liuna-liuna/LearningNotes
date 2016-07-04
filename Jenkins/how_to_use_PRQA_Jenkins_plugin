@@ -1,0 +1,46 @@
+#
+# how to use a jenkins plugin "PRQA Jenkins"?
+# 
+What is PRQA?
+	PRQA is a tool from PRQA company, to checking automatically 
+		if a software coding style is complied and if there are bugs.
+	PRQA product family: QAC/QAC++, QA Verify etc.
+	
+	A plugin for doing static code analysis using PRQA.
+	"gav":"com.programmingresearch:prqa-plugin:2.0.12
+	
+	
+# ref doc: http://www.cnblogs.com/trinitytec/p/4864583.html
+
+# extra info:
+白盒测试工具 
+      白盒测试工具一般是针对代码进行测试，测试中发现的缺陷可以定位到代码级，
+	  根据测试工具原理的不同，又可以分为静态测试工具和动态测试工具。
+		静态测试工具：代表有Panorama系列、Telelogic公司的Logiscope软件、PR公司的PRQA软件等。
+		
+		动态测试工具：代表有Rational公司的Purify系列、Compuware公司的DevPartner软件等。   
+		
+黑盒测试工具 
+      黑盒测试工具包括功能测试工具和性能测试工具。
+	  
+	  黑盒测试工具的一般原理是利用脚本的录制(Record)／回放(Playback)，
+	  模拟用户的操作，
+	  然后将被测系统的输出记录下来同预先给定的标准结果比较。
+	  
+	  黑盒测试工具可以大大减轻黑盒测试的工作量，在迭代开发的过程中，能够很好地进行回归测试。
+	  黑盒测试工具的代表有Rational公司的TeamTest、Robot、Quantify，Compuware公司的QACenter。
+	  
+	  另外，专用于性能测试的工具有Radview公司的WebLoad，
+	  Microsoft公司的WebStress及Microsoft Application Center Test等。 
+	  
+    3.测试管理工具
+      测试管理工具用于对测试进行管理。
+	  一般而言，测试管理工具对测试计划、测试用例、测试实施进行管理，并且测试管理工具还包括对缺陷的跟踪管理。
+	  测试管理工具的代表有Rational公司的Test Manager、Compureware公司的TrackRecord等软件。
+	  
+    4. 其它测试工具
+      其它专用的测试工具，
+	  如驱动自动化测试程序HCT 是Microsoft的Windows驱动自动化测试工具，
+	  数据库测试的TestBytes，
+	  对应用性能进行优化的EcoScope等 
+
