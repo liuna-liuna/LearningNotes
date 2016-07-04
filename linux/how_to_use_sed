@@ -8,3 +8,9 @@ no bar embarassment
 # to replace multiple words use sed
 cut -d" " -f1 log.gitlog  | sed -e 's/Failed//g;s/Success//g;s/Aborted//g p' | sort -u
 # ref doc: http://stackoverflow.com/questions/26568952/how-to-replace-multiple-patterns-at-once-with-sed
+
+# replace a pair of strings in a file
+$ echo ' category:&quot;Code Correctness\: Incorrect serialPersistentFields Modifier&quot; category:&quot;Code Correctness\: Function Not Invoked&quot; category:&quot;Code Correctness\: Missing [Serializable] Attribute&quot;'
+ | sed -n 's/category:&quot;//g p' | sed -n 's/&quot;/\n/g p'
+$ grep -iw 'category:' Template.xml | sed -n 's/category:&quot;//g p' | sed -n 's/&quot;/\n/g p' | sed 's/<query>/\n/g p' | sort -u | tee category_Template.xml
+
