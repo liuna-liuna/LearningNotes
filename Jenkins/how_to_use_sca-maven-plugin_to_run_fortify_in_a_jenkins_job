@@ -1,0 +1,51 @@
+#
+# run fortify scan using fortify supplied sca-maven-plugin
+#
+	# on ${Fortify_server1}, 
+	Pre-requisite:
+		fortify, maven, JDK installed.
+		
+	Steps:	
+	# cmds to test using fortify own sca-maven-plugin
+	set PATH=c:\jenkins\tools\hudson.tasks.Maven_MavenInstallation\maven_3.2.1\bin;%PATH%
+	
+	cd C:\tmp\advanced\maven-plugin
+	
+	Step # 1 Build fortify maven plugin
+		Open a command prompt cd %FORTIFY_INSTALLATION_DIRECTORY%\HP_FORTIFY\HP_Fortify_SCA_and_Apps_3.90\Samples\advanced\maven-plugin
+		mvn clean install
+		After sucessful build fortify plugin will be present into your local maven repository
+	
+	Step # 2 Add fortify source code analyzer dependency to your project pom file
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>com.fortify.ps.maven.plugin</groupId>
+					<artifactId>sca-maven-plugin</artifactId>
+					<version>3.90</version>
+				</plugin>
+			</plugins>
+		</build>
+		Note - Make sure you verify fortify scan plugin version in FORTIFY_INSTALLATION_DIRECTORY%\HP_FORTIFY\HP_Fortify_SCA_and_Apps_3.90\Samples\advanced\maven-plugin\pom.xml
+	
+	Step # 3 Create .fpr / report file
+		mvn sca:translate
+		mvn sca:scan
+	
+		ReportGenerator -format pdf -f target/${Fortify_target1}fortifyscan-5.14.2.pdf -source target/${Fortify_target1}fortifyscan-5.14.2.fpr -template "Fortify Developer Workbook-forCVOM_VIZ.xml" 
+	
+	Step # 4 remove this plugin from local repository
+		mvn dependency:purge-local-repository -DmanualInclude="com.fortify.ps.maven.plugin:sca-maven-plugin" -DreResolve=false
+	
+	[NOT validate yet.]	Step # 5 upload report to fortify f360 ssc server
+	[NOT validate yet.]	
+	[NOT validate yet.]	mvn -Dldi.fortifyScan com.fortify.ps.maven.plugin:maven-sca-plugin:scan \
+	[NOT validate yet.]	    -Dfortify.f360.authToken=<Your Auth Token> \
+	[NOT validate yet.]	    -Dfortify.f360.url=https://fortify.wdf.sap.corp/f360 \
+	[NOT validate yet.]	    -Dfortify.sca.buildId=<buildId> \
+	[NOT validate yet.]	    -Dfortify.f360.projectName=<360serverProjectName> \
+	[NOT validate yet.]	    -Dfortify.f360.projectVersion=<360ServerProjectVersion> \
+	[NOT validate yet.]	    -Dfortify.sca.toplevel.artifactId=<reactorArtifactId> \
+	[NOT validate yet.]	    -Dfortify.sca.upload=true
+				
+	# ref doc: http://fortify-maven.blogspot.hk/
