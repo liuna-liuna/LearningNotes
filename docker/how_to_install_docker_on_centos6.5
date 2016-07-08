@@ -1,0 +1,57 @@
+#
+# docker installation on CentOS 6.5
+#
+	Step 1. disable SELINUX 
+			vim /etc/selinux/config
+			
+	Step 2. install EPEL first (Extra Package for Enterprise Linux)
+			yum install http://ftp.riken.jp/Linux/fedora/epel/6/i386/epel-release-6-8.noarch.rpm 
+			
+			# double check:
+				yum info epel-release-6-8.noarch
+				
+	Step 3. install docker-io
+	Step 4. yum update -y device-mapper-libs
+	Step 5. docker service start
+	
+		sudo yum -y install docker-io
+		sudo yum -y update docker-io
+		sudo service docker start
+		sudo chkconfig docker on
+			# double check:
+				chkconfig --list | grep -i docker
+				
+	Step 6. enable port "tcp 443" in firefox
+	
+		Workaround for a docker behind a firewall:
+			sudo service docker stop
+			sudo HTTP_PROXY=proxy.van.sap.corp:8080 /usr/bin/docker -d &
+			sudo docker run -i -t centos /bin/bash
+		#	ref doc:	http://2mohitarora.blogspot.de/2014/02/docker-tip-if-you-are-running-docker.html
+	
+		
+	Step 7. use docker
+	
+		open a new terminal as root:
+			docker ps -a
+		
+		# Two ways to start docker
+		Detached (-d)
+			docker run -d hello-world
+			
+		Foreground
+			docker run -i -t centos /bin/bash
+				-t 表示在新容器内指定一个伪终端或终端，-i表示允许我们对容器内的 (STDIN) 进行交互。
+				我们在容器内还指定了一个新的命令： /bin/bash 。这将在容器内启动 bash shell
+				所以当容器（container）启动之后，我们会获取到一个命令提示符：
+					root@af8bae53bdd3:/#
+					可以运行一些命令.用 exit 命令或者使用 CTRL-D 来退出容器。
+				-a=[]           : Attach to `STDIN`, `STDOUT` and/or `STDERR`
+				-t              : Allocate a pseudo-tty
+				--sig-proxy=true: Proxy all received signals to the process (non-TTY mode only)
+				-i              : Keep STDIN open even if not attached
+
+		
+	# ref doc:		http://nareshv.blogspot.de/2013/08/installing-dockerio-on-centos-64-64-bit.html
+	# document:		http://www.kancloud.cn/thinkphp/docker-guide/39713
+	# user guide:	https://github.com/widuu/chinese_docker/blob/master/userguide/README.md
