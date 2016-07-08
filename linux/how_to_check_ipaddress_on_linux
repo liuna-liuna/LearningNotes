@@ -1,0 +1,6 @@
+#
+# how to check ip on a linux machine
+#
+hostname --ip-address
+hostname -I
+
