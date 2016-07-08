@@ -1,0 +1,49 @@
+#
+# how to install docker on Win8
+#
+	# binary:
+		# docker-toolbox  	https://www.docker.com/products/docker-toolbox
+		# boot2docker is deprecated https://github.com/boot2docker/windows-installer/releases/tag/v1.8.0	
+		# document:		http://www.kancloud.cn/thinkphp/docker-guide/39725
+	# usage:
+	
+	#	document:		https://docs.docker.com/engine/getstarted/
+	#	For more examples and ideas, visit:
+						https://docs.docker.com/userguide/
+
+
+	create a shortcut of bash.exe (in %GIT_HOME%)
+	kick off "Docker QuickStart Terminal" ("C:\Program Files\Git\bin\bash.exe" --login -i "C:\Program Files\Docker Toolbox\start.sh")
+	<=
+		docker is configured to use the default machine with IP 192.168.99.100
+		For help getting started, check out the docs at https://docs.docker.com
+		
+		Start interactive shell
+		Welcome to Git (version 1.9.5-preview20141217)
+
+$ docker version
+		Client:
+		Version:      1.11.2
+		API version:  1.23
+		Go version:   go1.5.4
+		Git commit:   b9f10c9
+		Built:        Wed Jun  1 21:20:08 2016
+		OS/Arch:      windows/amd64
+		
+		Server:
+		Version:      1.11.2
+		API version:  1.23
+		Go version:   go1.5.4
+		Git commit:   b9f10c9
+		Built:        Wed Jun  1 21:20:08 2016
+		OS/Arch:      linux/amd64
+ 
+[Not work]	export http_proxy=http://proxy.van.sap.corp:8080/
+[Not work]	export https_proxy=http://proxy.van.sap.corp:8080/
+		
+		1) double check url is accessible https://index.docker.io/v1/repositories/library/hello-world/images
+		2) 
+			# ref doc:	http://stackoverflow.com/questions/31990757/network-timed-out-while-trying-to-connect-to-https-index-docker-io
+			
+			
+ [TODO]	$ docker run hello-world
