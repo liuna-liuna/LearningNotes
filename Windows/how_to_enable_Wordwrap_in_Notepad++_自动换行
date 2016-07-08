@@ -1,0 +1,6 @@
+#
+# how to enable WordWrap in Notepad++ 自动换行
+#
+menu -> view -> Word wrap : enable it.
+#	ref doc: http://jingyan.baidu.com/article/a501d80c17c4a3ec620f5e55.html
+
