@@ -1,0 +1,20 @@
+#
+# how to push a patch set in cmi
+#
+  // fetch and checkout the change
+  // (checkout command copied from change screen)
+  $ git fetch https://gerrithost/myProject refs/changes/74/67374/2 && git checkout FETCH_HEAD
+
+  // rework the change
+  $ git add <path-of-reworked-file>
+  ...
+
+  // amend commit
+  $ git commit --amend
+
+  // push patch set
+  $ git push origin HEAD:refs/for/master
+
+	# ref doc:	https://gerrit-review.googlesource.com/Documentation/intro-user.html#review-change  
+	
+	
