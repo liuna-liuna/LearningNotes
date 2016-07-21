@@ -3,10 +3,11 @@
 #    docu:  https://${GERRIT_SERVER}/Documentation/user-search.html
 #
 method 1: in browser:
-owner:*@* status:merged   # => https://${GERRIT_SERVER}/#/q/owner:*%2540*+status:merged
-change:1377981						   # => https://${GERRIT_SERVER}/#/q/change:1377981
-ref: refs/heads/1297988			   	   # => https://${GERRIT_SERVER}/#/q/ref:+refs/heads/1297988
-file:.gitreview							# => https://${GERRIT_SERVER}p/#/q/file:.gitreview
+	owner:*@* status:merged   				   # => https://${GERRIT_SERVER}/#/q/owner:*%2540*+status:merged
+	change:1377981						   # => https://${GERRIT_SERVER}/#/q/change:1377981
+	ref: refs/heads/1297988			   	           # => https://${GERRIT_SERVER}/#/q/ref:+refs/heads/1297988
+	file:.gitreview						   # => https://${GERRIT_SERVER}p/#/q/file:.gitreview
+	commit: ${commitID}
 
 method 2: in windows command:
 	# to check changes with status:open project:${GERRIT_PROJECT1}
