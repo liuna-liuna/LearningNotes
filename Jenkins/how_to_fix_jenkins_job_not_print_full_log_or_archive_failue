@@ -1,0 +1,21 @@
+#
+# debug: jenkins job didn't output full log
+# debug: jenkins job archiving artifacts failed
+# debug: jenkins job ran slowly, failed sponteously
+#
+root-cause:
+<=> Not enough free disk on jenkins master: for archiving the artifacts.
+
+<= Phenomenon 1. memory usage on jenkins master is > 3.8GB.
+<= Phenomenon 2. Job ${Jenkins_job1} failed.
+                                Archiving artifacts
+                                ERROR: Failed to archive artifacts: **/target/*.*, ...
+                                java.io.IOException: java.io.IOException: Failed to extract c:\jenkins\workspace\${Jenkins_job1}@6/transfer of 11933 files
+                                ...
+                                Caused by: java.io.IOException: There is not enough space on the disk     
+
+<= Phenomenon 3. the archived artifacts in each ${Jenkins_job1} build takes ~1.28GB, which was 400MB before. Please see the attached screenshot for details.
+<= Phenomenon 4. free disk on jenkins master is 10GB.
+
+=> Fix 1. clean disk usage on jenkins master.
+=> Fix 2. reboot jenkins master. 
