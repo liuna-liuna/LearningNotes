@@ -26,3 +26,37 @@ Commands:
 	
 	=> Done. The data is shown on the right panel.
 
+#
+# perfmon: to set up a Data Collector Set for memory
+#
+1) import template
+	Data Collector Sets -> User Defined:
+		context menu:
+			New -> Data Collector Set:
+			-> input Name and select "Create from a template" -> Browse, find perfmon_Memory_template.xml, click Finish.
+			
+			
+2) double check:
+	Data Collector Sets -> User Defined -> Memory:
+		context menu:
+			-> Directory : Root directory: %systemdrive%\PerfLogs\Admin\Memory
+			-> Schedule : daily...
+			
+		System Monitor Log in the right panel:
+		context menu:
+			-> Performance counters:
+				Performance counters:
+					\Paging File(_Total)% Usage
+					...
+				Log format:
+					Binary
+				Simple interval:
+					1 Seconds
+					
+			-> File:
+				Log file name: 		SystemMonitorLog_Memory
+				File name format:	yyyyMMdd
+				Prefix file with computer name : Y
+				Log mode:			Append
+				
+			
