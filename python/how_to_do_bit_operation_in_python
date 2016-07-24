@@ -1,0 +1,27 @@
+#
+# bit operation in python
+#
+把十进制转换成二进制：bin()
+bin(number) -> string
+将二进制、十六进制转换成十进制：
+int(x, base)
+a='1010'
+int(a, 2) -> 10.
+a='1a'
+int(a, 16) -> 26
+位运算：&(按位与)，|(按位或)，^(按位异或)，~(按位取反)，>>(右移运算)，<<(左移运算)。优先级从高到低依次为：~, & , ^, |。
+
+Write a function that takes an unsigned integer and returns the number of ’1' bits it has (also known as the Hamming weight).
+
+For example, the 32-bit integer ’11' has binary representation 00000000000000000000000000001011, so the function should return 3.
+
+class Solution(object):
+    def hammingWeight(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        return len( [x for x in str(bin(n)[2:])[::1] if x=='1'] )
+        '''
+        return bin(n).count('1')
+        '''
