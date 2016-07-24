@@ -1,0 +1,31 @@
+1) urllib2.urlopen()函数不支持验证、cookie或者其它HTTP高级功能。
+   要支持这些功能，必须使用build_opener()函数创建自定义Opener对象。
+
+2) build_opener([handler1 [ handler2, ... ]])
+
+   参数handler是Handler实例，常用的有HTTPBasicAuthHandler、HTTPCookieProcessor、ProxyHandler等。
+
+   build_opener ()返回的对象具有open()方法，与urlopen()函数的功能相同。
+
+3) install_opener(opener)
+
+   安装不同的opener对象作为urlopen()使用的全局opener。
+
+Exmaple:
+	import urllib2
+	auth=urllib2.HTTPBasicAuthHandler()
+	auth.add_password('Administrator','http://www.example.com','Dave','123456')
+	opener=urllib2.build_opener(auth)
+	u=opener.open('http://www.example.com/evilplan.html')
+
+	import urllib2,cookielib
+	cookie=cookielib.CookieJar()
+	cookiehand=urllib2.HTTPCookieProcessor(cookie)
+	opener=urllib2.build_opener(cookiehand)
+
+	proxy=ProxyHandler({'http':'http://someproxy.com:8080'})
+	auth=HTTPBasicAuthHandler()
+	auth.add_password()
+	opener=build_opener(auth,proxy)
+
+# ref doc: http://www.jb51.net/article/46495.htm
