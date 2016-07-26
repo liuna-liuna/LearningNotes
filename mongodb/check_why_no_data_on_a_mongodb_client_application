@@ -1,0 +1,131 @@
+#
+# check why no data on a MongoDB client application http://${mongodb_client_app1}/analysis/overall/active/1 
+#
+Phenomenon:
+	This website http://${mongodb_client_app1}/analysis/overall/active/1 is used for monitoring commit status at each feat and master branch.  
+	It cannot display any data now.  Is it related with artifacts changes in CI Jobs? Could you please help check this issue? Thanks.
+
+Steps:
+1)	remote to ${mongodb_client_app1}
+	-> Task manager, find MongoDB service. It's in stopped status.
+	
+2)	check mongodb is started.
+
+	Project/Branch management MongoDB:
+		http://${mongodb_client_app1}:8081/
+			User: admin
+			Password: pass
+		
+		Running info:
+			Installed path:   C:\mongo-express
+			Configure file:  C:\mongo-express\config.js
+			Start commander:   cd  C:\mongo-express  &&  node app
+			
+			can access db content through http://localhost:8081/ .
+			
+			
+		References:
+			https://www.npmjs.com/package/mongo-express
+			http://docs.mongodb.org/ecosystem/tools/administration-interfaces/
+ 
+[start failed]	# Howver start failed with error msg:
+[start failed]		C:\mongo-express>node app
+[start failed]		connect.multipart() will be removed in connect 3.0
+[start failed]		visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+[start failed]		connect.limit() will be removed in connect 3.0
+[start failed]		Mongo Express server listening on port 8081
+[start failed]		
+[start failed]		C:\mongo-express\app.js:131
+[start failed]			throw err;
+[start failed]				^
+[start failed]		Error: failed to connect to [shg-cvom-infra.pgdev.sap.corp:27017]
+[start failed]			at null.<anonymous> (C:\mongo-express\node_modules\mongodb\lib\mongodb\connection\server.js:553:74)
+[start failed]			at emit (events.js:106:17)
+[start failed]			at null.<anonymous> (C:\mongo-express\node_modules\mongodb\lib\mongodb\connection\connection_pool.js:140:15)
+[start failed]			at emit (events.js:98:17)
+[start failed]			at Socket.<anonymous> (C:\mongo-express\node_modules\mongodb\lib\mongodb\connection\connection.js:512:10)
+[start failed]			at Socket.emit (events.js:95:17)
+[start failed]			at net.js:440:14
+[start failed]			at process._tickCallback (node.js:419:13)
+	
+3) on shg-cvom-infra.pgdev.sap.corp:
+	Services -> MongoDB:
+		D:\tools\MongoDB\bin\mongod.exe --dbpath D:\data\db --logpath=D:\data\logs\mongodb.log --service
+	The service is set to "Automatic" but stopped.
+	Root cause: 	in D:\data\logs\mongodb.log.2016-07-26T03-41-15 :
+		2016-07-20T18:08:17.297+0800 [initandlisten] ERROR: Insufficient free space for journal files
+		2016-07-20T18:08:17.297+0800 [initandlisten] Please make at least 3379MB available in D:\data\db\journal or use --smallfiles
+		2016-07-20T18:08:17.297+0800 [initandlisten] 
+		2016-07-20T18:08:17.312+0800 [initandlisten] exception in initAndListen: 15926 Insufficient free space for journals, terminating
+		2016-07-20T18:08:17.312+0800 [initandlisten] dbexit: 
+		2016-07-20T18:08:17.312+0800 [initandlisten] shutdown: going to close listening sockets...
+		2016-07-20T18:08:17.312+0800 [initandlisten] shutdown: going to flush diaglog...
+		2016-07-20T18:08:17.312+0800 [initandlisten] shutdown: going to close sockets...
+		2016-07-20T18:08:17.312+0800 [initandlisten] shutdown: waiting for fs preallocator...
+		2016-07-20T18:08:17.312+0800 [initandlisten] shutdown: lock for final commit...
+		2016-07-20T18:08:17.312+0800 [initandlisten] shutdown: final commit...
+		2016-07-20T18:08:17.312+0800 [initandlisten] shutdown: closing all files...
+		2016-07-20T18:08:17.312+0800 [initandlisten] closeAllFiles() finished
+		2016-07-20T18:08:17.312+0800 [initandlisten] journalCleanup...
+		2016-07-20T18:08:17.312+0800 [initandlisten] removeJournalFiles
+		2016-07-20T18:08:17.312+0800 [initandlisten] shutdown: removing fs lock...
+		2016-07-20T18:08:17.312+0800 [initandlisten] dbexit: really exiting now
+		
+4) Fix:
+		restart MongoDB service on shg-cvom-infra.pgdev.sap.corp
+		start MongoDB app on ${mongodb_client_app1}
+
+Root Cause:
+	MongoDB service was stopped due to insufficient free space for journals, 
+	http://${mongodb_client_app1}/analysis/overall/active/1 can NOT retrieve data.
+	
+#
+# extra info for MongoDB
+#
+1) install MongoDB as a service:
+		'D:\tools\MongoDB\bin\mongod.exe --dbpath D:\data\db --logpath=D:\data\logs\mongodb.log --service'
+	Service can be started from the command line with 'net start MongoDB'	
+	MongoDB starting : pid=1900 port=27017 dbpath=D:\data\db 64-bit host=SHG-CVOM-INFRA
+
+2) COMPONENTS
+  bin/mongod - The database process.
+  bin/mongos - Sharding controller.
+  bin/mongo  - The database shell (uses interactive javascript).
+  
+UTILITIES
+  bin/mongodump         - MongoDB dump tool - for backups, snapshots, etc..
+  bin/mongorestore      - MongoDB restore a dump
+  bin/mongoexport       - Export a single collection to test (JSON, CSV)
+  bin/mongoimport       - Import from JSON or CSV
+  bin/mongofiles        - Utility for putting and getting files from MongoDB GridFS
+  bin/mongostat         - Show performance statistics  
+	
+RUNNING
+  For command line options invoke:
+    $ ./mongod --help
+
+  To run a single server database:
+    $ mkdir /data/db
+    $ ./mongod
+    $
+    $ # The mongo javascript shell connects to localhost and test database by default:
+    $ ./mongo 
+    > help
+
+DRIVERS
+  Client drivers for most programming languages are available at mongodb.org.  Use the 
+  shell ("mongo") for administrative tasks.
+  
+#
+# extra info for mongo-express
+#
+	mongo-express is a web-based MongoDB admin interface
+		written with Node.js, Express and Bootstrap3.
+	
+	# ref doc: 			https://www.npmjs.com/package/mongo-express
+	# other MongoDB UI:	http://docs.mongodb.org/ecosystem/tools/administration-interfaces/
+		
+		
+		
+		
+		
