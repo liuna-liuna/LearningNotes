@@ -1,0 +1,38 @@
+#
+# why maven-antrun-plugin created a different jar between linux and windows
+#
+Phenomenon:
+    jenkins build was kicked off on linux and windows, same pom.xml, same settings,
+    however the created jar has a different .js file, which is generated through 
+    maven-antrun-plugin java task.
+
+Info: 
+    in the pom.xml, antrun:run calls a java target to create a jar from a list of files, which produced different order between Linux and Windows.
+ 
+ <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>copy all files to bin</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+…
+                                <concat destfile="${project.build.outputDirectory}/${file1}.js" force="yes"  encoding="UTF-8" outputencoding= "UTF-8">
+                                    <filelist files="${project.build.sourceDirectory}/${file2}.js,${langs}/language.js"/>
+                                </concat>
+                                <mkdir dir="${crosstab.output.dir}/${targetSubDir1}"/>
+                                <java jar="${build.dir}/buildAllInOne.jar" fork="true" failonerror="true">
+                                    <arg value="${${src.dir}/${srcSubDir1}" />
+                                    <arg value="${output.dir}/${targetSubDir1}" />
+                                    <arg value="${targetSubDir1}.js" />
+					...
+                                </java>
+
+<= Solution:
+[Not validated.] Alternative 1. set the order of files in antrun java task definitely
+[Not validated.] Alternative 2. use other task of antrun.
+
+
