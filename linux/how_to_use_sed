@@ -29,3 +29,24 @@ sed -i~ -e '7s/<!--\s*//g;7s/\s*-->//g;7s/\.\.\///g' -e '8s/^/<!--/g;12s/<\/scri
 #
 	# ref doc: 	http://www.pement.org/sed/sed1line.txt
 	# sedfaq:	http://sed.sourceforge.net/local/docs/sedfaq.html
+
+#
+# escape special characters in sed:  & < > [ ] { } ^ = ; ! ' + , ` ~ [white space]
+#
+	through quotation marks:
+	C:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\bin\sed.exe -i~ -e "7s/<!--\s*//g;7s/\s*-->//g;7s/\.\.\///g" -e "8s/^/<!--/g;12s/<\/script>\s*$/<\/script> -->/g"
+		-e"13s/src=\"\.\.\/\.\./src=\"http:\/\/veui5infra\.dhcp\.wdf\.sap\.corp:8080\/sapui5/g" index.html
+	
+	# ref doc: http://superuser.com/questions/552041/why-is-it-true-that-three-backslashes-are-needed-on-windows-for-sed-replace
+	# ref doc: http://stackoverflow.com/questions/2369314/why-does-sed-require-3-backslashes-for-a-regular-backslash
+	
+#
+# escape special characters in sed:  & < > [ ] { } ^ = ; ! ' + , ` ~ [white space]
+#
+	through quotation marks:
+	C:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\bin\sed.exe -i~ -e "7s/<!--\s*//g;7s/\s*-->//g;7s/\.\.\///g" -e "8s/^/<!--/g;12s/<\/script>\s*$/<\/script> -->/g"
+		-e"13s/src=\"\.\.\/\.\./src=\"http:\/\/server\.a\.b\.c\.d:8080\/app1/g" index.html
+	
+	# ref doc: http://superuser.com/questions/552041/why-is-it-true-that-three-backslashes-are-needed-on-windows-for-sed-replace
+	# ref doc: http://stackoverflow.com/questions/2369314/why-does-sed-require-3-backslashes-for-a-regular-backslash
+	
