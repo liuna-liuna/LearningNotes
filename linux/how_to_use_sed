@@ -14,3 +14,18 @@ $ echo ' category:&quot;Code Correctness\: Incorrect serialPersistentFields Modi
  | sed -n 's/category:&quot;//g p' | sed -n 's/&quot;/\n/g p'
 $ grep -iw 'category:' Template.xml | sed -n 's/category:&quot;//g p' | sed -n 's/&quot;/\n/g p' | sed 's/<query>/\n/g p' | sort -u | tee category_Template.xml
 
+no bar embarassment
+
+sed -e '7s/<!--\s*//g p' -e '7s/\s*-->//g' index.html
+sed -i~ -e '7s/<!--\s*//g' -e '7s/\s*-->//g' -e '7s/\.\.\///g' index.html
+ = 
+sed -i~ -e '7s/<!--\s*//g;7s/\s*-->//g;7s/\.\.\///g' index.html
+
+sed -i~ -e '7s/<!--\s*//g;7s/\s*-->//g;7s/\.\.\///g' -e '8s/^/<!--/g;12s/<\/script>\s*$/<\/script> -->/g' index.html
+
+
+#
+# sed: one line sed command
+#
+	# ref doc: 	http://www.pement.org/sed/sed1line.txt
+	# sedfaq:	http://sed.sourceforge.net/local/docs/sedfaq.html
