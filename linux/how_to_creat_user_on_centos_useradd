@@ -1,0 +1,20 @@
+#
+# how to add user on CentOS
+#
+useradd jenkins
+passwd  ***
+mkdir /home/jenkins/.ssh
+chmod 700 /home/jenkins/.ssh
+touch /home/jenkins/.ssh/authorized_keys
+chmod 644 /home/jenkins/.ssh/authorized_keys
+chown -R jenkins:jenkins /home/jenkins/.ssh
+
+## How to trouble shoot when it still goes wrong
+	Enable the debug level log in file /etc/ssh/sshd_config
+		LogLevel DEBUG3
+	Check the log from /var/log/auth.log or /var/log/secure
+
+## How To Fix "Server refused our key" Error in CentOS 6
+	try below command
+		restorecon -R -v /home/jenkins/.ssh
+	# ref doc: https://adamwright.wordpress.com/2013/04/15/how-to-fix-server-refused-our-key-error-in-centos-6/
