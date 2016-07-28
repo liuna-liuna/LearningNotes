@@ -50,3 +50,10 @@ sed -i~ -e '7s/<!--\s*//g;7s/\s*-->//g;7s/\.\.\///g' -e '8s/^/<!--/g;12s/<\/scri
 	# ref doc: http://superuser.com/questions/552041/why-is-it-true-that-three-backslashes-are-needed-on-windows-for-sed-replace
 	# ref doc: http://stackoverflow.com/questions/2369314/why-does-sed-require-3-backslashes-for-a-regular-backslash
 	
+
+# to replace multiple words use sed
+cut -d" " -f1 log.gitlog  | sed -e 's/Failed//g;s/Success//g;s/Aborted//g p' | sort -u
+# ref doc: http://stackoverflow.com/questions/26568952/how-to-replace-multiple-patterns-at-once-with-sed
+
+
+
