@@ -1,0 +1,72 @@
+#
+# how to unzip a .war package manually
+#
+jar xvf test.war
+
+	# into a specific destination folder
+unzip xvf test.war -d /dest/folder/can/not/exist
+	##	-o force overwrite
+	##	-d directory
+C:\jenkins\tools\hudson.plugins.git.GitTool\git-win-1.9.4\bin\unzip.exe -o Portal-ui5.war -d tmpUnzip
+
+#
+# how to zip files into a .war package manually
+#
+jar cvf test.war *
+
+#
+# how to update a file in a .war package manually
+#
+jar uvf test.war temp.file
+	#	manually edit interactive
+		vim file.zip
+		and you will be shown a list of files inside zip archive.
+		Choose the one you want to edit, change what you want, and exit with :x
+
+
+#
+# how to delete a file in a .war package manually
+#
+zip -d test.war temp.file
+7z d test.war temp.file
+
+#
+# info for war, jar, zip file
+#
+	## Jar file is zip file.
+	## a WAR file is just a special kind of JAR file, which is just a special kind of ZIP file. 
+	
+	##	What's the difference btw war and jar files ?
+		war has more metadata that a server can read out to know how to run the webapp.
+		jar: a bunch of compiled java files zipped in a file. You can think of it as a library that you can add to your project to use te classes and functions it defines.
+		war: also a zipped files, with a bunch of compiled java files, but with a different layout and also contains other assets (html, css, js files) and as coderanger put it, metadata to tell the server how to run this web app.
+		Java world => *.WAR = *.Zip file Python world => *.EGG = *.Zip file
+		The strength (if you consider it a strength) of Java WAR files is not that they're zipped or that they include dependencies,
+			but that there's a standardized configuration mechanism that all J2EE container servers understand (and, indeed, can extend if they see fit -- it's XML).
+		Things a Python (web) application might need to inform its container about: whether it prefers to or can safely run multithreaded/forked/evented; 
+			where in its internal hierarchy should be served as static files; 
+			where it's main WSGI entry point is; 
+			initialization and shutdown callbacks; etc.
+		Things that should stay out of configuration like this: chains of WSGI wrappers
+			(this ought to be done in code, as your code will either depend on, or break in the presence of, certain middlewares);
+			other things I can't think of right now.
+		If a wsgi app needs to tell its container those things you mentioned its better solved by a configuration object on the app which tells those things,
+			not by standardizing a complete structure for each and every web app, introducing new meta-files and tools required to "build" the web app.
+		The problem is not war file: jar and war files work on java because java is a "platform", whereas python isn't at the moment.
+			Everybody focus on metadata, but the real problem is the data (i.e. code here), plus lack of support from python itself.
+			Even forgetting about C extensions, python does not have the stability of java as far as backward/forward compatibility goes:
+				it is difficult to have a single source code that can work on all python versions that matter (at least 2.4->2.7, and 3.2 depending on the cases).
+			Then, the python import system brings several difficulties.
+				It is difficult to control (that's the problem that virtualenv tries to solve), and you cannot programmatically control which version of a package to solve.
+			Finally, the problem of C extensions is significant.
+				While relatively rare in java, a lot of interesting python packages use/depend on C extensions,
+				and those need to be built for each different python version, and even on a same OS, you have multiple incompatible ABI (e.g. ucs2 vs ucs4).
+			None of that can be solved with metadata, or an improved egg format.
+			The only solution so-far is a fully controlled python environment, like e.g. activestate, python(x,y) or EPD.
+			[EDIT] There is also a fundamental tradeoff between easy deployment and easy-to-mess with which is important in the python culture.
+				Part of the appeal of python is that it is easy to try new code, to customize things easily.
+				But that's part of what makes it more difficult to deploy in non trivial situations.
+	
+		# ref doc:	https://www.reddit.com/r/Python/comments/nwixz/does_python_need_something_like_javas_war_files/
+	
+	
