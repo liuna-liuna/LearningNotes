@@ -1,0 +1,8 @@
+#	
+# diff
+#
+	#  -b  --ignore-space-change  Ignore changes in the amount of white space.
+	#  -w  --ignore-all-space  Ignore all white space.
+  
+diff -w index.html sed.index.html
+
