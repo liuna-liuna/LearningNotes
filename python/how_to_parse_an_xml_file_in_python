@@ -1,0 +1,118 @@
+#
+# how to parse an xml file in python
+#
+# summary ref doc:	http://outofmemory.cn/code-snippet/914/python-kinds-parse-xml-bao-usage-method-summary
+#
+1) using ElementTree
+	try:
+		import xml.etree.cElementTree as ET
+	except ImportError:
+		import xml.etree.ElementTree  as ET
+	import pprint
+
+	for node in tree.findall('.//outline'): #没有用getiterator()，而是findall出一个列表迭代 outline是node的名字
+		url = node.attrib.get('xmlUrl')
+		if url:
+			print url
+	for node in tree.findall('.//outline/outline'): #寻找2级层次的node 就是node'outline'的子node是'outline'的过滤
+		url = node.attrib.get('xmlUrl')
+		print url
+	
+	# .// ./ difference between absolute path and relative path
+	
+	# ref doc:	http://www.cnblogs.com/ifantastic/archive/2013/04/12/3017110.html
+	
+	
+2) use libxml2
+	# libxml2是使用C语言开发的xml解析器，
+	# 是一个基于MIT License的免费开源软件，
+	# 多种编程语言都有基于它的实现，如lxml模块。
+	# “xpathEval()”接口不支持类似模板的用法
+	import libxml2
+	def get_xpath_1():
+		doc = libxml2.parseFile("data.xml")#data.xml文件结构与上述的input_xml_string相同
+		for node in doc.xpathEval("//item/data[@version = '1.0']"):
+			print (node, node.name, (node.properties.name, node.properties.content))
+		doc.freeDoc()			
+
+		import libxml2
+		def text() :
+			doc = libxml2.parseFile('/tmp/books.xml')
+			for book in doc.xpathEval('/books/book') :
+				print book.content
+			doc.freeDoc()
+			
+			
+  
+		import libxml2
+		
+		doc = libxml2.parseFile('clients.xml')
+		ctxt = doc.xpathNewContext()
+		clients = ctxt.xpathEval('/clients/client')
+		
+		# clean up nicely
+		doc.freeDoc()
+		ctxt.xpathFreeContext()
+		# ref doc:	http://devplant.net/2011/06/14/python-libxml2-xpath-on-child-node/
+	
+
+	
+		# if unicode,
+		# XML is a binary format, despite of looking like a text. 
+		# An encoding is specified in the beginning of the XML file in order to decode the XML bytes
+		#	into the text.
+		# What you should do is to pass str, not unicode to your library:
+
+		xml_doc = libxml2.parseDoc(DOC.encode("UTF-8"))
+
+		# ref doc:	http://stackoverflow.com/questions/1569076/pythons-libxml2-cant-parse-unicode-strings
+		
+  
+3)  use lxml
+	# lxml是以上述介绍过的libxml2为基础采用python语言开发的，
+	# 从使用层面上说比libxml2更适合python开发者(鄙人感受)，且"xpath"接口支持类似模板的用法
+	
+	import lxml.etree  
+	def get_xpath_2():  
+	doc = lxml.etree.parse(file)  
+	for node in doc.xpath("//item/data[@version = $name]", name = "1.0"):  
+		print (node, node.tag, (node.items())) 
+	   
+	
+4)	use xml.dom.minidom:
+	# python自带的xml处理模块xml.dom.minidom 解析xml
+	
+	import xml.dom.minidom  
+	def get_tagname():  
+		doc = xml.dom.minidom.parseString(input_xml_string)  
+		for node in doc.getElementsByTagName("data"):  
+			print (node, node.tagName, node.getAttribute("version"))  
+
+5) use xpath
+	# xpath是python官方推荐的一个支持xpath等处理的模块，
+	# 是基于本文介绍过的python自带xml处理模块扩展而成，
+	# 可以很好的结合使用，同时“find”接口也支持类似模板的用法
+
+	import xpath  
+	def get_xpath_3():  
+	doc = xml.dom.minidom.parseString(input_xml_string)  
+	for node in xpath.find("//item/data[@version = $name]", doc, name = "1.0"):  
+		print (node, node.tagName, node.getAttribute("version"))  
+	
+	>>> from lxml import etree
+	>>> f = StringIO('<foo><bar></bar></foo>')
+	>>> tree = etree.parse(f)
+	
+	>>> r = tree.xpath('/foo/bar')
+	>>> len(r)
+	1
+	>>> r[0].tag
+	'bar'
+	
+	>>> r = tree.xpath('bar')
+	>>> r[0].tag
+	'bar'
+
+	# ref doc:	http://lxml.de/xpathxslt.html
+
+
