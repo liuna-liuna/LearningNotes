@@ -1,0 +1,65 @@
+#
+# re usage
+#
+1) re.split
+		if 'build.xml' in files:
+			build = AJenkinsBuild()
+			tmpRoot = re.split(re.escape('\\'),root)
+			if (tmpRoot is not None):
+				tmpL = len(tmpRoot)
+				if (tmpL>=3):
+					if ( tmpRoot[tmpL-2]!='builds' ):
+						continue
+					build.BuildName = '{}_{}'.format(tmpRoot[tmpL-3], tmpRoot[tmpL-1])
+					build.JobName 	= tmpRoot[tmpL-3]
+					
+					
+2) re.compile
+	file1 = file('index.html')
+	data = file1.read()
+	pattern1=re.compile(r'<script type="text/javascript"')
+	match1 = pattern1.findall(data)
+	match1
+	['<script type="text/javascript"', '<script type="text/javascript"']
+
+3) re.escape	
+	>>> import re
+	>>> re.escape('^a.*$')
+	'\\^a\\.\\*\\$'
+	
+	# ref doc:	http://stackoverflow.com/questions/280435/escaping-regex-string-in-python
+	
+4) re.search
+			for node_name in node_names:
+				if not re.search(pattern, node_name, flags=re.IGNORECASE):
+					continue
+					
+				# for regular nodes: 
+				#	full url: http://***:8080/computer/node_name/ 
+				#	
+				nodeurl = '{}/computer/{}'.format(jenkinsurl, quote(node_name))
+				if node_name == "master":
+					# special handling for master: 
+					#	full url: http://***:8080/computer/(master)/ instead of http://***:8080/computer/master/ 
+					#
+					nodeurl = '{}/computer/({})'.format(jenkinsurl, quote(node_name))					
+				else:
+					pass
+					
+			>>> print re.search(p1, output).group(0)
+			>>> p1=r'<input name="\[(admin)\]"\s*checked="true"'
+			>>> print re.search(p1, output).group(1)	
+	
+5) re.finditer	
+	
+## Method 1. re.finditer(pattern, string)
+			for m in re.finditer(pattern, output):	
+				print "{} has role: {}".format(m.group(1), m.group(2))
+	
+## Method 2. re.compile(pattern).finditer(string)
+			p1Obj = re.compile(p1)
+			for m in p1Obj.finditer(output):
+				print m.groups()
+	
+	
+# ref doc:	https://docs.python.org/2/library/re.html
