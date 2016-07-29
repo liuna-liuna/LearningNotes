@@ -1,0 +1,70 @@
+#
+# get input in a python script
+#
+1) use sys.argv
+	
+	#!/usr/bin/python
+	import sys	
+	def main():
+		# print command line arguments
+		for arg in sys.argv[1:]:
+			print arg	
+	if __name__ == "__main__":
+		main()
+
+	Try it out:
+		$ python cmdline_args.py arg1 arg2 arg3
+		arg1
+		arg2
+		arg3
+
+2) use optparse
+		from   optparse import OptionParser
+		if __name__ == '__main__':
+			# get input options
+			parser = OptionParser()
+			parser.add_option("-n", "--nodename", dest="nodename", help="node name to be checked")
+			parser.add_option("-d", "--debug",    dest="debug",    help="output more information for debugging purpose", action="store_true", default=False)
+			options, arguments = parser.parse_args()
+			if options.nodename:
+				log_print( "The given nodename is: %s" %(options.nodename), "INFO " )
+				JenkinsSlaveUpdater(options.nodename, options.debug).CreateAJSlaveXmlFromJnlpFile()
+				exit(0)
+			else:
+				log_print( "Please input the name of a node you want to check.\n" + __doc__ % {'scriptName': sys.argv[0].split(os.sep)[-1]}, "INFO " )	
+				exit(1)	
+		
+		
+3) use getopt
+
+		#!/usr/bin/python
+		
+		import sys, getopt
+		
+		def main(argv):
+		inputfile = ''
+		outputfile = ''
+		try:
+			opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
+		except getopt.GetoptError:
+			print 'test.py -i <inputfile> -o <outputfile>'
+			sys.exit(2)
+		for opt, arg in opts:
+			if opt == '-h':
+				print 'test.py -i <inputfile> -o <outputfile>'
+				sys.exit()
+			elif opt in ("-i", "--ifile"):
+				inputfile = arg
+			elif opt in ("-o", "--ofile"):
+				outputfile = arg
+		print 'Input file is "', inputfile
+		print 'Output file is "', outputfile
+		
+		if __name__ == "__main__":
+		main(sys.argv[1:])
+
+
+# ref doc: http://www.tutorialspoint.com/python/python_command_line_arguments.htm
+
+
+
