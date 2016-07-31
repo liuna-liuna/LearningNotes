@@ -1,0 +1,35 @@
+#
+# how to run linux command from python shell
+#
+1). use os.system
+    os.system('ls -l')
+    # can't get output
+
+system(command) -> exit_status
+Execute the command (a string) in a subshell.
+
+
+2). use os.popen
+    os.popen('ls -l').readlines()
+    # return output as a file system
+    
+popen(command [, mode='r' [, bufsize]]) -> pipe
+Open a pipe to/from a command returning a file object.
+
+
+3). use subprocess
+    subprocess.call('ls -l', shell=False)
+    # return no output
+
+    p = subprocess.Popen('ls -l', shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    for l in p.stdout.readlines:
+        print l,
+    retval = p.wait()
+    # return output
+
+4). use commands
+    commands.getoutput('ls -l')
+    # return output
+
+    commands.getstatusoutput('ls -l')
+    # return a turple (status, output)
