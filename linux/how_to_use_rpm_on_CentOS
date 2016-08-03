@@ -1,0 +1,41 @@
+#
+# how to use rpm on CentOS
+#
+# rpm usage 
+#	ref doc: http://www.cnblogs.com/xiaochaohuashengmi/archive/2011/10/08/2203153.html
+#	ref doc: http://math.ecnu.edu.cn/~jypan/Teaching/Linux/command/rpm.htm
+
+RPM: ReadHat Pacakge Manager
+YUM: Yellowdog Updater Modified
+
+http://sev7enii.blog.163.com/blog/static/116128116201201932326540/
+# check installed packages
+rpm -qa
+search,se 查找符合一个模式的软件包。
+patch-info 显示指定补丁的完整信息。
+pattern-info 显示指定模式的完整信息。
+product-info 显示指定产品的完整信息。
+patch-check,pchk 检查补丁。
+list-updates,lu 列出可用的更新。
+patches,pch 列出所有可用的补丁。
+packages,pa 列出所有可用的软件包。
+patterns,pt 列出所有可用的模式。
+products,pd 列出所有可用的产品。
+what-provides,wp 列出能够提供指定功能的软件包。
+
+通过rpm 命令查询一个rpm 包是否安装了，也是要通过rpm 数据库来完成的.经常用下面的两个命令来初始化rpm 数据库；
+rpm --initdb
+rpm --rebuilddb
+
+# check dependencies
+rpm -qpR colordiff-1.0.9-1.el6.rf.noarch.rpm
+
+# un-install a rpm
+rpm -e epel-release
+
+
+# 
+# check httpd package on CentOS
+#
+rpm -qa | grep -i httpd
+
