@@ -1,0 +1,9 @@
+#
+# 	how to install epel (Extra Package for Enterprise Linux)
+#
+		#	yum install epel-release
+		#	yum -qR epel-release
+		#	yum install yum-protectbase.noarch
+		#	yum repolist
+#	ref doc: http://www.cyberciti.biz/faq/rhel-fedora-centos-linux-enable-epel-repo/
+	
