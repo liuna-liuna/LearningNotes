@@ -1,0 +1,25 @@
+#
+# install colordiff: show diff in color
+#
+Methhod1. using yum
+	# need to install epel first due to dependency
+		rpmlib(FileDigests) ...
+		rpmlib(PayloadIsXz) ...
+	# 	install epel (Extra Package for Enterprise Linux)
+		#	yum install epel-release
+		#	yum -qR epel-release
+		#	yum install yum-protectbase.noarch
+		#	yum repolist
+	#	ref doc: http://www.cyberciti.biz/faq/rhel-fedora-centos-linux-enable-epel-repo/
+	
+	
+yum install colordiff
+yum search colordiff
+
+Methhod2. using rpm
+[need further check. failed at first try due to dependency missing.]		# need to install dependency first:
+[need further check. failed at first try due to dependency missing.]			rpmlib(FileDigests) ...
+[need further check. failed at first try due to dependency missing.]			rpmlib(PayloadIsXz) ...
+[need further check. failed at first try due to dependency missing.]			
+[need further check. failed at first try due to dependency missing.]		# then run : rpm -qpi colordiff-1.0.9-1.el6.rf.noarch.rpm
+[need further check. failed at first try due to dependency missing.]	# ref doc: http://www.programgo.com/article/58412878757/
