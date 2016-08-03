@@ -1,0 +1,14 @@
+#
+# how to use yum on CentOS to do linux update
+#
+# yum commands for CentOS
+yum info installed # 列出所有已安裝的软件包信息
+yum info installed | grep -i -C10 maven
+
+yum info git
+yum install git
+yum info java-1.7.0-openjdk.x86_64
+yum update java-1.7.0-openjdk.x86_64
+
+# update yum itself
+yum -y update
