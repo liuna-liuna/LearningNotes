@@ -1,0 +1,37 @@
+#
+# how to check the modified time of a file on CentOS
+#
+Method1. use stat
+		stat -c'%n %y' /usr/share/tomcat5/webapps/lncmd*
+
+Method2. use date
+		date +%s -r file1
+		
+		# to print the seconds elapsed since the last modification
+		expr $(date +%s) - $(date +%s -r file1)
+		 # or
+		expr `date +%s` - `stat -c%Y file1`
+		
+Usage3.  touch can become handy in combination 
+			with cp -u ("copy only when the SOURCE file is newer than
+				the destination file 
+				or when the destination file is missing")
+				or for the creation of empty marker files.
+
+# how to get the modified time of a file
+	stat -c%Y file1 | sed 's/file1//'
+	stat -c%Y file1 | cut -d' ' -f1
+	stat -c%y file1 | sed 's/^\([0-9\-]*\).*/\1'
+in bash:
+	MODDATE=$(stat -c%y file1)
+	MODDATE=${MODDATE%% *}
+	echo $MODDATE
+	
+# how to check a file is modified 1 minute before
+	if test  "find /usr/share/tomcat5/webapps/lncmd_timemarker -mmin +1"; then echo ok; else echo not_ok;fi
+	if [ $(( `date +%s`-1800 )) -gt `date +%s -r /usr/share/tomcat5/webapps/lncmd_timemarker` ]; then echo ok; else echo not_ok; fi;
+	if test "find /usr/share/tomcat5/webapps/lncmd_timemarker -newer /usr/share/tomcat5/webapps/lncmd"; then echo ok; else echo not_ok;fi
+
+# ref doc:	http://stackoverflow.com/questions/2005021/how-can-i-tell-if-a-file-is-older-than-30-minutes-from-bin-sh
+# ref doc:	http://stackoverflow.com/questions/17203122/bash-if-else-statement-in-one-line
+
