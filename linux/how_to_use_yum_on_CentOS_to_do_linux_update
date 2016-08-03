@@ -12,3 +12,10 @@ yum update java-1.7.0-openjdk.x86_64
 
 # update yum itself
 yum -y update
+
+#
+# turn off yum-updatesd auto update on CentOS
+#
+chkconfig --level 12345 yum-updatesd off
+
+
