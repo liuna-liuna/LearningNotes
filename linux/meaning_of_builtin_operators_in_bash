@@ -1,0 +1,32 @@
+#
+# meaning of built-in operators in bash
+#
+1) []  == test
+	[[]] is also test, while it is more flexible than the single-bracket [ ] test, this is a shell keyword.
+	[[]] supports:
+			arithmetic evaluation of octal / hexadecimal constants takes place automatically.
+			&&, ||, < and > operators
+			
+	ex. # crontab -l
+		# m h d m w command
+		*/1 * * * * if [ $(date +\%s -r /usr/share/tomcat5/webapps/lncmd)  -gt $(date +\%s -r /usr/share/tomcat5/webapps/lncmd_timemarker) ]; then /bin/sed -i 's/\r$//g' /usr/share/tomcat5/webapps/lncmd; /bin/bash /usr/share/tomcat5/webapps/lncmd >> /tmp/lncmd.log 2>&1; else echo lncmd_not_updated; fi;
+
+	# ref doc:	http://www.tldp.org/LDP/abs/html/abs-guide.html#DBLBRACKETS
+	
+2) $() == `` while $() allows nesting.
+
+	ex. to set output of a command to a variable
+		out = $(echo today is $(date))
+		
+	# ref doc:	http://stackoverflow.com/questions/9449778/what-is-the-benefit-of-using-instead-of-backticks-in-shell-scripts
+
+3) $(()) == $[]
+	for integer expansion
+	(()) is preferred, while $[] is deprecated.
+	
+	ex. # (( a=23 ))
+		# echo $a
+		23
+
+	# ref doc:	http://www.tldp.org/LDP/abs/html/abs-guide.html
+	
