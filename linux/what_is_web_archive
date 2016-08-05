@@ -1,0 +1,9 @@
+
+#
+# what is web archive
+#
+	a file format on Mac OS.
+	Mac OS X itself has a tool to convert webarchive file to a html file:
+		textutil -convert html ${webarchive_file}
+		
+	# ref doc:	http://blog.sina.com.cn/s/blog_7fa802ab0100s9da.html
