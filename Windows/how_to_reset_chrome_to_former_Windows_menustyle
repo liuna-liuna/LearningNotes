@@ -1,0 +1,8 @@
+#
+#	chrome 回到之前Windows系统默认的菜单样式
+#
+似乎从最新的26.0.1384.2 dev-m版开始，Chrome Dev for Windows就抛弃了Windows系统默认的菜单样式，转而使用自定义的一套新的菜单样式，也包括右键菜单。可以看到新的菜单样式比以前间距更大，更清爽，没有了左侧的竖条，且加入了明显的阴影设计。
+　　但是因为其新的菜单样式比以前间距更大也就造成了很多的不方便。
+　　如果想要回到之前Windows系统默认的菜单样式的话，只需右键点击Chrome快捷方式，进入属性设置，找到快捷方式标签，在目标一栏的最后加入-disable-new-menu-style即可(需在前面加入一个空格)。如"C:\Program Files\Google\Chrome\Application\chrome.exe" -disable-new-menu-style
+　　重启浏览器之后，就会看到Windows系统默认的菜单样式了。
+　　删除上面的命令，即可随时还原为新的菜单样式。
