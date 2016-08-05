@@ -1,0 +1,49 @@
+#	maven commands used:
+mvn archetype:generate -DgroupId=org.sonatype.mavenbook -DartifactId=simple -Dpackage=org.sonatype.mavenbook -Dversion=1.0-SNAPSHOT
+mvn clean install
+	#	To prove to yourself that this program works, run it from the command line.
+		java -cp target/simple-1.0-SNAPSHOT.jar org.sonatype.mavenbook.App
+
+mvn help:effective-pom
+mvn site
+
+# maven commands format:
+1) mvn pluginId:goalId (prefix of the plugin)
+2) mvn lifecycle
+
+mvn archetype:generate -DgroupId=org.sonatype.mavenbook.custom -DartifactId=simple-weather -Dversion=1.0
+mvn help:describe -Dplugin=exec -Dfull
+mvn dependency:resolve
+mvn dependency:tree
+#
+# clean an installed package from local repository ex. %USERPROFILE%\.m2
+#
+Method 1. 
+mvn dependency:purge-local-repository -DmanualInclude="${groupId}:${artifactId}:${version}" -DreResolve=false
+mvn dependency:purge-local-repository -DmanualInclude="${groupId}:${artifactId}" -DreResolve=false
+
+
+mvn exec:java -Dexec.mainClass=org.sonatype.mavenbook.weather.Main -Dexec.args="70112"
+mvn help:describe -Dplugin=exec -Dfull
+mvn help:describe -DgroupId=${groupId} -DartifactId=${artifactId} -Dversion=1.6.0 -Dfull
+
+mvn test -Dmaven.test.failure.ignore=true
+mvn install -Dmaven.test.skip=true
+
+mvn -gs ${localpath1}\global_maven_settings.xml -s ${localpath1}\maven_user_settings.xml clean package
+
+
+mvn install assembly:assembly
+cd target
+java -cp simple-weather-1.0-jar-with-dependencies.jar org.sonatype.mavenbook.weather.Main
+
+# check plugin updates
+mvn versions:display-plugin-updates
+
+
+mvn archetype:generate -DgroupId=org.sonatype.mavenbook.simpleweb -DartifactId=simple-webapp -Dpackage=org.sonatype.mavenbook -Dversion=1.0-SNAPSHOT
+#	10: internal -> org.apache.maven.archetypes:maven-archetype-webapp (An archetype which contains a sample Maven Webapp project.)
+
+mvn clean install
+mvn jetty:run
+
