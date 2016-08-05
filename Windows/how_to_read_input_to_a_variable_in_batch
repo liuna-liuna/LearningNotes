@@ -1,0 +1,6 @@
+#
+#	how to read input to a variable in a batch
+#	ref doc: http://rickardnobel.se/counting-lines-in-windows-command-prompt/
+PING 192.168.100.77 | FIND /v /c “” > tmp1.txt
+SET /P lines=<tmp1.txt
+ECHO There are %lines% lines.
