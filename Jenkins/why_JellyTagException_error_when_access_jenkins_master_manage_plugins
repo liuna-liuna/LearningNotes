@@ -1,0 +1,78 @@
+#
+# why JellyTagException error when accessing ${Jenkins_master} -> Manage Jenkins -> Manage Plugins
+#
+Phenomenon:
+	click ${jenkins_master} -> Mnanage Jenkins -> Manage Plugins -> Updates, 
+			javax.servlet.ServletException: org.apache.commons.jelly.JellyTagException:
+			/hudson/PluginManager/table.jelly:74:52:<j:forEAch> java.lang.StackOverflowError
+				at org.kohsuke.stapler.jelly.JellyClassTearOff.serveIndexRequest(JellyClassTearOff.java:117)
+
+	ingore the Exception, click "Installed", it worked.
+		Another Exception after clicking "Available":
+			javax.servlet.ServletException: org.apache.commons.jelly.JellyTagException: jar:file:/D:/Jenkins/war/WEB-INF/lib/jenkins-core-1.596.2.jar!
+			/hudson/PluginManager/table.jelly:74:52:<j:forEAch> java.lang.StackOverflowError
+				at org.kohsuke.stapler.jelly.JellyFacet$1.dispatch(JellyFacet.java:103)
+				...
+		
+# debug steps
+[Not work for the exception]	1) enlarge JVM settings to -XX:MaxMetaspaceSize=1024m -Xms512m -Xmx4096m.
+[Not work for the exception]		<= Jenkins master: java process takes memory up to 2.9G.
+[Not work for the exception]		<= JellyTagException is still there.
+	
+[Could work. Not validated.]	2) update executable in jenkins.xml of jenkins.exe on Jenkins master to full path of jdk...\java.exe	
+[Could work. Not validated.]		<executable>C:\Program Files\Java\jdk1.8.0_40\bin\java.exe</executable>
+	
+
+[Works for correct java.exe used on Jenkins master in thread. Not for this exception.]	3) update JavaHome and RuntimeLib in registry:
+[Works for correct java.exe used on Jenkins master in thread. Not for this exception.]		[HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Runtime Environment]
+[Works for correct java.exe used on Jenkins master in thread. Not for this exception.]		from
+[Works for correct java.exe used on Jenkins master in thread. Not for this exception.]			"JavaHome"="C:\\Program Files\\Java\\jre1.8.0_40"
+[Works for correct java.exe used on Jenkins master in thread. Not for this exception.]			"RuntimeLib"="C:\\Program Files\\Java\\jre1.8.0_40\\bin\\client\\jvm.dll"
+[Works for correct java.exe used on Jenkins master in thread. Not for this exception.]		to
+[Works for correct java.exe used on Jenkins master in thread. Not for this exception.]			"JavaHome"="C:\\Program Files\\Java\\jdk1.8.0_40\\jre"
+[Works for correct java.exe used on Jenkins master in thread. Not for this exception.]			"RuntimeLib"="C:\\Program Files\\Java\\jdk1.8.0_40\\jre\\bin\\server\\jvm.dll"
+
+[Works for correct java.exe used on Jenkins master in thread. Not for this exception.]			C:\Program Files\Java\jdk1.8.0_40\jre
+[Works for correct java.exe used on Jenkins master in thread. Not for this exception.]			C:\Program Files\Java\jdk1.8.0_40\jre\bin\server\jvm.dll
+
+[Not needed]			[HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Development Kit]
+[Updated too]			[HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Plug-in]
+
+[Works]	4) Plugin issue
+	I noted that the last plugin listed in the plugins landing page (available updates) was the subversion plugin.
+	I manually downloaded the latest version and installed it from the "advanced" page.
+	This seems to have solved the problem for me. I consider this a workaround,
+	but the core problem remains that an older plugin can mess up the jenkins page.
+
+	# ref doc: https://issues.jenkins-ci.org/browse/JENKINS-36361
+
+[done] Enlarge --XX:MaxMetaspaceSize=1024m --Xmx4096m 
+	D:\Jenkins\jenkins.xml
+
+[Works]	[done] install Static Code Analysis Plug-ins ( analysis-core.hpi )  to 1.78
+[Works]	[done] Parameterized Trigger plugin	from 2.25 to 2.31
+[Works]	[done] Subversion Plugin  :  to 2.6
+
+[done]	Ping ${jenkins_master1}
+[done]	restart Jenkins master service
+[done]	restart Jenkins master
+[done]	kick off job http://${jenkins_master1}:8080/job/${jenkins_job1}/ 
+
+
+
+
+		
+[Not done since update some plugins works.] last plugin in "Updates" is Static Code Analysis, which has only one version 1.6.
+[Not done since update some plugins works.]	 manually install: 
+[Not done since update some plugins works.]		C:\Work\4Tasks\check_jenkins_UpdateAvailable_JellyTagException\analysis-core.hpi
+[Not done since update some plugins works.]	
+[Not done since update some plugins works.]	
+		# ref doc: https://wiki.jenkins-ci.org/display/JENKINS/Static+Code+Analysis+Plug-ins
+		
+
+		
+	# extra info: 
+	# Jenkins plugin 		https://wiki.jenkins-ci.org/display/JENKINS/Plugins
+	# Jenkins update center		https://updates.jenkins-ci.org/
+
+	
