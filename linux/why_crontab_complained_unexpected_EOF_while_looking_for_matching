@@ -1,0 +1,14 @@
+#
+# why crontab complained "/bin/sh: -c: line 0: unexpected EOF while looking for matching ``'"
+#
+	use \% instead of % in crontab -e command.
+	why?
+		The command field (the rest of the line) is the command to be run.  The
+		entire command portion of the line, up to a newline or % character, will
+		be executed by /bin/sh or by the shell specified in the SHELL variable of
+		the crontab.  Percent signs (‘%’) in the command, unless escaped with a
+		backslash (‘\’), will be changed into newline characters, and all data
+		after the first ‘%’ will be sent to the command as standard input.
+
+	# ref doc:	http://serverfault.com/questions/426748/unexpected-eof-while-looking-for-matching-on-cron-job
+	
