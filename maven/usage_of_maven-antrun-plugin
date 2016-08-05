@@ -1,0 +1,30 @@
+
+#
+# maven-antrun-plugin usage
+#
+task:
+1) replaceregexp
+	# ReplaceRegExp is a directory based task for replacing the occurrence of a given regular expression
+	#	with a substitution pattern in a selected file or set of files.
+	
+	<replaceregexp file="${src}/build.properties"
+               match="OldProperty=(.*)"
+               replace="NewProperty=\1"
+               byline="true"
+	/>
+
+	in build.xml:
+	<macrodef name="${macro_name}">
+      <attribute name="path" />
+      <sequential>
+        <replaceregexp file="@{path}"
+             flags="gi"
+             match="__internal_reference_\w+__"
+             replace="_${new_internal_reference}" />
+      </sequential>
+    </macrodef>
+	
+	# ref doc: https://ant.apache.org/manual/Tasks/replaceregexp.html
+	
+	
+	
