@@ -1,0 +1,34 @@
+#
+# fortify REST API
+#
+1) check authentication:
+	
+	https://${fortify_server1}/ssc/api/v1/authEntities
+	authEntities for 1 project with id 11280:	https://${fortify_server1}/ssc/api/v1/projectVersions/11280/authEntities
+	
+	
+2) check projectVersion
+	
+	https://${fortify_server1}/ssc/api/v1/projectVersions/
+	1 project with id 15293:	https://${fortify_server1}/ssc/api/v1/projectVersions/15293
+	
+
+3) get artifact info
+
+	from 1 project's REST API:
+		"artifacts":{"href":"https://${fortify_server1}/ssc/api/v1/projectVersions/15293/artifacts"}
+
+4) get 1 project's issues
+		https://${fortify_server1}/ssc/api/v1/projectVersions/16381/issues
+		<= can do analysis:
+			ex. based on 	"friority"
+					"analyzer"
+
+						
+		https://${fortify_server1}/ssc/api/v1/projectVersions/16381/issues
+		https://${fortify_server1}:443/ssc/api/v1/projectVersions/16381/issues/47491377
+		
+5) how to use fortify REST API		
+	!! need first check if auth-token works !!
+	# example:	http://stackoverflow.com/questions/36414245/create-project-using-fortify-software-security-center-rest-api
+	# ref doc:	https://${fortify_server1}/ssc/html/docs/api-reference/index.jsp
