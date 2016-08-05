@@ -35,3 +35,8 @@ in bash:
 # ref doc:	http://stackoverflow.com/questions/2005021/how-can-i-tell-if-a-file-is-older-than-30-minutes-from-bin-sh
 # ref doc:	http://stackoverflow.com/questions/17203122/bash-if-else-statement-in-one-line
 
+# special for crontab :
+	must escape % in crontab: use \% instead of %.
+	ex. 
+	*/1 * * * * if [ $(date +\%s -r /usr/share/tomcat5/webapps/lncmd)  -gt $(date +\%s -r /usr/share/tomcat5/webapps/lncmd_timemarker) ]; then /bin/sed -i 's/\r$//g' /usr/share/tomcat5/webapps/lncmd; /bin/bash /usr/share/tomcat5/webapps/lncmd >> /tmp/lncmd.log 2>&1; else echo lncmd_not_updated; fi;
+
