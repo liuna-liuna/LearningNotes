@@ -1,0 +1,4 @@
+#
+# how to output no newline by echo in a batch
+#
+echo | set /p=first line with no newline
