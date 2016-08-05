@@ -1,0 +1,22 @@
+#
+# how to calculate / do arithmatic in bash
+#
+1) for integer:	two formats:
+	$[ expression ] , deprecated
+	$((expression)) , better
+	
+	ex. echo 8 % 7 = $((8 % 7))
+		echo 2 ^ 8 = $[ 2 ** 8 ]
+
+2) for float: using bc / dc
+	echo "scale=10; ${userinput}" | bc 
+	echo 4 k 20 3 / p | dc
+	
+	# ref doc:	https://linuxconfig.org/bash-scripting-tutorial
+
+3) using python, perl, awk etc.
+	python -c "print 20+5/2"
+	awk "BEGIN {print 100/3}"
+
+	# ref doc:	http://unix.stackexchange.com/questions/40786/how-to-do-integer-float-calculations-in-bash-or-other-languages-frameworks
+	
