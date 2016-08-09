@@ -1,0 +1,73 @@
+
+#
+# how to set HttpURLConnection maximum data size on tomcat?
+#
+1) The parameter is in the connector section.
+	in ${TOMCAT_HOME}/conf/server.xml
+		maxHttpHeaderSize
+		maxPostSize	(default size 2M)
+
+	<!-- Define a non-SSL HTTP/1.1 Connector on port 8080 -->
+    <Connector port="8080" maxHttpHeaderSize="8192"
+               maxThreads="150" minSpareThreads="25" maxSpareThreads="75"
+               enableLookups="false" redirectPort="8443" acceptCount="100"
+               connectionTimeout="20000" disableUploadTimeout="true"
+               maxPostSize="67589953"  />
+			   
+2) in webapps/WEB-INF/web.xml:
+		max-file-size
+		max-request-size
+	
+	  <servlet>
+		<multipart-config>
+		<!-- 100MB max-->
+		<max-file-size>104857600</max-file-size>
+		<max-request-size>104857600</max-request-size>
+		<file-size-threshold>0</file-size-threshole>
+		</multipart-config>
+	</servlet>
+	
+	
+# ref doc:	http://stackoverflow.com/questions/2947683/httprequest-maximum-allowable-size-in-tomcat
+
+<= to fix the problem:
+  1) one war package was dropped to TomCat webapps, but was NOT unpacked automatically, so can NOT be accessed through TomCat web URL.
+  2) in log of TomCat:
+  /usr/share/tomcat5/logs/catalina.out and /usr/share/tomcat5/logs/catalina.2016-08-08.log:
+
+        at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1570)
+        at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1579)
+        at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1559)
+        at java.lang.Thread.run(Thread.java:701)
+Jul 25, 2016 7:13:05 PM org.apache.catalina.core.StandardContext resourcesStart
+SEVERE: Error starting static Resources
+java.lang.IllegalArgumentException: Invalid or unreadable WAR file : error in opening zip file
+        at org.apache.naming.resources.WARDirContext.setDocBase(WARDirContext.java:135)
+        at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3855)
+        at org.apache.catalina.core.StandardContext.start(StandardContext.java:4024)
+        at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:760)
+        at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:740)
+        at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:544)
+        at org.apache.catalina.startup.HostConfig.deployWAR(HostConfig.java:880)
+        at org.apache.catalina.startup.HostConfig.deployWARs(HostConfig.java:732)
+        at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:498)
+        at org.apache.catalina.startup.HostConfig.check(HostConfig.java:1261)
+        at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:301)
+        at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:120)
+        at org.apache.catalina.core.ContainerBase.backgroundProcess(ContainerBase.java:1306)
+        at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1570)
+        at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1579)
+        at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1559)
+        at java.lang.Thread.run(Thread.java:701)
+Jul 25, 2016 7:13:05 PM org.apache.catalina.core.StandardContext start
+SEVERE: Error in resourceStart()
+Jul 25, 2016 7:13:05 PM org.apache.catalina.core.StandardContext start
+SEVERE: Error getConfigured
+Jul 25, 2016 7:13:05 PM org.apache.catalina.core.StandardContext start
+SEVERE: Context [/${war1_huge_size}] startup failed due to previous errors
+Jul 25, 2016 7:13:05 PM org.apache.catalina.core.StandardContext stop
+INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/${war1_huge_size}] has not been started
+
+
+
+  
