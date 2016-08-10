@@ -26,4 +26,5 @@ c:\Work>echo %s2%
 "E:\Work\photos"
 
 # ref doc:	http://ss64.com/nt/syntax-replace.html
+# ref doc:	http://stackoverflow.com/questions/5816178/how-to-replace-string-inside-a-bat-file-with-command-line-parameter-string
 
