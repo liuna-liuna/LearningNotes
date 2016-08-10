@@ -1,0 +1,29 @@
+#
+# string operation in batch
+#
+#
+# find substring
+#
+c:\Work>set s1="C:\Work\photos"
+c:\Work>echo %s1%
+"C:\Work\photos"
+
+c:\Work>set s2=%s1:~3%
+c:\Work>echo %s2%
+\Work\photos"
+
+# ref doc:	http://ss64.com/nt/syntax-substring.html
+
+#
+# string substitution
+#
+c:\Work>set s1="C:\Work\photos"
+c:\Work>echo %s1%
+"C:\Work\photos"
+
+c:\Work>set s2=%s1:C:=E:%
+c:\Work>echo %s2%
+"E:\Work\photos"
+
+# ref doc:	http://ss64.com/nt/syntax-replace.html
+
