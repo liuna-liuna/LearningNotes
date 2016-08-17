@@ -1,0 +1,34 @@
+	
+#
+# how to use wildcard in git command
+#
+git add '*s.rb'
+find . -name "*.rb" | grep -v "not_me.rb" | xargs git add
+git checkout myBranch **/myFile.md
+git checkout myBranch  **/*Test*
+
+git branch -D `git branch | grep -E '^3\.2\..*'`	# instead of git branch -D 3.2 3.2.1 3.2.2
+git branch  | cut -c3- | egrep "^3.2" | xargs git branch -D
+git for-each-ref --format="%(refname:short)" refs/heads/3.2\* | xargs git branch -D
+	#... or the xargs-free:
+git branch -D `git for-each-ref --format="%(refname:short)" refs/heads/3.2\*`
+
+	# extra info:
+	1) Git does not deal with the wildcard, but your shell does.
+	2) With the **, your shell will look for files in all the subdirectories
+		starting from the current working directory.
+	3) Git does deal with wildcards, using fnmatch(3). See the pathspec entry in Git glossary.
+		But to be sure that git can see the wildcards, they must be escaped 
+		otherwise your shell will expand them first. 
+		Typically, I use wildcards between single-quotes:
+			git checkout myBranch -- '*/myFile.md'
+		The wildcards are applied to the whole name, directories included.
+
+		As you can see in the documentation, the pathspec also allows magic signature 
+		which change how to interpret the pathspec.
+		For example, you can have case-insensitive paths with icase;
+		for example, you could type ':(icase)*readme*' to find all your readme's.
+
+	# ref doc:	http://stackoverflow.com/questions/15160978/is-there-a-way-to-use-wildcards-with-git-checkout
+	# ref doc:	http://stackoverflow.com/questions/3670355/can-you-delete-multiple-branches-in-one-command-with-git
+	
