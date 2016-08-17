@@ -1,0 +1,9 @@
+#
+# how to find startup menu on Windows Server 2008 R2
+#
+for current login user: 
+		C:\Users\i321105\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+	or 	go to run -> shell:startup 
+for all users: 
+		C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+	or 	go to run -> shell:common startup
