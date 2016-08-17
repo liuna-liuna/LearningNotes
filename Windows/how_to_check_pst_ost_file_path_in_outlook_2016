@@ -1,0 +1,6 @@
+#
+# how to check .pst / .ost file path in Outlook 2016
+#
+Method1. regedit
+	reg query HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Outlook /v DefaultProfile
+	reg query HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Outlook\PST /v LastCorruptStore
