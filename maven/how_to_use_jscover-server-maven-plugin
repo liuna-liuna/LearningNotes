@@ -68,20 +68,165 @@ Example 1.
 # ref doc:	https://github.com/tntim96/JSCover-maven-plugin/tree/master/plugin-parent/server
 
 3) plugin info:
-2 modes: server mode, file mode.
-3 goals:
-mvn jscover-file:instrument
-mvn jscover-file:jscover
-mvn jscover-server:jscover
+#
+# jscover-server-maven-plugin info
+#
+Evaluation report:
+	https://wiki.wdf.sap.corp/wiki/display/BPM/JavaScript+Code+Coverage+Tool+Evaluation
+
+Issues and Bugs:
+	https://wiki.wdf.sap.corp/wiki/display/BISHGVisualization/Issue+and+solution
+		
+# ref doc: https://github.com/tntim96/JSCover-maven-plugin	
+
+	2 modes: server mode, file mode.
+	3 goals:
+	mvn jscover-file:instrument
+	mvn jscover-file:jscover
+	mvn jscover-server:jscover
 
 To merge reports generated from both server and file, run:
-mvn jscover-report:merge
-mvn jscover-report:format
+	mvn jscover-report:merge
+	mvn jscover-report:format
 
 # ref doc:  https://github.com/tntim96/JSCover-maven-plugin
 # ref doc:  https://github.com/tntim96/JSCover-Samples
 
 4) how to use jscover:
-2 ways: in jscover*.jar , or plugin ex. jscover*.maven.plugin.
-# ref doc:  http://www.cnblogs.com/reach296/p/4293885.html
+	2 ways: in jscover*.jar , or plugin ex. jscover*.maven.plugin.
+	# ref doc:  http://www.cnblogs.com/reach296/p/4293885.html
+
+5) detailed usage step:
+	5.1)	Download latest CVOM.HTML source code through Git Extension into C:\git\${Jenkins_workspace1}\
+	ssh://<i-number>@${git_server1}:29418/${git_repo1}
+	
+	5.2)	Copy the 2 settings files in the attachment into C:\Work\tools\Maven\maven-settings-on-jenkins\
+	5.3)	cd C:\git\${Jenkins_workspace1}\
+	5.4)	add following lines into pom.xml under C:\git\${Jenkins_workspace1}\, in node project\build\pluginManagement\plugins\ (as shown in the attachment):
+
+		<!-- for jscover-report -->
+		<plugin>
+				<groupId>com.github.tntim96</groupId>
+				<artifactId>jscover-report-maven-plugin</artifactId>
+				<version>1.0.19</version>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+										<goal>merge</goal>
+										<goal>format</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!--Configuration for merge goal-->
+					<destDir>merged</destDir>
+					<mergeDirStrings>
+						<mergeDirString>container\target\jscover-reports\unittest</mergeDirString>
+						<mergeDirString>info\target\jscover-reports\unittest</mergeDirString>
+						<mergeDirString>viz\target\jscover-reports\unittest</mergeDirString>
+					</mergeDirStrings>
+					<!--Configuration for format goal-->
+					<reportDir>merged</reportDir>
+					<srcDir>${project_module1}src/main/js</srcDir>
+					<coberturaXML>true</coberturaXML>
+					<lCOV>true</lCOV>
+				</configuration>
+		</plugin>
+
+	5.5)	run following 4 mvn commands in order in a CMD box:
+			mvn -gs C:\Work\tools\Maven\maven-settings-on-jenkins\Jenkins_GlobalSettings_global_maven_settings.xml -s C:\Work\tools\Maven\maven-settings-on-jenkins\LeanDI_settings_maven_user_settings.xml clean package
+			
+			mvn -gs C:\Work\tools\Maven\maven-settings-on-jenkins\Jenkins_GlobalSettings_global_maven_settings.xml -s C:\Work\tools\Maven\maven-settings-on-jenkins\LeanDI_settings_maven_user_settings.xml -f ${project_module1}pom.xml jscover-server:jscover -Punit_test | tee C:\Work\4Tasks\check_ut_coverage_failure\debug\log.jscover_container
+			
+			mvn -gs C:\Work\tools\Maven\maven-settings-on-jenkins\Jenkins_GlobalSettings_global_maven_settings.xml -s C:\Work\tools\Maven\maven-settings-on-jenkins\LeanDI_settings_maven_user_settings.xml -f ${project_module2}pom.xml jscover-server:jscover -Punit_test | tee C:\Work\4Tasks\check_ut_coverage_failure\debug\log.jscover_info
+			
+			mvn -gs C:\Work\tools\Maven\maven-settings-on-jenkins\Jenkins_GlobalSettings_global_maven_settings.xml -s C:\Work\tools\Maven\maven-settings-on-jenkins\LeanDI_settings_maven_user_settings.xml -f ${project_module3}pom.xml jscover-server:jscover -Punit_test | tee C:\Work\4Tasks\check_ut_coverage_failure\debug\log.jscover_viz
+			
+			mvn -gs C:\Work\tools\Maven\maven-settings-on-jenkins\Jenkins_GlobalSettings_global_maven_settings.xml -s C:\Work\tools\Maven\maven-settings-on-jenkins\LeanDI_settings_maven_user_settings.xml com.github.tntim96:jscover-report-maven-plugin:merge | tee C:\Work\4Tasks\check_ut_coverage_failure\debug\log.jscover_merge
+			
+			mvn -gs C:\Work\tools\Maven\maven-settings-on-jenkins\Jenkins_GlobalSettings_global_maven_settings.xml -s C:\Work\tools\Maven\maven-settings-on-jenkins\LeanDI_settings_maven_user_settings.xml com.github.tntim96:jscover-report-maven-plugin:format | tee C:\Work\4Tasks\check_ut_coverage_failure\debug\log.jscover_format
+	
+	5.6)	open report file:///C:/git/${Jenkins_workspace1}/merged/jscoverage.html in firefox.
+
+
+
+
+
+	
+#
+# Mandatory, local system account works in some situation, but not always. ex. could have ChromeDriver "unable to discover open pages" Exception:
+#
+#	[INFO] --- jscover-server-maven-plugin:1.0.14:jscover (default-cli) @ sap.viz.charts ---
+#	[INFO] Started JSCover server
+#	Starting ChromeDriver 2.19.346078 (6f1f0cde889532d48ce8242342d0b84f94b114a1) on port 32127
+#	Only local connections are allowed.
+#	java.lang.NullPointerException
+#		at jscover.maven.JSCoverMojo.stopWebClient(JSCoverMojo.java:144)
+#		at jscover.maven.ServerMojo.execute(ServerMojo.java:44)
+#		at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:133)
+#		at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:208)
+#		at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:153)
+#		at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:145)
+#		at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:108)
+#		at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:76)
+#		at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:51)
+#		at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:116)
+#		at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:361)
+#		at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:155)
+#		at org.apache.maven.cli.MavenCli.execute(MavenCli.java:584)
+#		at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:213)
+#		at org.apache.maven.cli.MavenCli.main(MavenCli.java:157)
+#		at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+#		at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+#		at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+#		at java.lang.reflect.Method.invoke(Method.java:497)
+#		at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:289)
+#		at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:229)
+#		at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:415)
+#		at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:356)
+#	java.lang.NullPointerException
+#		at jscover.maven.JSCoverMojo.stopWebClient(JSCoverMojo.java:149)
+#		at jscover.maven.ServerMojo.execute(ServerMojo.java:44)
+#		at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:133)
+#		at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:208)
+#		at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:153)
+#		at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:145)
+#		at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:108)
+#		at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:76)
+#		at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:51)
+#		at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:116)
+#		at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:361)
+#		at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:155)
+#		at org.apache.maven.cli.MavenCli.execute(MavenCli.java:584)
+#		at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:213)
+#		at org.apache.maven.cli.MavenCli.main(MavenCli.java:157)
+#		at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+#		at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+#		at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+#		at java.lang.reflect.Method.invoke(Method.java:497)
+#		at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:289)
+#		at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:229)
+#		at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:415)
+#		at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:356)
+#	[INFO] Stopped JSCover server
+#	[INFO] ------------------------------------------------------------------------
+#	[INFO] BUILD FAILURE
+#	[INFO] ------------------------------------------------------------------------
+#	[INFO] Total time: 01:07 min
+#	[INFO] Finished at: 2016-06-21T18:34:09+08:00
+#	[INFO] Final Memory: 13M/169M
+#	[INFO] ------------------------------------------------------------------------
+#		[ERROR] Failed to execute goal com.github.tntim96:jscover-server-maven-plugin:1.0.14:jscover (default-cli) on project sap.viz.charts: Execution default-cli of goal com.github.tntim96:jscover-server-maven-plugin:1.0.14:jscover failed: java.lang.reflect.InvocationTargetException: unknown error: unable to discover open pages
+#		[ERROR] (Driver info: chromedriver=2.19.346078 (6f1f0cde889532d48ce8242342d0b84f94b114a1),platform=Windows NT 6.1 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+#		[ERROR] Command duration or timeout: 61.64 seconds
+#		[ERROR] Build info: version: '2.46.0', revision: '61506a4624b13675f24581e453592342b7485d71', time: '2015-06-04 10:22:50'
+#		[ERROR] System info: host: '${Jenkins_slave1}', ip: '10.193.229.200', os.name: 'Windows Server 2008 R2', os.arch: 'amd64', os.version: '6.1', java.version: '1.8.0_45'
+#		[ERROR] Driver info: org.openqa.selenium.chrome.ChromeDriver
+
+# jenkins slave should be set up as a service, for not jscover-server-maven-plugin.
+
+# only for manual test
+#	3. 	java -jar slave.jar -jnlpUrl http://shg-cvom-infra.pgdev.sap.corp:8080/computer/shg-ci-build03/slave-agent.jnlp
+
 
