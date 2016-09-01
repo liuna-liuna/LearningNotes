@@ -2,14 +2,14 @@
 # how to check ut_coverage_all failed with ChromeDriver Exception "unable to discover open pages"
 #	in a Jenkins job using com.github.tntim96:jscover-server-maven-plugin:1.0.14:jscover
 #
-  http://shg-cvom-infra.pgdev.sap.corp:8080/job/ut_jscover_all/688/consoleFull
+  http://${jenkins_master1}:8080/job/${jenkins_job1}/688/consoleFull
 
 	
 	[ERROR] Failed to execute goal com.github.tntim96:jscover-server-maven-plugin:1.0.14:jscover (default-cli) on project sap.viz.controls: Execution default-cli of goal com.github.tntim96:jscover-server-maven-plugin:1.0.14:jscover failed: java.lang.reflect.InvocationTargetException: unknown error: unable to discover open pages
 	[ERROR] (Driver info: chromedriver=2.19.346078 (6f1f0cde889532d48ce8242342d0b84f94b114a1),platform=Windows NT 6.1 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
 	[ERROR] Command duration or timeout: 61.23 seconds
 	[ERROR] Build info: version: '2.46.0', revision: '61506a4624b13675f24581e453592342b7485d71', time: '2015-06-04 10:22:50'
-	[ERROR] System info: host: 'SHGCVOMCOVER01', ip: '10.193.229.200', os.name: 'Windows Server 2008 R2', os.arch: 'amd64', os.version: '6.1', java.version: '1.8.0_45'
+	[ERROR] System info: host: '${jenkins_slave1}', ip: '10.193.229.200', os.name: 'Windows Server 2008 R2', os.arch: 'amd64', os.version: '6.1', java.version: '1.8.0_45'
 	[ERROR] Driver info: org.openqa.selenium.chrome.ChromeDriver
 	[ERROR] -> [Help 1]
 
@@ -30,17 +30,17 @@ Same issue met by others.
 	##  ref doc: https://bugs.chromium.org/p/chromedriver/issues/detail?id=598 
 
 Debug steps:
-	1) local build on PVGD50896080A.apj.global.corp.sap: build pass
+	1) local build on ${jenkins_slave2}build pass
 	
 	mvn clean package -P !jshint
 	mvn -gs C:\Work\tools\Maven\maven-settings-on-jenkins\Jenkins_GlobalSettings_global_maven_settings.xml -s C:\Work\tools\Maven\maven-settings-on-jenkins\LeanDI_settings_maven_user_settings.xml -f container/pom.xml jscover-server:jscover -Punit_test
 	
-	2) local build on shgcvomcover01.dhcp.pgdev.sap.corp: build pass
+	2) local build on ${jenkins_slave1}.dhcp.pgdev.sap.corp: build pass
 	3) re-download plugin C:\.m2\repository\org\chromium\download\chrome\test\chromedriver\2.19\chromedriver-2.19-win32.zip: jenkins job failed.
-	4) switch to run the job on PVGD50832166A.apj.global.corp.sap : jenkins job failed.
+	4) switch to run the job on ${jenkins_slave3}: jenkins job failed.
 	
 	
-	[works]		5) switch jenkins service on shgcvomcover01.dhcp.pgdev.sap.corp from Local System account to global\service.tip.cvom: jenkins job succeeded.
+	[works]		5) switch jenkins service on ${jenkins_slave1}.dhcp.pgdev.sap.corp from Local System account to global\${jenkins_user1}: jenkins job succeeded.
 	
 						I have found the solution for this issue. it is working fine for me.
 						If you are using windows, run your Jenkins services in system admin,
@@ -57,7 +57,7 @@ Debug steps:
 		
 	[NOT work in a Jenkins job]	6) add option '--no-sandbox' to chromedriver	
 	[NOT work in a Jenkins job]			on a Jenkins slave, set "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --no-sandbox
-	[NOT work in a Jenkins job]			delete all files in C:\Users\SERVICE.TIP.CVOM\AppData\Local\Google\Chrome\User Data\Default\Local Storage\
+	[NOT work in a Jenkins job]			delete all files in C:\Users\${jenkins_user1}\AppData\Local\Google\Chrome\User Data\Default\Local Storage\
 	[NOT work in a Jenkins job]	In my case, adding the --no-sandbox argument to ChromeOptions solved the problem.
 	[NOT work in a Jenkins job]	
 	[NOT work in a Jenkins job]	
@@ -90,7 +90,7 @@ Debug steps:
 	[NOT work in a Jenkins job]	
 	[NOT work in a Jenkins job]	for Jenkins slave:
 	[NOT work in a Jenkins job]			<executable>C:\Program Files\Java\jdk1.8.0_45\bin\java.exe</executable>
-	[NOT work in a Jenkins job]			<arguments>-Xrs  -jar "%BASE%\slave.jar" -jnlpUrl http://shg-cvom-infra.pgdev.sap.corp:8080/computer/PVGD50930642A-Z840/slave-agent.jnlp -secret c9cf191b19ba3cb9876ae320e86c4f22f78e538a3714520706f7618fc87ad5a8</arguments>
+	[NOT work in a Jenkins job]			<arguments>-Xrs  -jar "%BASE%\slave.jar" -jnlpUrl http://${jenkins_master1}:8080/computer/${jenkins_slave1}/slave-agent.jnlp -secret ${jenkins_authtoken1}</arguments>
 	[NOT work in a Jenkins job]			-XX:MaxMetaspaceSize=512m -Xms512m -Xmx1024m
 	[NOT work in a Jenkins job]			
 	[NOT work in a Jenkins job]	9)	chromedriver from 19 -> 21
@@ -106,10 +106,10 @@ Debug steps:
 		
 
 Root cause 2:
-	Jenkins Slave service needs to be started in CMI instead of a service for jscover-server-maven-plugin.
+	Jenkins Slave service needs to be started in CMI instead of a service for jscover-server-maven-plugin
 	
 	Steps:
-		rdp to shgcvomcover01 
+		rdp to ${jenkins_slave1} 
 		pushd C:\jenkins_infra\ 
-		"C:\Program Files\Java\jdk1.8.0_45\bin\java.exe" -Xrs -XX:MaxMetaspaceSize=512m -Xms512m -Xmx1024m -jar slave.jar -jnlpUrl http://shg-cvom-infra.pgdev.sap.corp:8080/computer/UT_coverage(shgcvomcover01)/slave-agent.jnlp -secret 1bf236495470b59d611ae0ff1e160a99b31ffef93662e3d9e153deeaf0680409
+		"C:\Program Files\Java\jdk1.8.0_45\bin\java.exe" -Xrs -XX:MaxMetaspaceSize=512m -Xms512m -Xmx1024m -jar slave.jar -jnlpUrl http://${jenkins_master1}:8080/computer/UT_coverage(${jenkins_slave1})/slave-agent.jnlp -secret ${jenkins_authtoken2}
 
