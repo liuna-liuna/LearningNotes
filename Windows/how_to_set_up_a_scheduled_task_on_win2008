@@ -1,0 +1,18 @@
+#
+# how to set up a scheduled task on Windows Server 2008 R2
+#			
+taking set up task manual_start_jenkinsSlave_on_cover01.bat as an example:
+		go to Task Scheduler
+			-> "Task Scheduler (Local)" -> "Task Scheduler Library"
+			-> Create Task...
+				-> 	Name:				manual_start_jenkinsSlave_on_cover01.bat
+					Security options:	${service_account1}
+										# !! must set it to "Run whether user is logged on or not" !!
+										
+				-> 	Triggers: 	At Startup, At system startup.
+				->	Actions:	Start a program, \\${Share_filer1}\script_win_update\manual_start_jenkinsSlave_on_cover01.bat
+				->	Settings:	If the task fails, 	restart every: 				1 minute,
+													Attempt to restart up to:	3 times.
+		
+		<=>	If not run the task currently, disable it.
+	
