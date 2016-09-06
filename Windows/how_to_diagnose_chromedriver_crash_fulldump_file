@@ -1,0 +1,38 @@
+#
+# how to diagnose ChromeDriver crashes
+#
+steps:
+1)	use ChromeDriver debug version, ex.
+		http://chromedriver.storage.googleapis.com/index.html?path=2.6/ chromedriver_win32_debug.zip
+
+2)	configure to create a fulldump when crash.
+	# feature available since Windows Server 2008.
+	
+	# ref doc:	https://msdn.microsoft.com/en-us/library/windows/desktop/bb787181(v=vs.85).aspx
+
+3)  use WinDbg to debug the dump file
+		a) WinDbg介绍：	Debugging Tools and Symbols:
+			Getting Started		http://www.microsoft.com/whdc/devtools/debugging/debugstart.mspx
+			A word for WinDbg	http://mtaulty.com/communityserver/blogs/mike_taultys_blog/archive/2004/08/03/4656.aspx
+						
+		b) WinDbg下载：
+			Install Debugging Tools for Windows 64-bit Versions
+			http://www.microsoft.com/whdc/devtools/debugging/install64bit.mspx
+		
+		
+		c) 配置WinDbg：
+			运行WinDbg->菜单->File->Symbol File Path->按照下面的方法设置_NT_SYMBOL_PATH变量：
+			在弹出的框中输入“C:\MyCodesSymbols; SRV*C:\MyLocalSymbols*http://msdl.microsoft.com/download/symbols”(按照这样设置，WinDbg将先从本地文件夹C:\MyCodesSymbols中查找Symbol，如果找不到，则自动从MS的Symbol Server上下载Symbols)。
+			另一种做法是从这个Symbol下载地址中http://www.microsoft.com/whdc/devtools/debugging/symbolpkg.mspx，下载相应操作系统所需要的完整的Symbol安装包，并进行安装，例如我将其安装在D:\WINDOWS\Symbols，在该框中输入“D:\WINDOWS\Symbols”。
+			（这里要注意下载的Symbols的版本一定要正确，在我的Win2003+Sp1上，我曾经以为安装Win2003+Sp2的Symbols可能会牛×点，但结果证明我错了，
+			用WinDbg打开可执行文件时，提示“PDB symbol for mscorwks.dll not loaded;Defaulted to export symbols for ntdll.dll”的错误，
+			我有重新装上Win2003+Sp1的Symbols, 现在一切运行正常^_^）
+		
+		
+		d) 使用WinDbg：
+			WinDbg提供了图形界面和命令行两种运行方式。这里介绍使用图形界面的WinDbg来调试应用程序：
+			File->OpenExecutable->可以选择一个可执行文件进行调试；
+			File->Attache to a Process->可以选择一个运行中的进程，并对其进行调试；
+			
+		# ref doc:	http://www.cnblogs.com/happyhippy/archive/2007/04/08/710933.html
+
