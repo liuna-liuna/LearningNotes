@@ -1,0 +1,8 @@
+#
+# how to set auto-wrap and row-width in notepad++
+#
+in Notepad++ v6.7.9.2,
+	set auto-wrap:
+		View -> tickle Word Wrap
+	set row-width:
+		Settings -> Preference: Border Width : set it from 2 (default?) to 0.
