@@ -2,14 +2,14 @@
 # how to check ut_coverage_all failed with ChromeDriver Exception "unable to discover open pages"
 #	in a Jenkins job using com.github.tntim96:jscover-server-maven-plugin:1.0.14:jscover
 #
-  http://${jenkins_master1}:8080/job/${jenkins_job1}/688/consoleFull
+  http://${jenkins_master1}:8080/job/${jenkins_jscover_job1}/688/consoleFull
 
 	
 	[ERROR] Failed to execute goal com.github.tntim96:jscover-server-maven-plugin:1.0.14:jscover (default-cli) on project sap.viz.controls: Execution default-cli of goal com.github.tntim96:jscover-server-maven-plugin:1.0.14:jscover failed: java.lang.reflect.InvocationTargetException: unknown error: unable to discover open pages
 	[ERROR] (Driver info: chromedriver=2.19.346078 (6f1f0cde889532d48ce8242342d0b84f94b114a1),platform=Windows NT 6.1 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
 	[ERROR] Command duration or timeout: 61.23 seconds
 	[ERROR] Build info: version: '2.46.0', revision: '61506a4624b13675f24581e453592342b7485d71', time: '2015-06-04 10:22:50'
-	[ERROR] System info: host: '${jenkins_slave1}', ip: '10.193.229.200', os.name: 'Windows Server 2008 R2', os.arch: 'amd64', os.version: '6.1', java.version: '1.8.0_45'
+	[ERROR] System info: host: '${jenkins_jscover_slave1}', ip: '...', os.name: 'Windows Server 2008 R2', os.arch: 'amd64', os.version: '6.1', java.version: '1.8.0_45'
 	[ERROR] Driver info: org.openqa.selenium.chrome.ChromeDriver
 	[ERROR] -> [Help 1]
 
@@ -30,17 +30,17 @@ Same issue met by others.
 	##  ref doc: https://bugs.chromium.org/p/chromedriver/issues/detail?id=598 
 
 Debug steps:
-	1) local build on ${jenkins_slave2}build pass
+	1) local build on ${jenkins_slave1}: build pass
 	
 	mvn clean package -P !jshint
-	mvn -gs C:\Work\tools\Maven\maven-settings-on-jenkins\Jenkins_GlobalSettings_global_maven_settings.xml -s C:\Work\tools\Maven\maven-settings-on-jenkins\LeanDI_settings_maven_user_settings.xml -f container/pom.xml jscover-server:jscover -Punit_test
+	mvn -gs C:\Work\tools\Maven\maven-settings-on-jenkins\Jenkins_GlobalSettings_global_maven_settings.xml -s C:\Work\tools\Maven\maven-settings-on-jenkins\LeanDI_settings_maven_user_settings.xml -f ${git_module1}pom.xml jscover-server:jscover -Punit_test
 	
-	2) local build on ${jenkins_slave1}.dhcp.pgdev.sap.corp: build pass
+	2) local build on ${jenkins_jscover_slave1}.dhcp.pgdev.sap.corp: build pass
 	3) re-download plugin C:\.m2\repository\org\chromium\download\chrome\test\chromedriver\2.19\chromedriver-2.19-win32.zip: jenkins job failed.
-	4) switch to run the job on ${jenkins_slave3}: jenkins job failed.
+	4) switch to run the job on ${jenkins_slave1} : jenkins job failed.
 	
 	
-	[works]		5) switch jenkins service on ${jenkins_slave1}.dhcp.pgdev.sap.corp from Local System account to global\${jenkins_user1}: jenkins job succeeded.
+	[works]		5) switch jenkins service on ${jenkins_jscover_slave1} from Local System account to ${jenkins_user1}: jenkins job succeeded.
 	
 						I have found the solution for this issue. it is working fine for me.
 						If you are using windows, run your Jenkins services in system admin,
@@ -90,7 +90,7 @@ Debug steps:
 	[NOT work in a Jenkins job]	
 	[NOT work in a Jenkins job]	for Jenkins slave:
 	[NOT work in a Jenkins job]			<executable>C:\Program Files\Java\jdk1.8.0_45\bin\java.exe</executable>
-	[NOT work in a Jenkins job]			<arguments>-Xrs  -jar "%BASE%\slave.jar" -jnlpUrl http://${jenkins_master1}:8080/computer/${jenkins_slave1}/slave-agent.jnlp -secret ${jenkins_authtoken1}</arguments>
+	[NOT work in a Jenkins job]			<arguments>-Xrs  -jar "%BASE%\slave.jar" -jnlpUrl http://${jenkins_master1}:8080/computer/PVGD50930642A-Z840/slave-agent.jnlp -secret c9cf191b19ba3cb9876ae320e86c4f22f78e538a3714520706f7618fc87ad5a8</arguments>
 	[NOT work in a Jenkins job]			-XX:MaxMetaspaceSize=512m -Xms512m -Xmx1024m
 	[NOT work in a Jenkins job]			
 	[NOT work in a Jenkins job]	9)	chromedriver from 19 -> 21
@@ -103,13 +103,249 @@ Debug steps:
 	[NOT work in a Jenkins job]		Java home: c:\jenkins\tools\hudson.model.JDK\JDK-8u45\jre
 	[NOT work in a Jenkins job]		Default locale: en_US, platform encoding: Cp1252
 	[NOT work in a Jenkins job]		OS name: "windows server 2008 r2", version: "6.1", arch: "amd64", family: "dos"
+	[chromedriver.exe comes from]	[DEBUG] Configuring mojo 'org.apache.maven.plugins:maven-dependency-plugin:2.8:unpack' with basic configurator -->
+	[chromedriver.exe comes from]	[DEBUG]   (s) groupId = org.chromium.download.chrome.test
+	[chromedriver.exe comes from]	[DEBUG]   (s) artifactId = chromedriver
+	[chromedriver.exe comes from]	[DEBUG]   (s) version = 2.19
+	[chromedriver.exe comes from]	[DEBUG]   (s) classifier = win32
+	[chromedriver.exe comes from]	[DEBUG]   (s) type = zip
+	[chromedriver.exe comes from]	[DEBUG]   (s) overWrite = false
+	[chromedriver.exe comes from]	[DEBUG]   (s) outputDirectory = C:\jenkins\workspace\tmp_check_ut_jscover\info\target\tp\driver
+	[chromedriver.exe comes from]	[DEBUG]   (s) destFileName = chromedriver.exe
+	[chromedriver.exe comes from]	[DEBUG]   (s) artifactItems = [org.chromium.download.chrome.test:chromedriver:win32:2.19:zip]
+	[chromedriver.exe comes from]	[DEBUG]   (f) ignorePermissions = false
+	[chromedriver.exe comes from]	[DEBUG]   (s) local =        id: local
+	[chromedriver.exe comes from]		url: file:///C:/.m2/repository/
+	[chromedriver.exe comes from]	layout: default
+	[chromedriver.exe comes from]	snapshots: [enabled => true, update => always]
+	[chromedriver.exe comes from]	releases: [enabled => true, update => always]
+	[chromedriver.exe comes from]	
+	[chromedriver.exe comes from]	[DEBUG]   (s) markersDirectory = C:\jenkins\workspace\tmp_check_ut_jscover\info\target\dependency-maven-plugin-markers
+	[chromedriver.exe comes from]	[DEBUG]   (f) outputAbsoluteArtifactFilename = false
+	[chromedriver.exe comes from]	[DEBUG]   (s) outputDirectory = C:\jenkins\workspace\tmp_check_ut_jscover\info\target\dependency
+	[chromedriver.exe comes from]	[DEBUG]   (s) overWriteIfNewer = true
+	[chromedriver.exe comes from]	[DEBUG]   (s) overWriteReleases = false
+	[chromedriver.exe comes from]	[DEBUG]   (s) overWriteSnapshots = false
+		
+		
 		
 
 Root cause 2:
 	Jenkins Slave service needs to be started in CMI instead of a service for jscover-server-maven-plugin
 	
+			org.chromium.download.chrome.test:chromedriver:2.19
+			+ chrome browser: Version 52.0.2743.116 m
+			+ OS:			  Windows Server 2008 R2
+			+ jscover:		  com.github.tntim96:jscover-server-maven-plugin:1.0.14:jscover
+			+ Jenkins slave in CMI
+	
 	Steps:
-		rdp to ${jenkins_slave1} 
+		rdp to ${jenkins_jscover_slave1} 
 		pushd C:\jenkins_infra\ 
-		"C:\Program Files\Java\jdk1.8.0_45\bin\java.exe" -Xrs -XX:MaxMetaspaceSize=512m -Xms512m -Xmx1024m -jar slave.jar -jnlpUrl http://${jenkins_master1}:8080/computer/UT_coverage(${jenkins_slave1})/slave-agent.jnlp -secret ${jenkins_authtoken2}
+		"C:\Program Files\Java\jdk1.8.0_45\bin\java.exe" -Xrs -XX:MaxMetaspaceSize=512m -Xms512m -Xmx1024m -jar slave.jar -jnlpUrl http://${jenkins_master1}:8080/computer/${jenkins_jscover_slave1}/slave-agent.jnlp -secret 1bf236495470b59d611ae0ff1e160a99b31ffef93662e3d9e153deeaf0680409
+
+Extra info:
+[NOT validated]	# could be caused by:	
+		"unable to discover open pages" may occur when chromedriver failed to find a opened tab in the browser within specified time after it started chrome.
+		# ref doc:	https://bugs.chromium.org/p/chromedriver/issues/detail?id=1275
+		
+		
+	# thread on boardreader.com:
+		http://boardreader.com/thread/Unable_to_discover_open_pages_error_when_6yb1hk__gfvfH-YEC48.html?o=10
+		
+[NOT work]		a) My problem is solved after adding chromeOptions.AddArguments(" no-sandbox"); 
+[NOT work]		b) Adding capabilities: { browserName: 'chrome', chromeOptions: { args: ['--no-sandbox'] }, 
+			to my Protractor configuration file solved the problem. 
+	
+[NOT work]		c) https://groups.google.com/forum/#!topic/selenium-users/DsFv98yNXmU
+			Revert your chrome version to 51.
+			It will resolve the issue for the time being. Something went wrong with the release of Google Chrome 52.
+			
+			however, Summary: Fails to navigate to URL when Chrome 51 is launched in session 0 / through CI (was: Chrome 51 - unknown error: unable to discover open pages).
+			# ref doc: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1389
+			
+[NOT work]		d) "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --disable-extensions --allow-no-sandbox-job
+						--ignore-certificate-errors --allow-running-insecure-content
+						
+						--allow-no-sandbox-job is used in API.
+						-no-sandbox is used in CLI.
+			
+			allow-no-sandbox-job 	Enables the sandboxed processes to run without a job object assigned to them.
+									This flag is required to allow Chrome to run in RemoteApps or Citrix.
+									This flag can reduce the security of the sandboxed processes and allow them 
+									to do certain API calls like shut down Windows or access the clipboard.
+									Also we lose the chance to kill some processes until the outer job that owns them finishes.
+									
+			# ref doc: https://groups.google.com/forum/?utm_medium=email&utm_source=footer#!msg/selenium-users/gfvfH-YEC48/cY4lVMJWAQAJ
+			# ref doc: https://groups.google.com/forum/#!topic/selenium-users/DsFv98yNXmU
+			# ref doc: https://groups.google.com/forum/#!topic/selenium-users/gfvfH-YEC48
+			
+		<=> more info from ref doc:	https://bugs.chromium.org/p/chromedriver/issues/detail?id=1389
+		
+[NOT work]		e) I was getting an issue where all my chrome tests would pass both locally and if I ran them myself on the build server.
+			However, they would fail every time if the tests were run as a windows service in my VSTS Build. 
+			My chrome tests started passing again once I disabled the developer extensions that were added on the new chrome version.
+			I basically added the code below to all of my chrome test and now they are passing in all environments and as a windows service.
+			As stated multiple times about I think this is a compatibility issue with the driver and browser.
+			I tried all the about "fixes" and this seemed to be the only one that works for me.
+	
+				ChromeOptions chromeOptions = new ChromeOptions();
+				chromeOptions.AddArguments("test-type");
+				chromeOptions.AddArguments("start-maximized");
+				chromeOptions.AddArguments("--disable-extensions");
+				chromeOptions.AddArguments("no-sandbox");
+				PropertiesCollection.driver = new ChromeDriver(chromeOptions);
+	
+			I think it's not "disable-extension" that helps but "no-sandbox" switch passes your test. 
+			With the new canary build, you no longer need to pass this switch.
+			
+			# ref doc:	https://github.com/FuckTheWorld/chromedriver/issues/539#issuecomment-229252195
+
+Root cause 3:
+		f)	Fix is now available in Chrome 53 beta channel ex. Chrome Version 53.0.2785.89 beta-m (64-bit).
+
+			Please use Chrome beta v53.0.2785.70 & Chromedriver stable v2.23			
+			However, as stated above in comment35 , if anyone is running chromedriver tests in session 0,
+			they should modify their test infrastructure to run the tests in an interactive session because as of Windows vista,
+			Microsoft no longer supports running user applications (e.g. Chrome) in session 0.
+
+			comment35: Worth pointing this fix is available only for short term as Chrome will stop supporting Session 0 in the near future.
+						It would be good to switch your test frameworks to non-session 0 environment.
+
+##############################################################################################################################################
+[Verified]	Through error and trial:
+[Works]		on ${jenkins_jscover_slave1}:
+						Chrome:			  Version 53.0.2785.89 m
+						+ chromedriver:	  v2.19
+						+ jscover:		  com.github.tntim96:jscover-server-maven-plugin:1.0.14:jscover
+						+ Jenkins slave in CLI.
+							(exactly, manual_start_jenkinsSlave_on_cover01.bat as a scheduled task.)
+							
+						"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"				
+												
+[Works]		on PVGD50832167A.apj.global.corp.sap:
+						Chrome:			  53.0.2785.89 beta-m (64-bit)
+						+ chromedriver:	  v2.19
+						+ jscover:		  com.github.tntim96:jscover-server-maven-plugin:1.0.14:jscover
+						+ Jenkins slave as a service works.
+			
+
+			You can download Chrome beta from https://www.google.com/chrome/browser/beta.html
+			and Chromedriver stable build from http://chromedriver.storage.googleapis.com/index.html?path=2.23/
+			
+			# ref doc:	https://bugs.chromium.org/p/chromedriver/issues/detail?id=1389
+
+			# release notes for Chrome Version 53.0.2785.89:
+				# ref doc: http://googlechromereleases.blogspot.com/2016/08/stable-channel-update-for-desktop_31.html
+				
+				# relevant feature:
+					# ref doc:	https://groups.google.com/a/chromium.org/forum/#!msg/chromium-dev/QL2K4yFVg_U/vj44YWOaAwAJ
+					Summary
+						In September 2015, we made "Detect and run important plugin content" the default plugin setting in Chrome,
+						automatically pausing any cross-origin plugin content smaller than 400px in width or 300px in height.
+						This behavior has an exception for any plugin content that is 5x5 or smaller or is an undefined size,
+						because there was no canonical way of detecting viewability until Intersection Observer was standardized and implemented.
+						
+						We would now like to remove this exception and instead not load tiny, cross-origin content.
+						If the user has their plugin setting set to the default of "Detect and run important plugin content",
+						the browser will not instantiate cross-origin plugin content that is roughly 5x5 or smaller or has an undefined size.
+						An icon will be displayed in the URL bar indicating that plugin content is not running,
+						allowing the user to reload the page with plugin content running or open settings to add a site-wide exception.
+						Other choices of the plugin content setting are unaffected by this launch.
+						For more details, see the design doc.
+				
+				Spec
+					The behavior of plugin content is not standardized, but this removal is designed to move toward a more standards-based approach.
+					It is a follow-on to intersection observer, which implements a standardized version of the viewability detection,
+					a very common use case for this tiny cross-origin plugin content.
+				
+				<=> * Extensions web accessible resources bypass.
+					# ref doc:	http://filehippo.com/zh/download_google_chrome/changelog/
+				
+				<=> [IntersectionObserver] Check for valid ExecutionContext.
+							Because deliverIntersectionObservations() is called asynchronously during idle time,
+							it's possible that its ExecutionContext was deleted between the time a notification was created and when it's delivered.
+					# ref doc:	https://chromium.googlesource.com/chromium/src/+log/52.0.2743.116..53.0.2785.92?pretty=fuller&n=10000
+
+##############################################################################################################################################						
+						
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	g) set -Dwebdriver.chrome.logfile in top-level pom.xml:
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	             
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]		I start java with the following parameters (Linux / Mac):
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	             
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			DIR=path/to/dir/containing/selenium/and/stuff
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			cd "$DIR" && java -cp "$DIR\
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			:$DIR/output\
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			:$DIR/bin/selenium-server-standalone-2.33.0.jar" \
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			-Dwebdriver.chrome.driver="$DIR/bin/chromedriver" \
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			-Dwebdriver.chrome.args="-disable-logging" \
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			-Dwebdriver.chrome.logfile="/dev/null" \
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			AllTests
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			     
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			If you're on Windows:
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			     
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			set DIR=path\to\dir\containing\selenium\and\stuff
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			cd "%DIR%" && java -cp "%DIR%;%DIR%\output;%DIR%\bin\selenium-server-standalone-2.33.0.jar" ^
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			-Dwebdriver.chrome.driver="%DIR%\bin\chromedriver.exe" ^
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			-Dwebdriver.chrome.args="-disable-logging" ^
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			-Dwebdriver.chrome.logfile=NUL ^
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]			AllTests
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	             
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]		# ref doc: 			http://kechengpuzi.com/q/s13886430
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]		# ref doc for args:	https://sites.google.com/a/chromium.org/chromedriver/capabilities
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]		          
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]		   <plugin>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	             <groupId>com.github.tntim96</groupId>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	             <artifactId>jscover-server-maven-plugin</artifactId>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	             <version>1.0.14</version>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	             <configuration>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <documentRoot>${project.basedir}</documentRoot>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <!--
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <testDirectory>${project.build.testSourceDirectory}</testDirectory>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <testIncludes>APITestsRunner.html</testIncludes>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <testType>QUnit</testType>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <lineCoverageMinimum>1</lineCoverageMinimum>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <branchCoverageMinimum>1</branchCoverageMinimum>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <functionCoverageMinimum>1</functionCoverageMinimum>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <port>8099</port>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <instrumentPathArgs/>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <reportDir>${project.basedir}/target/jscover-reports/apitest</reportDir>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 -->
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <includeUnloadedJS>true</includeUnloadedJS>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <includeBranch>true</includeBranch>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <includeFunction>true</includeFunction>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <reportCoberturaXML>true</reportCoberturaXML>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <reportLCOV>true</reportLCOV>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <timeOutSeconds>20</timeOutSeconds>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <webDriverClassName>org.openqa.selenium.chrome.ChromeDriver</webDriverClassName>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <!-- 
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <webDriverClassName>org.openqa.selenium.phantomjs.PhantomJSDriver</webDriverClassName> 
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                 <webDriverClassName>org.openqa.selenium.firefox.FirefoxDriver</webDriverClassName> 
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                -->
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                <systemProperties>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                    <property>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                        <name>webdriver.chrome.driver</name>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                        <value>${driver.path}/chromedriver.exe</value>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                    </property>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                    <property>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                        <name>webdriver.chrome.logfile</name>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                        <value>${driver.path}/chromedriver.log</value>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                    </property>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                    <property>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                        <name>webdriver.chrome.args</name>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                        <value>no-sandbox</value>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                    </property>                            
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                    <!--
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                    <property>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                        <name>phantomjs.binary.path</name>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                        <value>${project.build.directory}/tp/phantomjs/phantomjs-2.0.0-windows/bin/phantomjs.exe</value>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                    </property> -->
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	                </systemProperties>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	            </configuration>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	        </plugin>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	    </plugins>
+[set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]		
+			
+[NOT work]		h)	update jscover-server-maven-plugin from v14 to v19.			
+							for com.github.tntim96:jscover-server-maven-plugin:1.0.14:jscover.
 
