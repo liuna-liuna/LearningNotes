@@ -1,9 +1,62 @@
 #
 # how to use chrome, chromedriver in a Jenkins job on Windows
 #
+Example 1) chrome + chromedriver + surefire + java test code
+	# Steps:
+	Step 1). unpack chrome and chromedriver:	maven-dependency-plugin
+	Step 2). config surefire plugin:			systemPropertyVariables:
+													webdriver.chrome.driver, win.google.chrome.bin.
+	Step 3). write java test code:				ex. 
+												public class WebTest{ 
+													@BeforeClass 
+													static public void setupOnce() throw IOException{
+														service = new ChromeDriverService.Builder(...)
+														
+														service.start()
+														
+														chromeOptions chromeOptions = new ChromeOptions();
+														chromeOptions.addArguments("no-sandbox");
+														capabilities = DesiredCapabilities.chrome();
+														capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
+														// use service and capabilities to open driver with settings and chrome bin
+														driver = new RemoteWebDriver(service.getUrl(), capabilities);
+														
+													}
+													
+													@AfterClass 
+													static public void tesardownOnce() {
+														if (null != service) {
+															service.stop(); 
+															service = null;
+														}
+													}
+													
+													@Test public 
+													void testGoogleSearch() throws ... {
+														driver.get("http://www.google.com/xhtml");
+														assertEquals("Google", driver.getTitle());
+														...
+													}
+													
+													
+												}
+	
+	
 	# ref doc:	http://stackoverflow.com/questions/38963784/chromedriver-fails-on-windows-jenkins-slave-running-in-foreground
 
-	## Selenium Webdriver info:
+Example 2) chrome + chromedriver + jscover-server + java test code	
+	# Steps:
+	Step 1). unpack chrome and chromedriver:	maven-dependency-plugin
+	Step 2). config jscover-server plugin:		ConfigurationOptions + systemPropertyVariables:
+													ConfigurationOptions: 		webDriverClassName, documentRoot, branchCoverageMinimum, 
+																				functionCoverageMinimum, includeBranch, includeFunction, includeUnloadedJS, instrumentPathArgs, lineCoverageMinimum, port, reportCoberturaXML, reportDir, reportLCOV, testDirectory, testIncludes, testType
+													systemPropertyVariables: 	webdriver.chrome.driver
+	Step 3). write java test code:				ex. 
+												public class WebTest{ 
+													...
+												}
+	
+## Selenium Webdriver info:
 		The primary new feature in Selenium 2.0 is the integration of the WebDriver API. WebDriver is designed to provide a simpler, more concise programming interface in addition to addressing some limitations in the Selenium-RC API. Selenium-WebDriver was developed to better support dynamic web pages where elements of a page may change without the page itself being reloaded. WebDriver’s goal is to supply a well-designed object-oriented API that provides improved support for modern advanced web-app testing problems.
 
 	# ref doc:	http://docs.seleniumhq.org/docs/03_webdriver.jsp		
