@@ -1,0 +1,9 @@
+#
+# how to set Underline / Bold / Italic in notepad++ v6.7.9.2
+#
+goto menu -> Settings -> Preferences -> Style Configurator
+	Select theme:	Default(stylers.xml)
+	Language:	Global Styles ( or other language same as the file )
+	Style:		ex. Default Style
+		=>	Font Style: tickle Underline / Bold / Italic
+		
