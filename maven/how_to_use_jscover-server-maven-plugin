@@ -113,8 +113,8 @@ To merge reports generated from both server and file, run:
 					<execution>
 						<phase>verify</phase>
 						<goals>
-										<goal>merge</goal>
-										<goal>format</goal>
+							<goal>merge</goal>
+							<goal>format</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -133,6 +133,19 @@ To merge reports generated from both server and file, run:
 					<lCOV>true</lCOV>
 				</configuration>
 		</plugin>
+		
+# extra info:
+			mergeDirStrings is an ArrayList, mergeDirString is the path of report1, report2...
+			
+			srcDir could be not used any more, used in version before 1.0.16 at Sep 11, 2015,
+					could be a legacy parameter.
+			# ref doc:		https://github.com/tntim96/JSCover-maven-plugin/issues/15
+			# legacy ref doc:	http://grepcode.com/file/repo1.maven.org/maven2/org.bitbucket.jscl/jscover-legacy-plugin/0.0.3/org/jscover/maven/AbstractJSCoverLegacyMojo.java
+			
+		# ref doc for jscover-report:		https://github.com/tntim96/JSCover-maven-plugin/blob/master/plugin-parent/report/README.md
+		# ref doc for jscover-report source:	https://javalibs.com/artifact/com.github.tntim96/jscover-report-maven-plugin?className=jscover.maven.MergeMojo&source
+							https://github.com/tntim96/JSCover-maven-plugin/blob/master/plugin-parent/report/src/main/java/jscover/maven/MergeMojo.java
+
 
 	5.5)	run following 4 mvn commands in order in a CMD box:
 			mvn -gs C:\Work\tools\Maven\maven-settings-on-jenkins\Jenkins_GlobalSettings_global_maven_settings.xml -s C:\Work\tools\Maven\maven-settings-on-jenkins\LeanDI_settings_maven_user_settings.xml clean package
@@ -149,6 +162,9 @@ To merge reports generated from both server and file, run:
 	
 	5.6)	open report file:///C:/git/${Jenkins_workspace1}/merged/jscoverage.html in firefox.
 
+6) how jscover instrument js script
+#
+	# ref doc:	https://tntim96.github.io/JSCover/manual/manual.xml#implementationInstrumentation
 
 
 
