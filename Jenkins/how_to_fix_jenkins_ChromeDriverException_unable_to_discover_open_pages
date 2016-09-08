@@ -153,7 +153,13 @@ Extra info:
 	# thread on boardreader.com:
 		http://boardreader.com/thread/Unable_to_discover_open_pages_error_when_6yb1hk__gfvfH-YEC48.html?o=10
 		
-[NOT work]		a) My problem is solved after adding chromeOptions.AddArguments(" no-sandbox"); 
+[NOT work]		a) My problem is solved after adding chromeOptions.AddArguments(" no-sandbox"),
+					and cleaned chrome cache:
+					[already unchecked]		Run this Program in compatibility mode for.
+					[added in CLI]			-no-sandbox 
+					[cache cleaned]			%USERPROFILE%\AppData\Local\Google\Chrome\User Data\Default\Local Storage
+					
+					# ref doc:	http://www.wintips.org/fix-google-chrome-blank-page-problem/
 [NOT work]		b) Adding capabilities: { browserName: 'chrome', chromeOptions: { args: ['--no-sandbox'] }, 
 			to my Protractor configuration file solved the problem. 
 	
