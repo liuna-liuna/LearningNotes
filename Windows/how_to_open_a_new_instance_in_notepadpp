@@ -1,0 +1,14 @@
+#
+# how to open a new instance in notepad++
+#
+in Notepad++ v6.7.9.2,
+Method1. add -multiInst to start notepad++
+			notepad++ Target:	"C:\Program Files (x86)\Notepad++\notepad++.exe" -multiInst
+		
+Method2. set in settings:
+			Settings -> Preferences -> Multi-Instance:
+				by default, us single instance mode
+				always use multiple instances
+				open session in new instance
+
+			# ref doc: http://docs.notepad-plus-plus.org/index.php/Multiple_Instances
