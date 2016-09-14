@@ -274,7 +274,10 @@ Root cause 3:
 					# ref doc:	https://chromium.googlesource.com/chromium/src/+log/52.0.2743.116..53.0.2785.92?pretty=fuller&n=10000
 
 on 9/14/2016, chrome version is better 53.0.2785.89 (64-bit), not the latest version or former version, which does not work.
-
+		on a Jenkins build slave:
+			stop auto-update of chrome:		run DisableChromeAutoUpdate.ps1
+			install 53.0.2785.89 (64-bit)	
+			run ${ut_jscover_job1}
 ##############################################################################################################################################						
 						
 [set webdriver.chrome.logfile in pom.xml works but -no-sandbox NOT]	g) set -Dwebdriver.chrome.logfile in top-level pom.xml:
