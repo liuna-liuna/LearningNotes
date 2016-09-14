@@ -1,0 +1,13 @@
+#
+# what is Certificate Propagation on windows
+#
+Certificate Propagation 
+	Copies user certificates and root certificates from smart cards into the current user's certificate store, 
+	detects when a smart card is inserted into a smart card reader,
+	and, if needed, installs the smart card Plug and Play minidriver.
+	
+	该服务为智能卡提供证书服务，默认手动，不使用智能卡的话可以将其禁用，不过手动也不碍事。
+
+# ref doc:	http://www.2cto.com/os/201602/490178.html
+
+	
