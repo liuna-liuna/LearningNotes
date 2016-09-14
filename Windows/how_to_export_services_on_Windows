@@ -1,0 +1,9 @@
+#
+# how to export services on Windows
+#
+Method 1)	Get-Service | Out-File services.txt
+			Get-Service | Export-CSV services.csv
+
+			# ref doc:	http://www.xuebuyuan.com/2012149.html
+
+Method 2) services.msc -> click export on menu
