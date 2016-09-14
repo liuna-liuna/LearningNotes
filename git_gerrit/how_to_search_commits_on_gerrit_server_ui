@@ -7,7 +7,10 @@ method 1: in browser:
 	change:1377981						   # => https://${GERRIT_SERVER}/#/q/change:1377981
 	ref: refs/heads/1297988			   	           # => https://${GERRIT_SERVER}/#/q/ref:+refs/heads/1297988
 	file:.gitreview						   # => https://${GERRIT_SERVER}p/#/q/file:.gitreview
+	file:^src/test/js/unittest/.*\.js branch:feat1		   # => https://git.wdf.sap.corp/#/q/file:%255Esrc/test/js/unittest/.*%255C.js+branch:feat1
 	commit: ${commitID}
+	owner:name1 (status:abandoned OR status:merged)		   # => https://git.wdf.sap.corp/#/q/owner:name1+(status:abandoned+OR+status:merged)
+
 
 method 2: in windows command:
 	# to check changes with status:open project:${GERRIT_PROJECT1}
