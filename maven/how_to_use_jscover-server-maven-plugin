@@ -241,6 +241,11 @@ To merge reports generated from both server and file, run:
 #		[ERROR] Driver info: org.openqa.selenium.chrome.ChromeDriver
 
 # jenkins slave should be set up as a service, for not jscover-server-maven-plugin.
+# on 9/14/2016, chrome version is better 53.0.2785.89 (64-bit), not the latest version or former version,
+#		to fix above except: not load cross-origin content.
+#		ref doc:
+#			https://bugs.chromium.org/p/chromedriver/issues/detail?id=1389
+#			https://groups.google.com/a/chromium.org/forum/#!msg/chromium-dev/QL2K4yFVg_U/vj44YWOaAwAJ
 
 # only for manual test
 #	3. 	java -jar slave.jar -jnlpUrl http://shg-cvom-infra.pgdev.sap.corp:8080/computer/shg-ci-build03/slave-agent.jnlp
