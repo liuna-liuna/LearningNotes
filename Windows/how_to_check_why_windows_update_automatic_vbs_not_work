@@ -1,0 +1,192 @@
+#
+# check why Windows Update automatically WUA_SearchDownloadInstall*.vbs not work
+#
+
+Phenomenon:
+	for job http://${jenkins_master1}:8080/view/tools/job/${jenkins_wua_job1}/ :
+	
+	1) WUA_SearchDownloadInstall*.vbs couldn't find updates, it reports "There are no applicable updates."
+		While Control Panel\All Control Panel Items\Windows Update, it reports updates.	
+	
+	2)	An Exception in running WUA_SearchDownloadInstall_withArgus.vbs: Download error (null): 0x80240044 in .vbs:
+		from cmd updateSession.CreateUpdateDownloader() 
+Fix:
+	1.1)	 run as Administrator manually:
+			%WINDIR%\system32\cscript.exe  \\${jenkins_master1}\script_win_update\WUA_SearchDownloadInstall_withArgus.vbs
+			runas /user:cronAdmin “cmd.exe /C %WINDIR%\system32\cscript.exe  \\${jenkins_master1}\script_win_update\WUA_SearchDownloadInstall_withArgus.vbs”
+	
+			C:\Users\service.tip.cvom>runas /user:global\service.tip.cvom
+				"cmd.exe /C %WINDIR%\system32\cscript.exe \\${jenkins_master1}\script_win_update\WUA_SearchDownloadInstall_withArgus.vbs > C:\temp\log.runas"
+	# ref doc:	http://stackoverflow.com/questions/9740694/windows-update-downloader-download-fail 
+	
+	1.2)	 set .vbs to run in an elevated state <= [Not validate]
+	[TODO]	could it be [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate]:
+		 			"ElevateNonAdmins"=dword:00000001
+	
+	
+	1.3)	 a workaround <= [Works]
+	[done] use csadmin instead of cscript.exe, which is set as “Run as an administrator”.
+			# ref doc:	http://stackoverflow.com/questions/17466681/how-to-run-vbs-as-administrator-from-vbs 
+	
+	2)	[done] set “notify” error to “Never notify” in Control Panel -> System and Security -> User Account Control Settings.
+	
+		run %WINDIR%\system32\cscript.exe as an Administrator, used a workaround in step 1) above.
+		[done] created an account ${jenkins_slave1}\cronAdmin. removed later. <= needs password interactively.
+	
+	
+	3)	[done] stop service wuauserv, "Windows Update", must run as Administrator.
+	[done] use cmdadmin instead of cmd.exe, which is set as “Run as an administrator”.
+		sc config wuauserv start=demand
+		net start wuauserv
+	
+		net stop wuauserv
+		sc config wuauserv start=disabled
+	# ref doc:	https://www.windows-commandline.com/start-stop-windows-update-service/ 
+	
+	
+	4)	[done]	remove tmp.output.
+	
+		[done]	removed [HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate\AU]
+				"UseWUServer"=dword:00000001
+		
+	# ref doc:	https://support.microsoft.com/en-us/kb/328010
+
+	5) disable *WUServer* in registry, reboot.
+	[works on ${jenkins_slave2}]
+		from [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\] :
+		in Group Policies (2 points):
+			[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Group Policy Objects\{0A42C068-A0FA-465B-A29A-B8B5872DD86A}Machine\Software\Policies\Microsoft\Windows\WindowsUpdate]
+			[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Group Policy Objects\{A15667DF-D206-4BAA-8F6C-4224DECC9392}Machine\Software\Policies\Microsoft\Windows\WindowsUpdate]
+		
+		WUA_SearchDownloadInstall*.vbs  didn't work even removed above 2 points in Group Policies on ${jenkins_slave1}.
+			<=> settings using one of 3 methods:
+			Option1) Using Group Policy Object Editor and editing the Local Group Policy object
+			Option2) Editing the registry directly by using the registry editor (Regedit.exe)
+			Option3) Centrally deploying these registry entries by using System Policy in Windows NT 4.0 style
+				# ref doc:	https://technet.microsoft.com/zh-cn/library/cc708449(v=ws.10).aspx
+		
+			Windows Registry Editor Version 5.00
+			
+			[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate]
+
+			"WUServer"="http://vanpgwus.pgdev.sap.corp:8001"
+			"WUStatusServer"="http://vanpgwus.pgdev.sap.corp:8001"
+			"TargetGroupEnabled"=dword:00000001
+			"TargetGroup"="Virtual Machines"
+			
+			[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU]
+			"AutoInstallMinorUpdates"=dword:00000001
+			"NoAUAsDefaultShutdownOption"=dword:00000001
+			"AUPowerManagement"=dword:00000001
+			"RebootRelaunchTimeoutEnabled"=dword:00000001
+			"RebootRelaunchTimeout"=dword:0000000f
+			"RescheduleWaitTimeEnabled"=dword:00000001
+			"RescheduleWaitTime"=dword:00000005
+			"DetectionFrequencyEnabled"=dword:00000001
+			"DetectionFrequency"=dword:00000004
+			"NoAutoUpdate"=dword:00000000
+			"UseWUServer"=dword:00000001
+			"AUOptions"=dword:00000003
+			"ScheduledInstallDay"=dword:00000000
+			"ScheduledInstallTime"=dword:00000003
+
+			change to:
+						"UseWUServer"=dword:00000000
+						"AUOptions"=dword:00000003
+	
+			meaning of UseWUServer:
+				- 1 = The computer gets its updates from a WSUS server.
+				- 0 = The computer gets its updates from Microsoft Update.
+	
+	6)	difference between WSUS and WU:
+		6.1) WSUS = Windows Server Update Services,
+			WSUS downloads these updates from the Microsoft Update website and then distributes them to computers on a network.
+			WSUS runs on Windows Server and is free to licensed Microsoft customers.
+			The WSUS infrastructure allows automatic downloads of updates, hotfixes, service packs, device drivers
+			and feature packs to clients in an organization from a central server(s).
+		 
+		WSUS in Chinese:	https://zh.wikipedia.org/wiki/Windows_Server%E6%9B%B4%E6%96%B0%E6%9C%8D%E5%8A%A1
+		
+		6.2) Windows Update
+			Windows Update, a service offered by Microsoft, provides updates for Windows components.
+			It can be replaced with Microsoft Update, an expanded version of the service which provides for other Microsoft software as well,
+			such as Microsoft Office, Windows Live Essentials and Microsoft Expression Studio. 
+			Microsoft routinely releases security updates on the second Tuesday of each month (Patch Tuesday), 
+			but can provide them whenever a new update is urgently required to prevent a newly discovered or prevalent exploit targeting Windows users.
+		
+			Windows 10 contains major changes to Windows Update operations; it no longer allows the manual, selective installation of updates.
+			All updates, regardless of type (this includes hardware drivers), are downloaded and installed automatically,
+			and users are only given the option to choose whether their system will reboot automatically to install updates when the system is inactive,
+			or be notified to schedule a reboot.
+						
+		WU in Chinese:		https://zh.wikipedia.org/wiki/Windows_Update
+		
+	
+Brief summary:
+3 Methods to do Windows Update automatically:
+	Method1. use WSUS get updates from a WSUS server: 				WSUS.reg, WSUS.bat
+	
+	Method2. use registry editor get updates from a WSUS server: 	configure all settings in registry. 
+			ex. for a non-Active Directory environment:
+			could be 3 options:
+				Option1) Using Group Policy Object Editor and editing the Local Group Policy object
+				Option2) Editing the registry directly by using the registry editor (Regedit.exe)
+				Option3) Centrally deploying these registry entries by using System Policy in Windows NT 4.0 style
+				
+	Method3. use WUA get updates from Microsoft Update: 			WUA_SearchDownloadInstall*.vbs 
+
+		# ref doc for WSUS:							https://technet.microsoft.com/zh-cn/library/cc708449(v=ws.10).aspx
+		# ref doc for how-to-confige-WUA-for-WSUS:	http://blogs.msmvps.com/athif/2005/09/14/manually-configure-wua/
+		# ref doc for use-registry-editor-for-WSUS:	https://msdn.microsoft.com/en-us/library/dd939844(v=ws.10).aspx
+													https://technet.microsoft.com/zh-cn/library/cc708449(v=ws.10).aspx
+		# ref doc for use-group-policy-for-WSUS:	https://technet.microsoft.com/zh-cn/library/cc720539(v=ws.10).aspx											
+
+
+In job http://${jenkins_master1}:8080/job/scm_update_windows_manually/ only when "UseWUServer"=dword:00000000:
+Execute Windows batch command:
+
+@echo off
+if /I %DisableWindowsAutomaticUpdate% equ True (
+    echo Disable Windows Automatic Update by command reg...
+	reg export "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" reg_before_enable_WAU.reg /y
+	REM reg delete "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" /v AUOptions /f
+	reg add "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" /v AUOptions /t REG_DWORD /d 3 /f
+)
+
+REM start Windows Update service, which is set to Disabled.
+echo start Windows Update service ...
+%WINDIR%\System32\cmdadmin.exe /C "sc config wuauserv start=demand"
+%WINDIR%\System32\cmdadmin.exe /C "sc start wuauserv"
+echo.
+
+echo run Windows Automatic Update Script:
+REM use csadmin instead of cscript.exe since it requires Run as an administrator permission.
+echo     %WINDIR%\system32\csadmin.exe %WindowsAutomaticUpdateScript%
+%WINDIR%\system32\csadmin.exe %WindowsAutomaticUpdateScript%
+echo.
+
+REM stop Windows Update service and set it to Disabled.
+echo stop Windows Update service and set it to Disabled.
+%WINDIR%\System32\cmdadmin.exe /C "sc stop wuauserv"
+%WINDIR%\System32\cmdadmin.exe /C "sc config wuauserv start=disabled"
+echo.
+
+echo to check if the host is back in 1 minutes once rebooted
+REM find the correct hostname
+%WINDIR%\system32\cscript.exe \\${jenkins_master1}\script_win_update\win_replace_in_string.vbs //nologo /node:%WindowsNode% > tmp.output
+set /P HOSTNAME=<tmp.output
+del /f tmp.output
+REM ping the host for 1 minutes every 5 seconds
+REM ping %HOSTNAME% -n 20 -w 5
+echo.
+echo Please check if the host is pingable after 5 minutes.
+echo    ping %HOSTNAME% -t
+echo.
+
+REM rebooting action
+echo.
+echo rebooting the host by a script: shutdown /r /t 1
+\\${jenkins_master1}\script_win_update\manual_reboot.bat
+
+
+
