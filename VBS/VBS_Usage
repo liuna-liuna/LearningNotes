@@ -1,0 +1,118 @@
+#
+# VBS usage
+#
+1)	# ref doc in Chinese: https://msdn.microsoft.com/zh-cn/library/5hsw66as.aspx
+
+2) "" escape " as a literal
+	# ref doc: https://msdn.microsoft.com/en-us/library/aa711651(v=vs.71).aspx		
+	ex:
+		Imports System
+
+		Module Test
+			Sub Main()
+				' This prints out: ".
+				Console.WriteLine("""")
+		
+				' This prints out: a"b.
+				Console.WriteLine("a""b")
+		
+				' This causes a compile error due to mismatched double-quotes.
+				Console.WriteLine("a"b")
+			End Sub
+		End Module
+		
+3) WScript.Shell run() method
+	# ref doc:	https://msdn.microsoft.com/en-us/library/d5fk67ky(v=vs.84).aspx
+	ex.
+		Dim oShell
+		Set oShell = WScript.CreateObject ("WScript.Shell")
+		oShell.run "cmd /K CD C:\ & Dir"
+		Set oShell = Nothing
+		
+	## cmd.exe usage: /C /K meaning
+	/C      Carries out the command specified by string and then terminates
+	/K      Carries out the command specified by string but remains
+		
+		
+4) Dim usage in VBA
+	# ref doc:	https://msdn.microsoft.com/en-us/library/7ee5a7s1.aspx#default
+	ex.
+	Dim i = 5
+	Dim i as Integer = 5
+	Dim logFile, logFileName
+	
+	# default type:  Nothing or Integer (when used as) if Option Strict is off, else a compile-time error.
+	# default value: Nothing for all reference types including Object,
+						String and all arrays, 0 for all numeric types including Byte and SByte,
+						Binary 0 for Char, False for Boolean, 01/01/0001 12:00:00AM for Date.
+	
+5) On Error Resume Next
+	# ref doc:	https://msdn.microsoft.com/zh-cn/library/5hsw66as.aspx
+	ex.
+	5.1) On Error Resume Next
+		# Resume Next 	该语句指定当发生运行时错误时，控制由错误语句跳转到紧随发生错误语句之后的语句，并从该位置继续执行。
+						在访问对象时，使用此形式而不是 On Error GoTo。
+
+
+	5.2) 
+	Public Sub InitializeMatrix(ByVal Var1 As Object, ByVal Var2 As Object)
+		On Error GoTo ErrorHandler
+		' Insert code that might generate an error here
+		Exit Sub
+	ErrorHandler:
+		' Insert code to handle the error here
+		Resume Next
+	End Sub
+	
+	5.3) On Error Goto 0
+		#  GoTo 0 	该语句禁用当前过程中已启用的错误处理程序，并将其重置为 Nothing
+	
+6) Win32_OperatingSystem.Reboot, Win32_OperatingSystem.Win32Shutdown()
+	6.1) both can be used to shutdown / reboot / poweroff / logoff a local or a remote computer.
+	6.2) Win32Shutdown has more fine-grained control, through an Integer parameter.
+		Parameter Meaning
+		0			Log off
+		1			Shut down
+		2			Reboot
+		4			Force ... even unsaved work
+		8			Power down
+		10			Force ... even software hung and not respond.
+		
+		can combine: ex. 2+4, 8+4 etc.
+		
+	6.3) to Fix: 'Privilege not held' Error; Shutdown vs RemoteShutdown 
+		use Shutdown instead of RemoteShutdown in GetObject("winmgmts:{ImpersonationLevel=impersonate,(Shutdown)}!\\" & strComputer & "\root\cimv2").
+		
+		# ref doc:	http://www.tek-tips.com/viewthread.cfm?qid=1701519
+	
+7)	to fix VBScript: 800A0401 - Expected End of Statement
+	Phenomenon:
+		Error comes from command ex.
+			Dim a As String
+	
+	Root Cause:
+		in VBS, cannot dim variables as something but in VBA can, 
+			because all variables in VBS are automatically of type Variant.
+			
+			Correct format in VBS: 
+				Dim a
+				set a = CreateObject(...)
+				a = "Hello World"
+			
+		
+	# ref doc:	http://stackoverflow.com/questions/12803768/vbscript-800a0401-expected-end-of-statement
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
