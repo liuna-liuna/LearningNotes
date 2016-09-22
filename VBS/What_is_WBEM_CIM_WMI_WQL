@@ -1,0 +1,48 @@
+#
+# What is WBEM
+#	
+1) WBEM = Web Based Enterprise Management = 基于Web的企业管理
+	由 DMTF 在许多厂商的帮助下创立。 
+	DMTF = Distributed Management Task Force = 分布式管理任务组
+
+2) WBEM 的目标是，为管理企业环境、硬件厂商等开发一个标准的接口集。
+
+3) WBEM 模型最关键的部分是它的
+		数据模型（或者描述和定义对象的方式），
+		编码规范，
+		客户端和服务器端传输数据的模式。
+
+4） WBEM 的数据模型是 CIM
+	CIM = Common Information Model = 公共信息模型
+	CIM 是一个用来命名计算机的物理和逻辑单元的标准的命名系统（或者命名模式）。譬如 LogicDisk， 电缆等等。
+	CIM 分三层：
+		第一层：	核心模型 Core Model，这一层包含的类定义对于所有的管理领域都是共同的。
+		第二次： 公共模型 Common Model，这一层包含的类定义对于特定的管理领域都是共同的。
+		第三次： 扩展模型 Extension Model，这一层包含的类定义与特定的操作系统或者技术有关。
+	
+5) What is WMI
+	WMI = Windows Management Instrumentation = Windows 管理规范
+	创立于1996年。
+	WMI 是微软扩展了 CIM 2.0 得到的面向 Win32 系统的扩展模型，
+		其中的类、属性格式：
+			Win32_${ClassName}.${PropertyName}
+			Win32 是 CIM 模式 cimv2 命名空间内 WMI 扩展类的前缀。
+			
+	WMI 主要用于托管系统资源管理，包括本地和远程计算机。
+	Instrumentation 特指 WMI 可以获得计算机内部状态的信息。
+
+6) WQL = WMI Query Language = WMI 查询语言
+	WQL 是经过语义上的微小改动以支持 WMI 的一个 ANSI SQL 子集。
+	
+	使用 WQL 可以访问三种 WMI 信息：
+		数据： ExecQuery, ExecQueryAsync
+		事件: ExecNotificationQuery, ExecNotificationQueryAsync.
+		架构: ?TODO?
+
+	WQL 支持三种类型的查询：
+		SELECT
+		ASSOCIATIONS OF
+		REFERENCES OF
+		
+
+	
