@@ -9,15 +9,46 @@ Phenomenon:
 		While Control Panel\All Control Panel Items\Windows Update, it reports updates.	
 	
 	2)	An Exception in running WUA_SearchDownloadInstall_withArgus.vbs: Download error (null): 0x80240044 in .vbs:
-		from cmd updateSession.CreateUpdateDownloader() 
+		from cmds:
+			updateSession.CreateUpdateDownloader() 
+			downloader.Updates = updatesToDownload
+			downloader.Download()
+			
+Root Cause:
+	Windows Updater API requires elevated privileges.
+	=> make sure:
+		connected to the Internet
+		Windows Update service is enabled
+		no pending update installations.
+		Web Server (IIS) feature is on if WSUS auto update in used.
+		
+	# ref doc:	http://stackoverflow.com/questions/9740694/windows-update-downloader-download-fail 
+	
+	Workaround to give more specific error messages:
+		var downloader = updsession.CreateUpdateDownloader() 
+		downloader.Updates = updatesToDownload
+		try {
+			downloader.Download()
+		}
+		catch(err) {
+			WScript.Echo("Oops, Download error.")
+			WScript.Echo("Possible reason:")
+			WScript.Echo("* On Windows Vista/7 and after, This requires you Run as Administrator.")
+			WScript.Quit(3)
+		}
+	
+	
 Fix:
+#
+# how to run a .vbs as Administrator
+#
 	1.1)	 run as Administrator manually:
-			%WINDIR%\system32\cscript.exe  \\${jenkins_master1}\script_win_update\WUA_SearchDownloadInstall_withArgus.vbs
-			runas /user:cronAdmin “cmd.exe /C %WINDIR%\system32\cscript.exe  \\${jenkins_master1}\script_win_update\WUA_SearchDownloadInstall_withArgus.vbs”
+			%WINDIR%\system32\cscript.exe  \\shg-cvom-infra.pgdev.sap.corp\script_win_update\WUA_SearchDownloadInstall_withArgus.vbs
+			runas /user:cronAdmin "cmd.exe /C %WINDIR%\system32\cscript.exe  \\shg-cvom-infra.pgdev.sap.corp\script_win_update\WUA_SearchDownloadInstall_withArgus.vbs"
 	
 			C:\Users\service.tip.cvom>runas /user:global\service.tip.cvom
-				"cmd.exe /C %WINDIR%\system32\cscript.exe \\${jenkins_master1}\script_win_update\WUA_SearchDownloadInstall_withArgus.vbs > C:\temp\log.runas"
-	# ref doc:	http://stackoverflow.com/questions/9740694/windows-update-downloader-download-fail 
+				"cmd.exe /C %WINDIR%\system32\cscript.exe \\shg-cvom-infra.pgdev.sap.corp\script_win_update\WUA_SearchDownloadInstall_withArgus.vbs > C:\temp\log.runas"
+	
 	
 	1.2)	 set .vbs to run in an elevated state <= [Not validate]
 	[TODO]	could it be [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate]:
@@ -25,7 +56,15 @@ Fix:
 	
 	
 	1.3)	 a workaround <= [Works]
-	[done] use csadmin instead of cscript.exe, which is set as “Run as an administrator”.
+		[done] use csadmin instead of cscript.exe, which is set as "run as an administrator"
+			Steps:
+				Go to System32 (or Syswow4 for x64)
+				Copy cscript.exe and wscript.exe and name them csadmin.exe and wsadmin.exe
+				Open their properties, set "Run as admin" flag.
+			Now if you want to run your script as admin, use one of these:
+				csadmin myscript.vbs
+				wsadmin myscript.vbs
+				
 			# ref doc:	http://stackoverflow.com/questions/17466681/how-to-run-vbs-as-administrator-from-vbs 
 	
 	2)	[done] set “notify” error to “Never notify” in Control Panel -> System and Security -> User Account Control Settings.
@@ -97,6 +136,20 @@ Fix:
 			meaning of UseWUServer:
 				- 1 = The computer gets its updates from a WSUS server.
 				- 0 = The computer gets its updates from Microsoft Update.
+			cmds to check:
+			> reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "UseWUServer"
+
+				HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU
+				UseWUServer    REG_DWORD    0x1
+		
+			> reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay"
+			or
+				reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update" /v "ScheduledInstallDay"
+				
+			> reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime"
+			or
+				reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update" /v "ScheduledInstallTime"
+
 	
 	6)	difference between WSUS and WU:
 		6.1) WSUS = Windows Server Update Services,
@@ -119,8 +172,36 @@ Fix:
 			and users are only given the option to choose whether their system will reboot automatically to install updates when the system is inactive,
 			or be notified to schedule a reboot.
 						
-		WU in Chinese:		https://zh.wikipedia.org/wiki/Windows_Update
+		WSUS in Chinese:				https://zh.wikipedia.org/wiki/Windows_Server%E6%9B%B4%E6%96%B0%E6%9C%8D%E5%8A%A1
+		Configuration Items meaning:	https://technet.microsoft.com/zh-cn/library/cc720464(v=ws.10).aspx
+										ex. ScheduledInstallDay and ScheduledInstallTime
+
 		
+	7) 	WUA in .vbs:				\\shg-cvom-infra.pgdev.sap.corp\script_win_update\WUA_SearchDownloadInstall_withArgus.vbs
+		WUA in .ps1 (PowerShell):	# ref doc:	http://www.gregorystrike.com/2011/04/07/force-windows-automatic-updates-with-powershell/
+		
+		
+	8) on 166:
+		Phenomenon:
+				Windows Update -> check update: No update package was found.
+								Actually it's 166 important updates.
+		Root cause:
+				WSUS uses IIS for installation, while IIS was not installed.
+				WSUS系统客户端的配置与管理
+					1、使用域策略公司建有域的，如果所有电脑都加入域，可以在域中设置WSUS的计算机策略，使得每台加入域的电脑都可以接受WSUS补丁。
+					新建一个WSUS域策略于所有受管理计算机账户，该策略设置下列参数：
+					在WSUS策略的“计算机配置/管理模板/Windows组件/Windows Update”中：
+					l         启用“配置自动更新”
+					l         启用“指定Intranet Microsoft更新的位置”，并设置“为检测更新设置Intranet更新服务：”及“设置Intranet统计服务器”为WSUS服务器：http://<服务器名>，如是新创建的IIS站点，为：http://<服务器名>:8530。
+					2、使用本地策略在“运行”中输入gpedit.msc，进行“本地计算机”设置，设置参数同上。
+					3、日常管理注意问题WSUS服务器配置好以后，系统会自动与微软的升级服务器同步，并按照既定审批规则，推送到客户端。
+					4、 务必保持系统的Background Intelligent Transfer Service和Automatic Updates服务处于非禁用状态。
+				# ref doc:	http://www.liusuping.com/os/windows-server-update-services-wsus30.html
+				# ref doc:	http://www.08lr.cn/article/816.html
+		Fix:
+				Server Manager -> Add Roles: Web Server (IIS): Full installation ( 48 role services ).
+				# ref doc:		https://www.nimbo.com/blog/how-to-install-internet-information-services-iis-in-windows-server-2008/
+
 	
 Brief summary:
 3 Methods to do Windows Update automatically:
