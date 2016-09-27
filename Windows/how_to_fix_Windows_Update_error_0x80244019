@@ -1,0 +1,25 @@
+#
+# how to fix Windows Update error 0x80244019
+#		
+	9) 
+	Phenomenon:
+		Windows Update -> Check for updates:
+			Windows could not search for new updates
+			Error(s) found:
+				Code 80244019	Windows Update encountered an unknown error.
+			
+	Root cause:
+		可能：域控对所有计算机部署的组策略，导致 WU 无法连到微软更新，如域控设置通过 WSUS 而不是 WU 更新。
+		
+	Fix:
+		Workaround：	更改本机注册表：
+						remove [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate]
+									WUServer
+									WUStatusServer
+								[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU]
+									UseWUServer = 0
+						or
+						remove whole [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate]
+						
+# ref doc:	http://www.oschina.net/question/213217_41998
+# same as point 9 in https://github.com/liuna-liuna/LearningNotes/blob/master/Windows/how_to_check_why_windows_update_automatic_vbs_not_work_WSUS_WS
