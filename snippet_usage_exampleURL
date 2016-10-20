@@ -1,0 +1,22 @@
+#
+# snippet usage
+# 
+1) What is snippet
+	Snippet = a small region of re-usable source code, machine code or text.
+	3 types:
+		static, such as macros;
+		dynamic, such as programmable macros;
+		scriptable, such as scripting language ex. a feature of running shell command.
+	
+	Available in editors, IDE etc. ex. in Visual Studio there is one "Code Snippets Manager".
+	
+	# ref doc:	https://en.wikipedia.org/wiki/Snippet_(programming)
+	# snippets web-site:
+		#	https://github.com/geekcomputers/Python or https://github.com/search?utf8=%E2%9C%93&q=python
+		#	http://codesnippets.fesslersoft.de/category/python/
+		#	http://snippetsource.net/
+		#	https://tagmycode.com/snippets/list/language/python
+		
+	in SAP,
+		#	http://www.sapui5.org/sapui5blogs/code-snippets/  for sapui5 usage
+		#	http://veui5infra.dhcp.wdf.sap.corp:8080/snippix/ for HTML5 code snippet
