@@ -1,0 +1,42 @@
+＃
+＃ What is Chocolatey
+#
+1) Chocolatey 好比 Linux的 apt-get,背后用NuGet。
+    Chocolatey 哲学是完全用命令行安装应用程序。
+    
+2）安装Chocolatey：
+   in cli:
+   @powershell -NoProfile -ExecutionPolicy unrestricted
+      -Command "iex ((New-Object System.Net.WebClient).DownloadString("https:\\chocolatey.org\install.ps1"))"
+      && SET PATH=%PATH%;%systemdrive%\chocolatey\bin
+   (-ExecutionPolicy : at least RemoteSigned)
+   
+    安装要求：        
+      Windows 7+ / Windows Server 2003+
+      PowerShell v2+
+      .NET Framework 4+ (the installation will attempt to install .NET 4.0 if you do not have it installed)
+      No Visual Studio required.
+
+   # ref: https://github.com/chocolatey/choco/wiki/Installation
+   
+3) 用Chocolatey下载安装软件：
+  in cli:
+  cinst ${name_of_sw_to_install}
+    ex. 
+    cinst git.install
+    cinst nodejs.install
+    cinst vagrant
+    cinst virtualbox
+    cinst notepadplusplus.install
+    cinst SublimeText3
+    cinst jdk8
+    cinst python
+    cinst jenkins.install
+  
+  查看软件是否中Chocolatey的数据库中，
+  clist ${name_of_sw_to_install}
+  ＃or
+  查看网页： https://chocolatey.org/packages 
+  
+  # ref: https://laravel-china.org/topics/67 #for: 利用 Chocolatey 快速在 Windows 下搭建一个开发环境
+  # ref: http://www.appinn.com/chocolatey/ 
