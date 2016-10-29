@@ -2,7 +2,10 @@
 ＃ What is Chocolatey
 #
 1) Chocolatey 好比 Linux的 apt-get,背后用NuGet。
+    Chocolatey是 Windows 上的包管理器。
     Chocolatey 哲学是完全用命令行安装应用程序。
+    
+    ＃ ref： https://www.zhihu.com/question/46196731/answer/123113271 
     
 2）安装Chocolatey：
    in cli:
@@ -40,3 +43,10 @@
   
   # ref: https://laravel-china.org/topics/67 #for: 利用 Chocolatey 快速在 Windows 下搭建一个开发环境
   # ref: http://www.appinn.com/chocolatey/ 
+  
+4）Chocolatey 和 UWP 的区别
+    Chocolatey社区维护，UWP 微软。
+    UWP ＝ Universal Windows Platform
+    
+    ＃ ref： https://www.zhihu.com/question/46196731/answer/123113271 
+    
