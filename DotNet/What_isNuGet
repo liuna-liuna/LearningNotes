@@ -1,0 +1,13 @@
+#
+# What is NuGet
+#
+1) NuGet, read as NewGet, 中文“新买买”。
+    NuGet 是Visual Studio的扩展之一，NuGet to Visual Studio is like Maven to Java.
+    NuGet可以用来管理和更新各种类库，并在更新时自动添加类库的相关引用。管理类库如 JQuery，Newtonsoft.Json, Json.Net, log4net等等。
+    
+2）安装，工具 －> 扩展管理器R... －> 搜索框里输入NuGet －> 找到NuGet Package Manager  －> 下载安装。
+    安装好以后，工具才到出现一项Library Pacakge Manager，右键项目文件出现一项 Manage Nuget Packages。
+
+  已经安装了 MVC3 的系统上已自动安装了 NuGet。
+  
+# Reference: http://kb.cnblogs.com/page/143190/
