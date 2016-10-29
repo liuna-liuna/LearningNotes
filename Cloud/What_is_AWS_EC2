@@ -1,0 +1,23 @@
+#
+# What is AWS EC2
+#
+1) AWS = Amazon Web Services， 提供一整套云计算服务。包括：
+    Compute & Networking, Storage & Content Delivery, Database, Deployment & Management,
+    Analytics, App Services etc.
+    Amazon EC2（Elastic Compute Cloud）是一个让用户可以租用云电脑运行所需应用的系统。
+    
+    EC2 = Elastic Compute, providing virtual servers in the cloud.
+    AWS EC2是一个 IaaS 云服务，主要提供弹性的计算资源。也是AWS的核心组成部分。
+    EC2环境中，虚拟机被称为实例，实例的镜像被称为AMI。
+    实例可以在很短的时间内创建、启动、运行，根据类型和使用时间收费。
+    EC2提供的主要服务：
+      EBS ＝ Elastic Block Storage，为EC2实例提供永久性的存储。
+      弹性IP地址
+      VPC ＝ Virtual Private Cloud
+      ELB ＝ Elastic Load Balancing，可以跨越多个 AWS EC2实例自动分配应用程序的传人流量。
+      Auto Scaling：根据定义的条件，自动扩展AWS EC2容量。
+      
+    S3 is one service in AWS in Storage & Content Delivery, providing scalable storage in the cloud.
+      
+＃ ref： http://www.cnblogs.com/gyouxu/p/3617906.html
+
