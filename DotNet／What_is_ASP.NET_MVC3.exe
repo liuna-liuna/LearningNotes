@@ -1,0 +1,39 @@
+#
+# What is MVC3.exe
+#
+1) ASP.NET MVC 3 在 ASP.NET 4 运行时之上提供了一种模型视图控制器（MVC）框架。
+    该框架使用MVC来开发可测试性和可维护性很高的Web应用程序。
+    该框架鼓励开发人员明确地分离应用程序各职责之间的任务
+    － 使用视图的UI逻辑、使用控制器的用户输入处理以及使用模型的域逻辑。
+
+
+2）When referre in a solution:
+  <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral,...">
+    <Private>...</Private>
+  </Reference>
+  
+  
+3） Windows server 2003 ＋ IIS6 搭建 Asp.net MVC运行环境
+    
+安装.Net Framework4.0。
+下载地址： http://www.microsoft.com/zh-cn/download/details.aspx?id=17718
+安装WindowsServer2003-KB968930-x86-CHS.exe，PowerShell 2.0的补丁
+下载地址： http://www.microsoft.com/zh-cn/download/details.aspx?id=4045
+安装wic_x86_chs.exe，windows图像处理组件
+下载地址： http://www.microsoft.com/zh-cn/download/details.aspx?id=32
+安装Asp.net MVC（根据需要选择相应的版本）
+MVC 3 : http://www.microsoft.com/zh-cn/download/details.aspx?id=4211
+MVC 4 : http://www.microsoft.com/zh-cn/download/details.aspx?id=30683
+WebPages 2 : http://www.microsoft.com/zh-cn/download/details.aspx?id=34600
+重新注册IIS，C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe -i
+在IIS中新建网站。在网站名称上右键，选择“属性”，打开“主目录”选项卡，点击“配置”，打开应用程序配置。
+在“映射”选项卡中点击"添加"，添加应用程序扩展名映射。
+  可执行文件：C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\aspnet_isapi.dll，扩展名：.mvc，
+  动作：限制为GET,POST,HEAD，取消勾选：确认文件是否存在。
+在“映射”选项卡中点击"插入"，添加应用程序扩展名映射。
+  可执行文件：C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\aspnet_isapi.dll，取消勾选：确认文件是否存在。
+  
+＃ reference： http://www.jb51.net/article/74437.htm
+
+
+
