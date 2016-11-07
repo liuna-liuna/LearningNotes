@@ -1,0 +1,18 @@
+#
+# how_to_configure_.gitignore
+#
+1) .gitignore in the workspace:
+    under root directory: applies for the whole workspace by default
+    under each sub-directory: applies for this sub-directory
+    
+2) examples in .gitingore:
+    *.pyc
+    bin\
+    
+3) how to ignore files, which are already put into a repository in Git?
+    ex.
+    git rm -r --cached WebRoot/WEB-INF/classes/**/*
+    git commit
+    # -r = -recursive
+    
+# ref:   http://www.cnblogs.com/wucg/archive/2011/08/16/2141647.html
