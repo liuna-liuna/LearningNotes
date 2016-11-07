@@ -1,0 +1,5 @@
+#
+# difference_bt_git_reset_git_checkout
+#
+1) git reset HEAD <file>...   # to unstage
+   git checkout -- <file> ... # to discard changes in working directory
