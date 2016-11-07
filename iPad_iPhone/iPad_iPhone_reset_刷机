@@ -1,0 +1,28 @@
+#
+# iPad ／ iPhone 如何刷机
+＃
+通过 DFU ＋ iTunes
+
+1）什么是 DFU 模式？
+  DFU ＝ Development FirmwareU pgrade，就是iPad固件的强制升降级模式。
+  
+2）如何进入 DFU 模式？
+①、按电源键开机，屏幕会出现苹果标志，不要松开电源键。
+
+②、接着再按住主屏 Home 键，直到屏幕黑屏。
+
+③、当屏幕黑屏时，请松开电源键，继续按住主屏 Home 键不要松开。
+
+当成功进入 DFU 恢复模式以后，会在 iPad 上的屏幕上看到一个连接 iTunes 标志。
+注：如果一次进入不了恢复模式，请尝试多操作几次。
+
+＃ ref： https://zhidao.baidu.com/question/2201220670127935548.html
+
+3）用iTunes恢复 iPad 出现未知错误21解决办法
+
+  ［待验证］ 进入 DFU 模式、直到看到 iTunes 图标
+  ［待验证］ 按住shift键，并用鼠标点击“恢复”按钮，弹出选择固件的窗口后松开Shift键，恢复你选择的固件。
+  ［待验证］ 
+  ［待验证］ 此类错误出现的概率并不高，而且使用DFU模式就可以解决。
+  
+＃ ref： http://jingyan.baidu.com/article/ab0b5630d2bff7c15bfa7d4f.html
