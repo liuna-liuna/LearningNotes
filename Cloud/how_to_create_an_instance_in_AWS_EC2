@@ -1,0 +1,161 @@
+#
+# AWS Usage
+#
+1) How to register to AWS
+
+	go to http://www.amazonaws.cn/, -> Create an AWS account,
+		....
+
+
+2) How to login to AWS
+	If using IAM, <- specific URL and IAM user certificate:
+		https://your_account_alias.signin.aws.amazon.com/console/
+	Else:
+		http://www.amazonaws.cn/
+		
+	# or must specific:
+		
+		https://console.amazonaws.cn/ec2/ 
+		# or 
+		https://console.amazonaws.cn/ec2/v2/home?region=${region}
+		
+		
+3) How to create an instance in AWS EC2
+
+	3.1) Part 1. set up basic configuration
+		go to http://www.amazonaws.cn/, 
+		-> login , [creating an AWS account]
+		-> create  a Key Pairs
+		-> Create a VPC
+		-> Create a Security Group
+		-> Create an EIP
+
+	3.2) Part 2. start an instance ( = create an instance) 
+		-> login https://console.amazonaws.cn/ec2/, 
+		-> Launch Instance
+		-> Choose an AMI: 
+		#an example DB:	OS:			Windows Server 2008 R2 Enterprise, SP1, 6.1.7601
+		#an example DB:	SQL Server:	SQL Server 2012:
+		#an example DB:					MS SSMS: 11.0.2100.60
+		#an example DB:						(MS Analysis Services Client Tools)
+		#an example DB:					MDAC:	6.1.7601.17514
+		#an example DB:					IE:		8.0.7601.17514
+		#an example DB:					MSXML:	3.0 6.0
+		#an example DB:					.NET:	4.0.30319.17929
+		#an example DB:					OS:		6.1.7601
+		#an example DB:					
+		#an example DB:	CPU: 8核 40G 2439G, 硬盘应该是15K的	
+		#an example DB:	HP DL388 G9
+		#an example DB:	CPU: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz  2 * 8 cores
+		#an example DB:	RAM: 64G  DISK:600G*8(15K) NIC: 8   POWER: 2
+		
+		-> Choose an Instance Type: 	ex. c4.xlarge
+		
+		-> Review and Launch:
+			...
+			Security Group
+			...
+			Launch
+			
+		-> Choose (or Create) a Key Pairs
+		-> Launch Instances
+			
+		#AMI:	Microsoft Windows Server 2012 with SQL Server Standard - ami-38de0a55
+		#AMI:	Microsoft Windows Server 2012 RTM, 64-bit architecture, Microsoft SQL Server 2012 SP1. [英语]
+		#AMI:	根设备类型: ebs 虚拟化类型: hvm
+		#AMI:	系列		类型		vCPU 	内存 (GiB)		实例存储 (GB) 		可用的优化 EBS 		网络性能	
+		#AMI:	计算优化	c4.xlarge	4		7.5				仅限于 EBS			是					高
+		#AMI:	Net:		vpc-... (default)
+		#AMI:	Sub-Net:	subnet-d...(default)
+		#AMI:	Allocate Public IP automatically:	[must!] from Using Sub-net -> to: Disabled. 	##默认子网的此属性设置为 true
+		#AMI:	Close Operation:	stop
+
+		#AMI:	卷类型	设备		快照				大小 (GiB)	卷类型					IOPS			吞吐量 (MB/s) 	终止时删除
+		#AMI:	根目录	/dev/sda1	snap-ac583fa4			50	 	通用型 SSD（GP2）		150 / 3000		不适用			true
+		#AMI:	Key/Value:	Name/SilverChinaLabsDB
+		#AMI:	select a current Security Group
+		#AMI:	ID			名称		描述				操作	
+		#AMI:	sg-ef373a8a		default		default 	VPC security group
+
+		#AMI:	实例类型	ECU		vCPU	内存 (GiB)		实例存储 (GB)		可用的优化 EBS		网络性能
+		#AMI:	c4.xlarge	16		4		7.5				仅限于 EBS			是					High
+
+		#AMI: 
+[Ignore]	由于 AMI 需要打开端口 1433 以获得访问权限，因此您无法连接到此实例。您当前的安全组没有打开端口 1433。
+		
+		#AMI:	EIP:
+			from EC2 Control -> EIP -> Allocate a new EIP:
+		<=	*.*.*.*
+			# ref:	https://docs.amazonaws.cn/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html
+		
+			-> Stop an instance, ex. i-*
+			-> Connect an address
+				-> Input instance id:	ex. i-*
+			-> Start the instance ex. i-*
+			
+	
+		<= got a Public DNS
+			for i-*:		ec2-${ip}.${region}.compute.amazonaws.com.cn
+			
+		<= wait for a few minutes
+		<= check Status Checks: if OK.
+		
+		
+	3.3) Part 3. connect to Instance
+		-> login https://console.amazonaws.cn/ec2/, 
+		-> Instance	-> Select an instance	-> Connect
+		
+		-> Connect To your instance: Get Password:
+			-> browse to a key file, copy the content.
+			-> Decrypt Password
+			-> [Keep it.]
+				*/*
+			
+		-> Download Remote Desktop File : download and/or open .rdp.
+			-> Close "Connect to Your Instance".
+		
+		-> RDP login:
+			-> to verify the security certificate:
+				-> View Certificate -> Details -> Thumbprint
+		-> Amazon EC2 Control -> select this instance -> Actions -> Get System Log:
+			-> search for "RDPCERTIFICATE-THUMPRINT"
+[To Check]	<= Both should be same!!
+		ex.
+			#Certificate Thumpprint:	**	#from EC2 System Log
+‎			#Certificate Thumpprint:	**	#from RDP certificate 
+
+		[then continue:] RDP:View Certificate -> OK
+						-> Yes (to connect the instance)
+		
+		-> done
+
+
+		
+
+4) Glossary
+
+AMI = AMazon Machine Image
+AWS = Amazon Web Service
+
+CIDR 	= Classless Inter-Domain Routing /ˈsaɪ.dr/ or /ˈsi.dr/
+		= 无类域间路由。一种 Internet 协议地址分配和路由聚合方法。
+		ex. 
+			single IP: 203.0.113.25/32
+			a sub-net: 203.0.113.0/24
+		
+	# ref: https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation
+
+
+EBS = Amazon Elastic Block Store = Amazon 持久性数据块级存储卷
+
+
+
+IAM = Amazon Identity and Access Management
+
+
+
+
+# ref: http://docs.amazonaws.cn/general/latest/gr/glos-chap.html	
+	
+	
+	
