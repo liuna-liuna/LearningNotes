@@ -1,0 +1,12 @@
+#
+# how to use Regular Expression Usage in notepad++
+#
+	<value.*?Let's start things off by adding some items to your inventory.
+	<=	Regular expression + . matches newline
+	
+	# Replace
+		## 所有Key1，key1 key2，key2 key3相关的字样，要替换成NewKey。注意<key></key> 中的不能动。
+	Find with: 		<value>(.*?\s*)(key1\s+)*key2(\s*key3)*(\s*?)(.*)
+	Replace with:	<value>(\1)NewKey(\5)
+	Regular expression
+
