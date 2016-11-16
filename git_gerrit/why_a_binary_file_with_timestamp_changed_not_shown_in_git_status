@@ -1,0 +1,27 @@
+#
+# why a binary file with timestamp changed not shown in git status
+#
+[to be validated]
+Using file ${binary_file1} as an example, ex. a .js.
+	1) make sure ${binary_file1} not in .gitignore
+	2) make sure a binary file is taken as changed when its time stamp is changed
+		that is, core.filemode is set to true (default is false)
+		In MINGW64 git-bash:
+
+      on Windows OS:
+        chmod a+x Source/Radiant.Retail.Now.NowWeb/Localization/Resources.zh-CN.js
+        git config –global core.filemode true
+				git config--local core.filemode true
+				
+    # ref:     http://gitready.com/intermediate/2009/02/18/temporarily-ignoring-files.html 
+	
+	3) make sure ${binary_file1} is not marked as assume-unchanged
+		git update-index --assume-unchanged PATH 
+		git ls-files -v | grep ${binary_file1} | git update-index --no-assume-unchanged
+	
+	# ref:     http://stackoverflow.com/questions/12920652/git-update-index-assume-unchanged-returns-fatal-unable-to-mark-file
+    # ref:     http://stackoverflow.com/questions/11755922/git-update-index-no-assume-unchanged-doesnt-work 
+	# ref: 		http://codethug.com/2013/09/20/4-ways-to-ignore-files-with-git/ 
+
+Workaround, once above steps not work: 
+    Add a space at the end of ${binary_file1}
