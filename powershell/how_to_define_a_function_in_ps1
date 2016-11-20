@@ -1,0 +1,28 @@
+#
+# how to define function in ps
+#
+1) with or without default value
+  function Add-Number {
+    Param( $intOne,
+      $intTwo)
+    $intOne + $intTwo
+  }
+  
+  Param( $intOne = 5,
+    $intTwo = 3)
+  function Add-Number
+  {
+    Param( $intONe,
+      $intTwo)
+     $intOne + $intTwo
+     
+  }
+  
+  # run a function
+  add-number -intOne 2 -intTwo 5
+  add-number
+  add-number 10 11
+  
+  # dot-source a function
+  . ${PS_script1}.ps1
+  dir function:\ad*
