@@ -40,4 +40,51 @@
   . ${PS_script1}.ps1
   dir function:\ad*
 
-2) 
+2) an advanced function, also called a script cmdlet
+ 
+  function Do-Something {
+   <#
+   .SYNOPSIS
+   Describe the function here
+   .DESCRIPTION
+   Describe the function in more detail
+   .EXAMPLE
+   Give an example here
+   .EXAMPLE
+   Give another example here
+   .PARAMETER computerName
+   The computer name to query, Just one.
+   .PARAMETER logname
+   The name of a file to write failed computer name to. Deafults to errors.txt.
+   #>
+   
+   [CmdletBinding(SupportsShouldProcess=$True, ConfirmImpact='Low')]
+   param
+   (
+    [Parameter(Mandatory=$True,
+      ValueFromPipeline=$True,
+      ValueFromPipelineByPropertyName=$True,
+      HelpMessage='What computer name would you like to target?')]
+    [Alias('host')]
+    [ValidateLength(3,30)]
+    [string[]]$computerName,
+    
+    [string]$logname = 'errors.txt'
+   )
+   
+   begin {
+    write-verbose "Deleting $logname"
+    del $logname -ErrorActionSilentlyContinue
+   },
+   
+   process {
+    write-verbse "Beginning process loop"
+    
+    foreach ($computer in $computerName) {
+     write-verbose "Processing $computer"
+     if ($pscmdlet.shouldProcess($computer)) {
+      # use $computer here
+     }
+    }
+   } 
+  }
