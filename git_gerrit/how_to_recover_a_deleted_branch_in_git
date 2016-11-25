@@ -1,0 +1,9 @@
+#
+# how to recover a deleted branch
+#
+In your local workspace,
+(!! 不要 pull 最新的code !!) 
+
+git reflog --no-abbrev                              # 找到你的commit
+git checkout -b ${branch_name} ${sha}         # ${sha} 是从上一条 reflog 命令里找到的你的 commit 的hash值
+git commit …                                        # commit
