@@ -1,0 +1,83 @@
+#
+# how to manage a computer remotely by powershell
+#
+Through WinRM.
+1) WinRM = Windows Remote Management service,
+  WinRS = Windows Remote Shell
+  
+2) recommended to run WinRM related commands as an Administrator
+
+3) PowerShell couldn't show run a UI on remote computer,
+  even though a program with UI, it could ONLY run as a job at the background.
+
+4) Remote Manage a computer:
+  4.1) enable RM:
+      Method1.  Enable-PSRemoting
+      Method2.  Enable WinRM service, set it to start up as automatic
+                +
+                update local policy:
+                  gpedit.msc -> local policy: computer configuration \ administrator template \ WinRM \
+                                 Allow remote server management through WinRM
+                                -> Options:
+                                  ipv4, ipv6 : *
+                                  
+  4.2) 2 modes, 3 methods
+  
+      4.2.1) one to one : or interactive mode
+        Enter-PSSession -ComputerName $computername
+        Exit-PSSession
+        
+        All variables and settings are lost once this session is closed.
+        
+       4.2.2) one to many: or persistent mode
+        $session = New-PSSession -ComputerName $computername
+        Remove-PSSession $session
+        
+        This mode can be used to share data between different commands \ tasks \ jobs.
+       
+       Invoke-Command is used in both interactive mode and persistent mode.
+       Usage of Invoke-Command:
+        A). Invoke-Command -Command {...} -Session $session
+                              [-Credential] ... [-useSSL] [-Port]... [-ThrottleLimit]...
+                  
+        B). Invoke-Command -ScriptBlock {...} -Session $session
+        C). Invoke-Command -ScriptBlock { Param($P1, $P2) Get-EventLog -logname $P1 -newest $P2 } -Session $session 
+                            -ArgumentList $A1,$A2
+                            
+        D). Invoke-Command -FilePath $filepath -Session $session
+        E). Invoke-Command -ScriptBlock {...} -Session $session -AsJob
+              # get job output
+              Get-Job -id 3 | Receive-Job
+        
+        An Example:
+          Invoke-Command -Command { Import-Module activedirectory } -Session $session
+          Export-PSSession -CommandName "*-AD*" -OutputModule RemAD -AllowClobber
+              # This acts like a shortcut, the command runs actually on remote computer
+          Remove-PSSession $session
+          
+          Import-Module RemAD -prefix Rem
+          Get-RemADUser -Filter "Name like D*"
+          Help New-RemADUser
+          Remove-Module RemAD
+  
+        
+       4.2.3) Method3. through command directory: which has ComputerName as a parameter but no Session as a parameter.
+        Get-Command | Where { $_.parameters.keys -contains "ComputerName"
+                          -and $_.parameters.keys -notcontains "Session" }
+        ex.
+          Restart-Computer, Test-Connection, Clear-Eventlog, Get-EventLog, 
+          Get-HotFix, Get-Process, Get-Service, Set-Service, Get-WinEvent, Get-WmiObject. 
+          
+        PS: command to get PSSession related cmdlets:
+          Get-Command -noun PSSession
+          
+5). to disable PS-Remoting:
+    Disable-PSRemoting    # This could and could ONLY disable teh ps thread configurations which are registered.
+    [must manually] disalbe WinRM service
+      ex. Set-Service winrm -StartupType Manual
+          Stop-Service winrm
+    [must manually] remode port listener ex. listener of port 5985
+      ex. Get-ChildItem wsman:\localhost\Listener -Recurse |
+            Foreach-Object {$_.PSPath} | Where-Object { (Get-Item "$_\Port").Value -eq 5985} | Remove-Item
+            
+            
