@@ -1,0 +1,50 @@
+#
+# PowerShell is both a scripting language and cmdlet runner
+#
+PowerShell is both a scripting language and cmdlet runner.
+To do a task in both methods, ex.
+1) scripting:
+  function Get-Something {
+    [CmdletBinding (...)]     # ex. ShouldSupportProcess=$true,
+                              #     Confirm...="medium" # or "high"
+                          
+    Param(...)
+    BEGIN {...}
+    PROCESS {...}
+      # ex. Process {
+              if $pscmdlet.ShouldProcess($param1) {
+                Write-Host "Processing..."
+              }
+            }
+    END {...}
+    
+  }
+  
+2) cmdlet runner:
+    $cmd1 | $cmd2 | ...
+    
+An Example:
+    function Get-Inventory {
+        [Cmdletinding()]
+        
+        Param(  [Parameter(Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelineByProperty=$true)],
+                [string]$computername
+        )
+        
+        Process {
+              $os = gwmi Win32_OperatingSystem -ComputerName $computername
+              $bios = gwmi Win32_Bios -ComputerName $computername
+              $obj = New-Object psobject
+              $obj | add-member noteproperty OSBuild ($os.buildnumber)
+                   | add-member noteproperty OSPackVer ($os.servicepackamajorversion)
+                   | add-member noteproperty BIOSSerial ($bios.serialnumber)
+              write-output obj
+        }
+    
+      }
+      
+      Get-WmiObject Win32_OperatingSystem -ComputerName (Get-Content names.txt) |
+        Select-Object @{Label="ComputerName"; Expression={$_.__SERVER} },
+                      @{Label="OSBuild"; Expression={$_.buildnumber} },
+                      @{Label="BIOSSerial"; Expression={ (gwmi Win32_BIOS -ComputerName $_.__SERVER).serialnumber } }
+                      
