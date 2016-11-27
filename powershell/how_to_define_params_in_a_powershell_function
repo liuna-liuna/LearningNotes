@@ -1,0 +1,17 @@
+#
+# how to define params in a powershell function
+#
+Examples:
+1) param(
+      [parameter(Mandatory=$true, ValueFromPipeline=$true)]
+      [string[]]$computernames,
+      
+      [parameter($Mandatory=$false)]
+      [alias("PF")]
+      [switch]$pingfirst,
+      
+      [parameter($Mandatory=$true, Position=0)]
+      [AllowEmptyString()]
+      [string]$class
+    )
+    
