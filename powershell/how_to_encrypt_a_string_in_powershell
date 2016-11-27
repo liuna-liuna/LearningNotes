@@ -1,0 +1,35 @@
+#
+# how to encrypt a string in powershell
+#
+1) through ConvertFrom-SecureString and ConvertTo-SecureString
+  
+  example:
+    $user = "domainname\username"
+    $password = ConvertTo-SecureString "password" -AsPlainText -Force
+    $credential = New-Object -TypeName "System.Management.Automation.PSCredential"
+                            -ArgumentList $user,$password
+    $session = New-PSSession -ComputerName $ip -Credential $credential
+    $result = Invoke-Command -Session $session -ScriptBlock {...}
+    $result
+    
+    Enter-PSSession -Session $session -Credential "domainname\username"
+
+2) usage of ConvertFrom-SecureString
+    ConvertFrom-SecureString [-SecureString] <SecureString>
+                              [-SecureKey] <SecureKey>
+                              ...
+
+  by default, it's DPAPI ciphered and deciphered, 
+              which is based on id ( = user name) + machine.
+  
+  DPAPI = Data Protection API
+  
+  
+3) usage of ConvertTo-SecureString
+      ConvertTo-SecureString [-String] <Password>
+                             [-AsPlainText]
+                             [-Force]
+                             ...
+
+
+[TODO]
