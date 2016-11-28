@@ -1,0 +1,13 @@
+#
+# how to add a whole directory into a project
+#
+open Visual Studio 2015 Community
+open the project
+drop the whole directory from Windows Explorer into the project in the Solution Explorer into VS,
+click Show All Files at the top of Solution Explorer
+click the whole directory, right-click, click Include in Project.
+=> a + symbol is shown.
+=> Done.
+
+# ref:	http://stackoverflow.com/questions/57776/how-to-add-existing-item-an-entire-directory-structure-in-visual-studio 
+# ref:	http://stackoverflow.com/questions/392473/how-do-i-add-an-existing-directory-tree-to-a-project-in-visual-studio
