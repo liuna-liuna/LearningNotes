@@ -1,0 +1,19 @@
+#
+# what is <Folder Include ...> in .csproj for
+#
+1) could to track an empty folder
+	<Folder Include="Properties\" />
+	
+2) could to customized package / deploy settings ex. 
+	<None Include="Properties\" />
+	
+3) Mechanism:
+	It looks like, in VS 2015 at least, if a folder is added to a project without any contents then the <Folder> tag is added to keep track of the folder. 
+	However, once an item is added to the folder VS removes the pure <Folder> tag from the csproj file and simply tracks the item in that folder. 
+	It looks like VS and XS are both smart enough to load the complete folder hierarchies for their items, so tracking Folders explicitly isn't necessary.
+	
+	ex.     <Content Include="Dir1\File1.pdf" />
+
+
+# ref:	https://github.com/predictive-technology-laboratory/sensus/pull/231/files
+
