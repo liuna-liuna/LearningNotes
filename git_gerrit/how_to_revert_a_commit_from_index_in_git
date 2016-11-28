@@ -1,0 +1,11 @@
+#
+# how to revert a commit from index in git
+#
+# remove a newly added file / directory from index in git
+git reset HEAD Source/ir1/dir2/
+
+# remove a modified file / directory from index in git 
+git checkout -- Source/dir1/dir2/file1
+
+# remove all changes in index and workspace
+git reset --hard HEAD
