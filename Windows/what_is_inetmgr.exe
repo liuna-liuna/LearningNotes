@@ -1,0 +1,12 @@
+#
+# what is inetmgr.exe
+#
+1) inetmgr.exe = IIS manager
+
+2) it locates in C:\Windows\System32\inetsrv\inetmgr.exe
+
+3) extension on github: https://github.com/typesafe/inetmgr
+  inetmgr is primarily a library that helps automate the configuration of IIS (7+). 
+  It is built on top of the standard IIS configuration API (www.iis.net/ConfigReference) 
+    but provides a more elegant, ruby-like interface which, 
+    typically, can be used from your rake tasks.
