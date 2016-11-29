@@ -10,3 +10,12 @@ Go to Control Panel\All Control Panel Items\Programs and Features\,
 	Next
 	…
 	Done
+
+More details for IIS on Win7,
+  Go into Control Panel -> Programs-> Turn Windows features on or off.
+  Click on features for Internet Information Services.
+  Specifically, Web Management Tools and Wold Wide Web Services.
+
+  For Web Management Tools ->IIS 6 Management Compatibility
+    ->IIS Metabase and IIS 6 configuration compatibility.
+    (or any other features you think you may need)
