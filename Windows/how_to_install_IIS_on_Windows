@@ -1,0 +1,12 @@
+#
+# how to install IIS on Windows
+#
+1) Enable IIS feature
+Go to Control Panel\All Control Panel Items\Programs and Features\,
+	Turn Windows features on or off
+	Select “Web Server (IIS)” for Windows Server 2012, 
+“Internet Information Services” for Win7,
+	Next
+	Next
+	…
+	Done
