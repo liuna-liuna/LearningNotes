@@ -1,0 +1,23 @@
+#
+# what is colocation
+#
+1) Colocation = 中文译名: 场地出租；[1]  主机托管[2] 
+
+2) 原指为了互连方便，一家通信公司的交换机借放在另一家通信公司的机房里或两家公司的交换机都放在同一个由第三方设立的独立的地点（叫telehouse）。
+现指独立设置的场地，专门出租给ISP、传统本地通信公司、新加入的本地通信公司、长途通信公司、内容提供者、网上企业、
+数据存储公司、内容配送服务、ASP和Web托管公司存放设备。
+
+3) A colocation centre (also spelled co-location, or colo) or "carrier hotel", 
+  is a type of data centre where equipment, space, and bandwidth are available for rental to retail customers. 
+  Colocation facilities provide space, power, cooling, and physical security for the server, storage,
+  and networking equipment of other firms—
+  and connect them to a variety of telecommunications and network service providers-
+  with a minimum of cost and complexity.
+
+4) Many colocation providers sell to a wide range of customers, ranging from large enterprises to small companies.
+  Typically, the customer owns the IT equipment and the facility provides power and cooling. 
+  Customers retain control over the design and usage of their equipment, 
+  but daily management of the data center and facility are overseen by the multi-tenant colocation provider.
+
+# ref:  http://baike.baidu.com/link?url=64CvH0e8TO6U-CBiD8RH386HIwQNJidhSQ5ahEPc8sxfRXoQxXstsKsDlumCqKqacu9tGRe8Ilftjcbafj1WMjuPU_M0bIJTzN2LkX95b8mWrGAgTkHFBYwsUKlWAxeItjeZBrTQPXqj5pmM7pIaUK
+# ref:  https://en.wikipedia.org/wiki/Colocation_centre
