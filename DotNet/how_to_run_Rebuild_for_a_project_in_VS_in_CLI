@@ -1,0 +1,25 @@
+#
+# how to run Rebuild for a project in VS in CLI
+#
+"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe" C:\workspace\dir1\file1.sln
+
+	# ref:	Use msbuild and pass the Clean and Rebuild targets:
+	# ref:	
+	# ref:	msbuild path\to\solution\yoursolution.sln /t:Clean;Rebuild
+	# ref:	Or if you only want to rebuild a single project:
+	# ref:	
+	# ref:	msbuild path\to\project\yourproject.csproj /t:Clean;Rebuild
+
+# ref:	http://stackoverflow.com/questions/14367582/how-to-run-a-clean-build-for-a-particular-project-from-a-solution-in-visual-stud
+
+msbuild.exe C:\workspace\dir1\file1.sln
+
+# on CLI:
+msbuild.exe C:\workspace\dir1\dir2\file1.csproj /t:Clean;Rebuild /p:OutputPath=C:\workspace\dir1\dir2\bin\Debug\
+
+# in PowerShell ISE:
+C:\Windows\Microsoft.Net\Framework64\v4.0.30319\MSBuild.exe C:\workspace\dir1\dir2\file1.csproj "/t:Clean;Rebuild" /p:OutputPath=C:\workspace\dir1\dir2\bin\Debug\ 
+
+# after defined environment variables in PowerShell ISE:
+cd $Env:TargetDir
+$Env:TargetFileName
