@@ -1,0 +1,8 @@
+#
+# location of msbuild.exe on Win7
+#
+C:\Windows\Microsoft.Net\Framework64\v4.0.30319\MSBuild.exe
+C:\Windows\Microsoft.Net\Framework\v4.0.30319\MSBuild.exe
+	
+# ref:	https://social.msdn.microsoft.com/Forums/windowsapps/en-US/23a7dc5d-c337-4eed-8af4-c016def5516e/location-of-msbuildexe?forum=msbuild
+
