@@ -1,0 +1,25 @@
+#
+# how to get / set environment variables in powershell
+#
+
+# to get
+Get-ChildItem Env:
+$Env:os
+[environment]::GetEnvironmentVariable("TMP","User")		# "User" is the type.
+
+# to set
+$Env:TargetDir = 'C:\workspace\dir1\dir2\'
+$Env:TargetFileName = 'C:\workspace\dir1\dir2\file1.exe'
+
+
+[Environment]::SetEnvironmentVariable("TargetFileName", "C:\workspace\dir1\dir2\file1.exe", "User")
+[Environment]::SetEnvironmentVariable("TargetFileName", "C:\workspace\dir1\dir2\file1.exe", "Process")
+
+[TODO: to check why "Machine" NOT work: Administrator?? ]
+[Environment]::SetEnvironmentVariable("TargetFileName", "C:\workspace\dir1\dir2\file1.exe", "Machine")
+
+	
+# to remove
+Remove-Item $Env:TargetFileName
+[Environment]::SetEnvironmentVariable("TargetFileName", $null, "User")
+
