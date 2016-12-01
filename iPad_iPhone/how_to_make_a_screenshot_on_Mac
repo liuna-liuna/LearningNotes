@@ -1,0 +1,15 @@
+#
+# how to make a screenshot on Mac
+#
+#  for whole screen
+1) Command + Shift + 3
+2) Find a .png on desktop
+
+# for part of the screen
+1) Command + Shift + 4
+2) Crop part of the screen you want to catch,
+    like snipping tool on Windows,
+    using Shift key, Options key, Space bar key to change the view.
+3) Find a .png on desktop
+
+# ref:  https://support.apple.com/en-us/HT201361
