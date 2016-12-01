@@ -1,0 +1,14 @@
+#
+# how to optimize a folder to ex. Music
+#
+Open a folder -> Properties -> Customize:
+	Optimize this folder for: Music
+								Genral Items
+								Documents
+								Pictures
+								Music
+								Videos
+								
+# ref:	http://superuser.com/questions/513298/irritating-auto-changing-column-types-in-windows-explorer-in-case-of-audio-video
+
+
