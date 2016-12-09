@@ -1,0 +1,36 @@
+#
+# usage of string and System.String in C#
+#
+1) string is alias of System.String, System.String has more safe functions.
+
+2) string is immutable
+
+3) regular string and verbatim string literals
+	regular string ex.
+		string col = "col1\tclo2"
+			// Output: col1	clo2
+	verbatim string literals ex.
+		string newCol = @"col1\tcol2"
+			// Output:	col1\tclo2
+		
+		string newCol2 = @"line1
+							line2
+							"
+			// Output:	line1
+						line2
+						
+
+4) string escape '\'
+	ex. \' \b \t \r
+	
+	string unescape '@' '\\', '@""'
+	
+
+5) string formatting {0},value1
+		ex. Console.Writeline("testing output {0} output {1}", value1, value2, value_not_used)
+						
+6) string operations
+	[TODO]						
+						
+# ref doc:	https://msdn.microsoft.com/en-us/library/ms228362.aspx
+
