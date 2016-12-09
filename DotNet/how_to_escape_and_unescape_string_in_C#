@@ -1,0 +1,20 @@
+#
+# how to escape and unescape string in C#
+#
+1) using @
+	@ has two functions:
+		1.1) unescape 
+		1.2) multi-line
+		
+		ex. 
+			string d = @"hello \t world";               // hello \t world
+			string e = "Joe said \"Hello\" to me";      // Joe said "Hello" to me
+			string f = @"Joe said ""Hello"" to me";   // Joe said "Hello" to me
+			string g = "\\\\server\\share\\file.txt";   // \\server\share\file.txt
+			string h = @"\\server\share\file.txt";      // \\server\share\file.txt
+			string i = "one\r\ntwo\r\nthree";
+			string j = @"one
+						two
+						three";
+
+# ref doc:	https://msdn.microsoft.com/en-us/library/aa691090(v=vs.71).aspx
