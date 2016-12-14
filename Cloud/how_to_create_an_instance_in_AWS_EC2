@@ -28,6 +28,7 @@
 		-> create  a Key Pairs
 		-> Create a VPC
 		-> Create a Security Group
+		   This step to create a VPC and Security Group can be skipped, if there is already one.
 		-> Create an EIP
 
 	3.2) Part 2. start an instance ( = create an instance) 
@@ -110,8 +111,12 @@
 			-> Decrypt Password
 			-> [Keep it.]
 				*/*
-			
-		-> Download Remote Desktop File : download and/or open .rdp.
+			# [FAQ] Once the Get Password is always not available, even after 4 minutes,
+				Check the instance log. It could have network issue, EIP issue etc.
+			# [FAQ] Workaround: re-create an instance.
+
+
+		-> Connect -> Download Remote Desktop File : download and/or open .rdp.
 			-> Close "Connect to Your Instance".
 		
 		-> RDP login:
@@ -122,7 +127,7 @@
 [To Check]	<= Both should be same!!
 		ex.
 			#Certificate Thumpprint:	**	#from EC2 System Log
-‎			#Certificate Thumpprint:	**	#from RDP certificate 
+			#Certificate Thumpprint:	**	#from RDP certificate 
 
 		[then continue:] RDP:View Certificate -> OK
 						-> Yes (to connect the instance)
