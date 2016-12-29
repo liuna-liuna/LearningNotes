@@ -1,6 +1,12 @@
 #
 # how to run linux command from python shell
 #
+#
+## recommend:
+    to use subprocess instead of other modules.
+        to use subprocess.Popen(...), subprocess.communicate(), subprocess.wait(),
+                subprocess.call(), subprocess.check_call(), subprocess.check_output()...etc.
+                
 1). use os.system
     os.system('ls -l')
     # can't get output
@@ -27,9 +33,96 @@ Open a pipe to/from a command returning a file object.
     retval = p.wait()
     # return output
 
+    see details in 3.2) attached below.
+    
 4). use commands
     commands.getoutput('ls -l')
     # return output
 
     commands.getstatusoutput('ls -l')
     # return a turple (status, output)
+
+3.2). details for use subprocess
+    a) class subprocess.Popen(args, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None,
+                                preexec_fn=None, close_fds=False, shell=False, cwd=None, env=None,
+                                universal_newlines=False, startupinfo=None, creationflags=0)
+       # Note1. NOT recommend to use shell=True due to security risk.
+                shell=False: disable all shell based features , but does not suffer from this vulnerability.
+                            and which can be done through python glob, fnmatch, 
+                                os.walk(), os.path.expandvars(), os.path.expanduser(), shutil.
+                example:
+                >>> from subprocess import call
+                >>> filename = input("What file would you like to display?\n")
+                What file would you like to display?
+                non_existent; rm -rf / #
+                >>> call("cat " + filename, shell=True) # Uh-oh. This will end badly...
+
+       # Note2. close_fds=True: on Unix, all file descriptors except 0, 1, 2 are closed before the child process is executed.
+                                on Windows, no handles are inherited to the child process. 
+                                on Windlows, can't use close_fds=True and re-direct standand handles by setting stdin, stdout, stderr.
+  
+       # Note3. bufsize=0 (default): unbuffered
+                bufsize=1:            line buffered
+                bufsize=-1:           use system buffer
+                bufsize=other positive value:            set the bufsize
+                
+                # recommend: set bufsize=-1 or bufsize=4096(large enough number) when experiencing performance issue.
+         
+    b) example using subprocess.Popen(...), subprocess.communicate()
+        import subprocess
+        child1 = subprocess.Popen(["ls","-l"], stdout=subprocess.PIPE)
+        child2 = subprocess.Popen(["wc"], stdin=child1.stdout,stdout=subprocess.PIPE)
+        out = child2.communicate()
+        print(out)
+    
+    c) difference between subprocess.communicate() and subprocess.wait()
+        c1) when output is larger than PIPE size, .wait() could cause deadlock.
+            use 'ulimit -a' to check PIPE size
+            .communicate() uses memory => output limit depends on memory size.
+        c2) .wait() returns return code,
+            use Popen().returncode instead after .communicate. ex. child2.returncode
+            
+     d) difference among subprocess.call(), subprocess.check_call(), subprocess.check_output()
+        subprocess.call():          return returncode
+        subprocess.check_call():    return 0. 
+                                    It checks the return status: 
+                                        if returncode!=0, raise subprocess.CalledProcessError, which includes following info:
+                                        
+                                            exception subprocess.CalledProcessError
+                                                Exception raised when a process run by check_call() or check_output()
+                                                 returns a non-zero exit status.
+                                                
+                                                returncode
+                                                Exit status of the child process.
+                                                
+                                                cmd
+                                                Command that was used to spawn the child process.
+                                                
+                                                output
+                                                Output of the child process if this exception is raised by check_output(). 
+                                                Otherwise, None.
+                                        
+        subprocess.check_output():  return output.
+        
+        example1:
+            >>> subprocess.check_call(["ls", "-l"])
+            0
+            
+            >>> subprocess.check_call("exit 1", shell=True)
+            Traceback (most recent call last):
+               ...
+            subprocess.CalledProcessError: Command 'exit 1' returned non-zero exit status 1
+
+        example2:
+            >>> subprocess.check_output(["echo", "Hello World!"])
+            'Hello World!\n'
+            
+            >>> subprocess.check_output("exit 1", shell=True)
+            Traceback (most recent call last):
+               ...
+            subprocess.CalledProcessError: Command 'exit 1' returned non-zero exit status 1
+
+
+    # ref:  https://docs.python.org/2/library/subprocess.html
+    # ref:  http://www.cnblogs.com/vamei/archive/2012/09/23/2698014.html
+    
