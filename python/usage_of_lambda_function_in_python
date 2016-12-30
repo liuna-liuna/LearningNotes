@@ -15,3 +15,28 @@ examples:
     map(lambda x: x[0], filter(lambda x: x[0] if x[1]&1 else None, zip(y.keys(), y.values()))) # works too
 >>> map(lambda x: x[0], filter(lambda x: x[0] if (x[1]&1) else None, zip(y.keys(), y.values())))
 [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+
+
+3) >>> foo = [2, 18, 9, 22, 17, 24, 8, 12, 27]
+>>> 
+>>> print filter(lambda x: x % 3 == 0, foo)
+[18, 9, 24, 12, 27]
+
+
+4) lambda functions sometimes can be done by list comprehension.
+    map(lambda x: x[0], filter(lambda x: x[0] if x[1]&1 else None, zip(y.keys(), y.values())))
+    = 
+    yy = [x[0] for x in zip(y.keys(), y.values()) if x[1]&1 and x[0]>0]
+    
+    import commands
+    >>> lines = commands.getoutput('mount -v').splitlines()
+    >>> 
+     points = map(lambda line: line.split()[2], lines)
+    =
+     points = [line.split()[2] for line in lines]
+    
+    >>> print points
+    ['/', '/var', '/usr', '/usr/local', '/tmp', '/proc']
+
+    # ref:  http://www.secnetix.de/olli/Python/lambda_functions.hawk
+    
