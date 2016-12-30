@@ -1,0 +1,125 @@
+#
+# usage of closure in python
+#
+1) closure is created when inner function refers a variable outside
+      and the outer function returns inner function as return value.
+   closure is normally calculated later.
+   
+      # recommend: NOT use cycling variable in closure or variables which will be changed later.
+      
+2) examples
+
+example1:
+  >>> def count1():
+  ...     fs=[]
+  ...     for i in range(1,4):
+  ...             def f():
+  ...                     return i*i
+  ...             fs.append(f)
+  ...     return fs
+  ...
+  >>> f1, f2, f3 = count1()
+  >>> f1
+  <function f at 0x026026B0>
+  >>> f1()
+  9
+  >>> f2()
+  9
+  >>> f3()
+  9
+
+<= i is changed later
+
+example2:
+  >>> def count2():
+  ...     fs=[]
+  ...     for i in range(1,4):
+  ...             def f():
+  ...                     i = i
+  ...                     return i*i
+  ...             fs.append(f)
+  ...     return fs
+  ...
+  >>> ff1,ff2,ff3=count2()
+  >>> ff1()
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+    File "<stdin>", line 5, in f
+  UnboundLocalError: local variable 'i' referenced before assignment
+
+<= i =i in inner function doesn't work.
+
+example3:
+  >>> def count2():
+  ...     fs=[]
+  ...     for i in range(1,4):
+  ...             def f(i):
+  ...                     return i*i
+  ...             fs.append(f)
+  ...     return fs
+  ...
+  >>> ff1,ff2,ff3=count2()
+  >>> ff1()
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  TypeError: f() takes exactly 1 argument (0 given)
+  >>> ff1(1)
+  1
+  >>> ff1(2)
+  4
+  >>> ff1(3)
+  9
+  >>> ff1(8)
+  64
+  
+  <= if defined formal variable to inner function, inner function does not refer to the variable in closure.
+  
+example4:
+  >>> def count2():
+  ...     fs=[]
+  ...     for i in range(1,4):
+  ...             def f(i):
+  ...                     return i*i
+  ...             fs.append(f(i))
+  ...     return fs
+  ...
+  >>> ff1,ff2,ff3=count2()
+  >>> ff1()
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  TypeError: 'int' object is not callable
+  >>> ff1
+  1
+  >>> ff2
+  4
+  >>> ff3
+  9
+
+<= fs.append(f(i)) calculated and added as an int already.
+
+
+example5:
+  >>> def count2():
+  ...     fs=[]
+  ...     for i in range(1,4):
+  ...             def f(j):
+  ...                     def g():
+  ...                             return j*j
+  ...                     return g
+  ...             fs.append( f(i) )
+  ...     return fs
+  ...
+  >>> ff1,ff2,ff3=count2()
+  >>> ff1()
+  1
+  >>> ff2()
+  4
+  >>> ff3()
+  9
+
+<= works!
+<= when using cycling variable or to-be-changed-variable, Must define a deeper inner function: g()...return g in f(j) and fs.append(f(i)).
+## 如果一定要引用循环变量怎么办？方法是再创建一个函数，用该函数的参数绑定循环变量当前的值，无论该循环变量后续如何更改，已绑定到函数参数的值不变.
+#
+# ref:  http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/0014186131194415d50558b7a1c424f9fb52b84dc9c965c000
+
