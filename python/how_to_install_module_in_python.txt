@@ -27,3 +27,35 @@ python -m pip install --upgrade pip
 #	py-dom-xpath (Pure Python XPath implementation) : https://code.google.com/p/py-dom-xpath/
 
 
+#
+# install matplotlib
+#
+# on Win7:
+python -m pip install matplotlib
+  # output:
+        Collecting matplotlib
+        Downloading matplotlib-1.5.3-cp27-cp27m-win32.whl (6.0MB)
+        ...
+        Collecting numpy>=1.6 (from matplotlib)
+        Downloading numpy-1.11.3-cp27-none-win32.whl (6.5MB)
+        ...
+        Collecting python-dateutil (from matplotlib)
+        Downloading python_dateutil-2.6.0-py2.py3-none-any.whl (194kB)
+        ...
+        Collecting cycler (from matplotlib)
+        Downloading cycler-0.10.0-py2.py3-none-any.whl
+      Collecting pyparsing!=2.0.4,!=2.1.2,>=1.5.6 (from matplotlib)
+        Downloading pyparsing-2.1.10-py2.py3-none-any.whl (56kB)
+        ...
+        Collecting pytz (from matplotlib)
+        Downloading pytz-2016.10-py2.py3-none-any.whl (483kB)
+        ...
+        Collecting six>=1.5 (from python-dateutil->matplotlib)
+        Downloading six-1.10.0-py2.py3-none-any.whl
+      Installing collected packages: numpy, six, python-dateutil, cycler, pyparsing, pytz, matplotlib
+      Successfully installed cycler-0.10.0 matplotlib-1.5.3 numpy-1.11.3 pyparsing-2.1.10 
+      python-dateutil-2.6.0 pytz-2016.10 six-1.10.0
+
+
+
+# ref:  http://www.cnblogs.com/gsblog/p/3422106.html
