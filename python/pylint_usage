@@ -1,0 +1,12 @@
+#
+# pylint usage
+#
+0) install pylint on Win7:
+  python -m pip install pylint
+  
+1) run pylint on Win7:
+  Method1. in cli:          python -m pylint --list-msgs
+                            python -m pylint --generate-rcfile > pylint.rc
+                            
+  Method2. in python cli:   import pylint; pylint.run_pylint_gui()
+  
