@@ -74,7 +74,24 @@ Open a pipe to/from a command returning a file object.
         child2 = subprocess.Popen(["wc"], stdin=child1.stdout,stdout=subprocess.PIPE)
         out = child2.communicate()
         print(out)
-    
+        
+        example2. to get output of subprocess.Popen:
+                    sp1 = subprocess.Popen(...)
+                    out, err = sp1.communicate()
+                    print sp1.communicate()[0]
+                    
+         example3. to get output of subprocess.Popen:
+                    sp1 = subprocess.Popen(...)
+                    print sp1.stdout.read()
+ 
+         example4. to get output of subprocess.Popen:
+                    sp1 = subprocess.Popen(...)
+                    while 1:
+                        print sp1.stdout.readline(),
+                        time.sleep(.1)
+                        
+                    
+                    
     c) difference between subprocess.communicate() and subprocess.wait()
         c1) when output is larger than PIPE size, .wait() could cause deadlock.
             use 'ulimit -a' to check PIPE size
