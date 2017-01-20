@@ -1,0 +1,188 @@
+#
+# basics of Google big data technology
+#
+1. Google File System (GFS)
+
+1) distributed file system
+	using cheap commercial system
+	using software technologies to keep system reliability
+
+	<=> reduce cost of storage
+
+
+2) master, client, chunk server.
+	master:	brain of the GFS
+			meta data:
+				namespace
+				chunk to file mapping
+				chunk backup location
+			
+			namespace, chunk to file mapping uses logging to keep atomicity.
+			chunk backup location is kept on each chunk server itself.
+			
+			master communicates with chunk server with heartbeat message: 
+				direction, chunk server status.
+				
+			master balances the load of every chunk server periodically.
+			
+			master has remote realtime backup.
+			
+	client: communicates with master for meta data: namespace, chunk handle, chunk location
+			communicates with chunk server for chunk: data stream
+			
+			provides specific Google API to Google program:
+				in library format. <=> more functionality, no need to switch in operating system core mode.
+				Google program and libranry file are compiled together.
+
+			
+	chunk server: chunks, 64 MB by default, blocks 64 KB by default. 
+				each block <-> a 32 bit checksum.
+				<=> when reading a duplicate, chunk server checks the data and checksum to see if data is valid. If no, read another duplicate.
+				
+					file system.
+					register to master. <=> expand dynamically.
+					3 duplicates.
+					all duplicates are written good. <=> write successfully.
+					one duplicate has fault, master copies the correct one.
+					
+3) master: meta data is cached in memory. <=> meta data is as compact as possible.
+	client: chunk data no cache.
+	chunk server: data may be cached by the file system if read / write frequently.	
+	
+4) in user mode. <=> implement easy, debug easy, not affect the operating system, GFS and core can be updated seperately.
+	master, chunk server are running as process.
+
+5) other technologies:
+	machine cluster 
+	failure detection
+	adding a node dynamically
+	energy saving
+
+
+# ref:	http://blog.csdn.net/gloud/article/details/5667549
+# ref:	http://blog.sina.com.cn/s/blog_631d3a630101lde9.html
+
+
+
+
+2.  MapReduce
+1) distributed parallel calculation of big data
+
+2) 	Map: process part of the original data to an intermediate result. map: (in_key, in_value) -> {(keyj, valuej) | 1<=j<=k}
+	Reduce: summarize all intermediate result of a key together. reduce: (key, [value1,...,valuem]) -> (key, final_value)
+	
+		Map: (in_key, in_value) -> {(keyj, valuej) | j = 1…k}
+		Reduce: (key, [value1,…,valuem]) -> (key, final_value)
+
+	Map jobs are indepedent.
+	
+3) In MapReduce model, there is a master.
+	master collects the output from map, provide it to reduce.
+	
+	Once a task fails, master will roll back to a checkpoint.
+	Once a worker (map or reduce), master sends the task to another worker.
+	Once the whole master fails, could only restart the MapReduce model processing.
+	
+	
+# ref:	http://blog.csdn.net/gloud/article/details/5667554
+
+4) Example:	words count:
+				python-implemented map-reduce-for-hadoop using hadoop-streaming
+
+
+## in file mapper.py
+#! /usr/bin/env python
+
+import sys
+def read_file(file=sys.stdin):
+	for line in file:
+		yield line.strip()
+		
+def main(separator='\t'):
+	data = read_file(sys.stdin)
+	for word in data:
+		print('%s%s%s' % (word, separator, 1))
+
+if __name__ == '__main__':
+	main()
+	
+
+## in file reducer.py
+#! /usr/bin/env python
+
+import itertools
+import operator
+import sys
+
+def read_mapper_output(file=sys.stdin, separator='\t'):
+	for line in file:
+		yield line.rstrip().split(separator=separator)
+		
+def main(separator='\t'):
+	data = read_mapper_output(sys.stdin)
+	for word, counts in itertools.groupby(data, operator.itemgetter(0)):
+		try:
+			total_count = sum(int(count) for word, count in counts)
+		except ValueError:
+			pass
+		print('%s%s%s' % (word, separator, total_count))
+
+if __name__ == '__main__':
+	main()
+
+
+# ref:	http://blog.csdn.net/zhaoyl03/article/details/8657031/
+
+
+
+3. BigTable
+
+1) similar to a database, but provides different interface.
+	BigTable takes the data as unexplained strings. It stores them by: rows, column family, timestamps.
+	Each cell is allowed to do calculation.
+	
+2) BigTable is a persistent sparse map.
+
+3) data in BigTable is stored as Google SSTable format.
+	Each SSTable contents many blocks, each block 64K (or customerized).
+	At the end of each block, there is a pointer of the block location.
+	
+4) chubby (a distribution lock) is used in BigTable.
+	chubby contents directories and small files. A directory and a file can be used as a lock.
+
+5) 3 main parts in BigTable implementation:
+	library: link to clients
+	master server: assign tablet to tablet servers, balance tablet servers etc.
+	tablet server.
+
+6) tablet location:
+	tablet is designed in a three-tier B+ similar data structure:
+	
+	chubby file -> root tablet(1st metadata tablet) -> other metadata tablets -> user table1, ..., user tablen.
+	
+7) tablet serving:
+	SSTables -> read ops <- memtable
+	write ops -> memtable
+	
+	SSTable is immutable. SSTable = Sorted String Table
+	memtable is mutable, so copy-on-write.
+	
+8) when size of a memtable reaches a threshold, it's frozen, then converted to a SSTable.
+	A new memtable is created.
+	
+	major compression: all SSTables are compressed. can recycle system resources taken by the deleted SSTables.
+	minor compression: compress SSTables and memtable, has an entry for deletion.
+	
+9) caching for read performance
+	Scan cache: key-value from output of SSTables reading-out. high-level. suitable for applications frequently reading same data.
+	Block cache: SSTables. low-level. suitable for sequential reading etc. to get data adjacent to the read one.
+
+
+
+
+# ref:	http://blog.sina.com.cn/s/blog_631d3a630101lde8.html
+# ref:	http://www.360doc.com/content/14/0912/13/15077656_408907386.shtml
+# ref:	http://blog.csdn.net/opennaive/article/details/7532589
+
+
+
