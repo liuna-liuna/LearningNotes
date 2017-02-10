@@ -70,11 +70,127 @@
     nginx -V 查看版本，以及配置文件地址
     nginx -v 查看版本
     nginx -c filename 指定配置文件
+    nginx -t check if syntax right in nginx.conf
     
 # ref:  http://blog.csdn.net/chenglei9128/article/details/47835745
 
 6) config file: /usr/local/etc/nginx/nginx.conf
+  # 6.1) two parts mainly:
+  {
+    # main part
+      # ex. 
+      user nobody;
+      work_processes 1;
+      error_log logs/error.log
+      error_log logs/error.log info;    # works only when --with-debug is used in compiling nginx
+      pid logs/nginx.pid;
+      
+      # 6.2) for events
+      events {
+        worker_connections 1024;
+        
+        # use epoll/...;
+        # accept_mutex on|off;
+        # ...
+      }
+      
+     # http:  for virtual hosts part
+     http {
+        include       mime.types;
+        default_type  application/octet-stream;
+        
+        access_log    logs/access.log main;
+        send_file     on;
+        keep_alive    65;
+        
+        # 6.3) for gzip
+        # gzip          on;
+        # gzip_min_length 1000;
+        # ...
+        
+        # 6.4) another format to define server
+        # define server part into another conf
+        # and include conf/nginx-vhost.conf
+        #
+        server {
+          listen      8080;
+          server_name localhost;
+          
+          location / {
+            root  html;
+            index index.html index.htm;
+            
+            # 6.5) for authentication
+            # auth_basic          "***";
+            # auth_bacic_user_file /www/html/.passwd;
+            
+            # 6.6) for customizing headers
+            # expires    24h;
+            # add_header myhead test;
+            
+            # 6.7) for redirecting web urls
+            # rewrite ^/admin/(.*)$ /web/$1;
+              # grammer format: rewrite grgex replacement [flags]; 
+              #         flags: ex. last, bleak, redirect, permanent.
+            # 6.8) for 防盗链
+            #     （1）、定义合规的引用
+            #             valid_referers none | blocked | server_names | string ...;
+            #      (2)、拒绝不合规的引用
+            #              if ($invalid referer) {
+            #               rewrite ^/ http://www.b.com/403.html;
+            #              }
+            
+            
+            # 6.9) for reverse proxy
+            # proxy_pass http://192.168.9.11;
+            # for cache
+            # proxy_cache STATIC;
+            # ...
+            
+          }
+          
+          error_page  500 502 503 504 /50x.html;
+          location /50x.html {
+            root html;
+          }
+          
+          location ...
+        
+        }
+        
+        server ...
+        
+        # 6.10) upstream: for load balance: 3 algorithms: ip_hash, keepalive, least_conn
+        # upstream web {
+        #   server 192.168.9.11:80 max_fails=3 fail_timeout=10s;
+        #   server 192.168.9.13:80 max_fails=3 fail_timeout=10s;
+        #   server 127.0.0.1:8080 backup;
+        # }
+        # 
+        # server {
+        #   ...
+        #   proxy_pass http://web;
+        #   ...
+        # }
+     
+      }
+   
+  }
+  
+  # ref:  http://www.tuicool.com/articles/yUbuIfQ
+  
 
+7) difference between Apache and Nginx
+  # 核心区别：
+    # apache是同步多进程模型，一个连接对应一个进程；
+    # nginx是异步的，多个连接（万级别）可以对应一个进程.
+  
+  # ref:  http://blog.csdn.net/xo_zhang/article/details/8995756
+
+8) Nginx开发从入门到精通
+  # ref:  http://tengine.taobao.org/book/index.html
+  
+  
 
 
 
