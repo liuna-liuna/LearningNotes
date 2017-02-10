@@ -18,3 +18,15 @@ chown -R jenkins:jenkins /home/jenkins/.ssh
 	try below command
 		restorecon -R -v /home/jenkins/.ssh
 	# ref doc: https://adamwright.wordpress.com/2013/04/15/how-to-fix-server-refused-our-key-error-in-centos-6/
+
+# what does -r mean in groupadd, useradd
+-r: system account
+groupadd -r xxx		# gid, uid for xxx is between SYS_USER_MIN-SYS_USER_MAX, ex. 201-999,
+useradd -r xxx		# 	instead of USER_MIN-USER_MAX.
+			# for useradd -r xxx, no default creation of home directory, if needed must -M home1 to create it.
+
+groupadd -r nginx
+useradd -r -g nginx -s /sbin/nologin -M ginx nginx
+
+# ref:	http://blog.csdn.net/wanghai__/article/details/5744409
+# ref:	https://segmentfault.com/q/1010000007442826
