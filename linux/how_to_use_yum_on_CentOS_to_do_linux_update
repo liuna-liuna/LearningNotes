@@ -18,4 +18,23 @@ yum -y update
 #
 chkconfig --level 12345 yum-updatesd off
 
+# difference between yum install and yum groupinstall
+yum install mysql   
+    # install the tool and its dependency only: mysql, ...
+yum groupinstall "MySQL Database"   
+    # install the whole package and the dependencies of tools in it: mysql, mysql-server, mysql-bench, ...
+# ref:  http://blog.csdn.net/jiangzhengdong/article/details/8037159
+
+# grouplist, groupinstall
+yum grouplist     # 来查看可能批量安装哪些列表
+yum grouplist | grep -i development
+yum groupinfo group1    #
+yum groupinstall "Development Tools"
+yum -y groupinstall "Development tools,Server platform development,Desktop platform development"
+
+# ref:  http://www.cnblogs.com/zlslch/p/6033284.html
+
+# yum commands list
+# ref:  http://blog.sina.com.cn/s/blog_ae8c692e0101gg6m.html
+
 
