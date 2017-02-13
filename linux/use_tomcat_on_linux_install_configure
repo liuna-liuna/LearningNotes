@@ -1,0 +1,103 @@
+#
+# use tomcat on linux
+# 
+1) install jdk, tomcat
+  download
+  unzip / tar -xzvf ...
+  set up environment variables: JAVA_HOME, JAVA_BIN, CLASSPATH, PATH, CATALINA_HOME ex. in /etc/profile
+   -> source /etc/profile
+   
+  check / update tomcat config conf/server.xml, conf/tomcat-users.xml:
+    conf/server.xml:
+      <Server port="8005" shutdown="SHUTDOWN" debug="0" >
+        <Service name="Catalina" >
+          <Connector port="8080" protocol="HTTP/1.1"  redirectPort="8443"
+              maxThreads="150" minSpareThreads="25" maxSpareThreads="75" maxCount="100"
+              enableLookups="false" disableUploadTimeout="true" connectionTimeout="20000" debug="0" 
+              maxHttpHeaderSize="8192" maxPostSize="67589953"
+              />
+          <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" 
+              enableLookups="false" debug="0" />
+              
+          <Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true" sslProtocol="TLS"
+              clientAuth="false" scheme="https" secure="true"
+              maxThreads="150"
+              keystoreFile="conf/.keystore" keystorePass="***" />
+          
+          <Engine name="Catalina" defaultHost="localhost" debug="0" >
+            <Logger/>
+            <Realm/>
+            <Valve/>
+            
+            <Host name="localhost" appBase="/webapps" unpackWars="true" autoDeploy="true" >
+              <Context path="/myweb1" docBase="/webapps/myweb1" />
+              <Context .../>
+            </Host>
+            <Host name="hostname.domainname" appBase="/mailapps" >
+              ...
+            </Host>
+            
+          </Engine>
+        
+        <Service>   
+      </Server>
+      
+   in conf/tomcat-users.xml:
+    <tomcat-users>
+      <user name="admin" password="***" roles="admin-gui, manager-gui" />
+    </tomcat-users>
+    
+    # ref:  http://www.blogjava.net/baoyaer/articles/107278.html
+    # ref:  http://blog.csdn.net/zhuying_linux/article/details/6591042
+    
+  check if firewall is on, if on, configure the rule for tomcat in /etc/profile/iptables or
+    through /sbin/iptables -I INPUT -dport 8080 -j ACCEPT
+    service iptables restart
+  
+  create myweb1.war package and drop it to webapps/
+  create a welcome file for myweb1
+    in myweb1/WEB-INF/web.xml:
+        <welcome-file-list>
+          <welcome-file>index.html</welcome-file>
+          <welcome-file>index.htm</welcome-file>
+          <welcome-file>index.jsp</welcome-file>
+        </welcome-file-list>
+        
+  start tomcat using startup.sh or service
+    ./startup.sh
+    service tomcat5 start
+  
+  # ref:  http://blog.csdn.net/gyming/article/details/36060843
+  
+  
+2) customize tomcat conf/server.xml and conf/tomcat-users.xml:
+  2.1) example in section 1) above
+  2.2) web应用和虚拟目录的映射.
+   可以修改xml配置文件的<Context>元素来设置web应用和虚拟目录的映射.
+   ·conf/server.xml         
+      //在<host>元素下添加<Context path="/webdir" docBase="/webappdir"/>,
+      需要重新启动Tomcat服务生效，不建议使用.
+      
+   ·conf/context.xml        
+      //添加<Context>元素所有web应用有效.
+      
+   ·conf/[enginename]/[hostname]/context.xml.default  
+      //[enginename]一般是Catalina，主机[hostname]的所有web应用有效.
+      
+   ·conf/[enginename]/[hostname]/   
+      //在目录下任意建一个文件(扩展名xml),文件名即为虚拟目录名.多级目录使用#分割.
+        <Context docBase="/webappdir"/>, //缺省值web应用目录可以定义为ROOT.xml，
+        添加<Context docBase="/webappdir"/>,
+        需重新启动Tomcat服务器.
+        
+   ·META-INF/context.xml    
+      //可以将web应用放在webapps目录下让Tomcat服务器自动映射，适用开发环境，实际运用环境中不用自动映射。
+      如没有修改配置文件，web应用目录为ROOT时则为默认web应用。
+   
+ 
+    # ref:  http://www.blogjava.net/baoyaer/articles/107278.html
+    # ref:  http://blog.csdn.net/zhuying_linux/article/details/6591042
+    # ref:  http://blog.csdn.net/gyming/article/details/36060843
+    
+    
+
