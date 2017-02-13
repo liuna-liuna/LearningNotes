@@ -99,5 +99,18 @@
     # ref:  http://blog.csdn.net/zhuying_linux/article/details/6591042
     # ref:  http://blog.csdn.net/gyming/article/details/36060843
     
-    
+3)  tomcat集群, Apache + Tomcat的负载均衡与集群配置, Linux下Apache与Tomcat整合的简单方法 
+   3.1) install apache, configure conf/httpd.conf
+   3.2) install tomcat, configure conf/server.xml, conf/tomcat-users.xml
+   3.3) use mod_proxy or mod_jk to do load balance between Apache and Tomcat cluster: 
+        build, configure conf/httpd.conf and/or include conf/app1.conf and/or conf/workers.properties
+        
+   3.4) set up tomcat cluster, configure conf/server.xml
+   3.5) test web server
+   
+   # ref: http://blog.csdn.net/zhuying_linux/article/details/6587814
+   # ref: http://blog.csdn.net/zhuying_linux/article/details/6590700
+   # ref: http://blog.csdn.net/zhuying_linux/article/details/5803996
+   
+   
 
