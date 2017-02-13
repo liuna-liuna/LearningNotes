@@ -1,0 +1,34 @@
+#
+# difference between Apache Nginx Tomcat
+#
+1) Apache， Nginx: HTTP Server
+                    本身不支持生成动态页面。
+                    对静态资源支持很好。
+                    一般情况下，Apache，Nginx 在负载均衡里是前端服务器，用来处理请求的转发（反向代理等）；
+                    绝大部分时候他们本身并不会运行项目。
+                    
+                    Apache： 支持PHP，Perl，Cgi，负载均衡。
+                    Nginx：  动静分离，负载均衡。
+                    
+   Tomcat：        Servlet (JSP) Container
+                    生成动态页面。
+                    管理Servlet 程序的生命周期，将URL映射到指定的Servlet进行处理，与Servlet程序合作处理HTTP请求。
+                    需要语言的Runtime，对Java即Jdk；
+                    需要支持应用相关的规范，例如类库、安全方面的特性，
+                    对于 Tomcat 来说，就是需要提供 JSP/Sevlet 运行需要的标准类库、Interface 等。
+                    
+                    tomcat和jetty，WebLogic是后端服务器，是直接用来运行项目的容器。
+   
+   # ref: https://www.zhihu.com/question/32212996
+   # ref: http://blog.csdn.net/zhgn2/article/details/14774603
+   
+2) 常用组合：
+  Apache ＋ Tomcat （Cluster）
+  Nginx ＋ Tomcat （Cluster）
+  Apache ＋ Nginx＋ Tomcat （Cluster）
+  
+   # ref: http://blog.csdn.net/u011316248/article/details/9254563
+   # ref: http://xtony.blog.51cto.com/3964396/1140591/
+   
+   
+   
