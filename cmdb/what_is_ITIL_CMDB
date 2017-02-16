@@ -2,8 +2,28 @@
 # what is ITIL CMDB
 #
 1) ITIL = Information Technology Infrastructure Library，信息技术基础设施库
-		
-		
+	主要适应于信息技术服务管理（ITSM = Information Technology Service Management ）。
+	ITIL为ITSM提供了一个客观、严谨、可量化的标准和规范。
+	(1) Incident Management:	purpose is to solve the incident quickly with quality and recover from it.
+	(2) Problem Management:		purpose is to discover why and prevent it.
+	(3) Configuration Management:	purpose is to manage assets: hardware, software, people… all configuration items (CI)
+	(4) Change Management:		purpose is to use standard method and steps to do change and implement it quickly.
+	(5) Release Management:		purpose is to release and publish CIs after tested good.		
+	事件管理的目标是在不影响业务的情况下，尽可能快速的恢复服务，从而保证最佳的效率和服务的可持续性。
+	事件管理流程的建立包括事件分类，确定事件的优先级和建立事件的升级机制。
+	问题管理是调查基础设施和所有可用信息，包括事件数据库，来确定引起事件发生的真正潜在原因，一起提供的服务中可能存在的故障。
+	配置管理的目标是：定义和控制服务与基础设施的部件，并保持准确的配置信息。
+	变更管理的目标是：以受控的方式，确保所有变更得到评估、批准、实施和评审。
+	发布管理的目标是：在实际运行环境的发布中，交付、分发并跟踪一个或多个变更。
+
 		
 2) CMDB = Configuration Management Database
+	在实际的项目中，CMDB常常被认为是构建其它ITIL流程的基础而优先考虑，ITIL项目的成败与是否成功建立CMDB有非常大的关系。
+	CMDB工具中至少包含这几种关键的功能：整合、调和、同步、映射和可视化。
+	
+3) use Python Django + Puppet + API to implement CMDB
+
+# ref:	http://www.cnblogs.com/alex3714/articles/5420433.html
+# ref:	http://www.cnblogs.com/hetan/p/5793971.html
+
 
