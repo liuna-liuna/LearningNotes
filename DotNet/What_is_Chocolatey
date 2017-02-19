@@ -4,6 +4,7 @@
 1) Chocolatey 好比 Linux的 apt-get,背后用NuGet。
     Chocolatey是 Windows 上的包管理器。
     Chocolatey 哲学是完全用命令行安装应用程序。
+    Chocolatey 用各个包的官方的安装路径，需要license的一般安装以后需要注册license。
     
     ＃ ref： https://www.zhihu.com/question/46196731/answer/123113271 
     
@@ -13,6 +14,11 @@
       -Command "iex ((New-Object System.Net.WebClient).DownloadString("https:\\chocolatey.org\install.ps1"))"
       && SET PATH=%PATH%;%systemdrive%\chocolatey\bin
    (-ExecutionPolicy : at least RemoteSigned)
+   # iex = invoke-expression
+   
+   # in powershell3 and ExecutionPolicy is at least RemoteSigned:
+   iwr "https:\\chocolatey.org\install.ps1" -UseBasicParsing | iex
+   # iwr = invoke-webrequest
    
     安装要求：        
       Windows 7+ / Windows Server 2003+
@@ -24,7 +30,7 @@
    
 3) 用Chocolatey下载安装软件：
   in cli:
-  cinst ${name_of_sw_to_install}
+  cinst ${name_of_sw_to_install}        # cinst = choco install
     ex. 
     cinst git.install
     cinst nodejs.install
@@ -37,7 +43,7 @@
     cinst jenkins.install
   
   查看软件是否中Chocolatey的数据库中，
-  clist ${name_of_sw_to_install}
+  clist ${name_of_sw_to_install}        # clist = choco list
   ＃or
   查看网页： https://chocolatey.org/packages 
   
