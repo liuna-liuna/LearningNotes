@@ -7,7 +7,7 @@
     － 使用视图的UI逻辑、使用控制器的用户输入处理以及使用模型的域逻辑。
 
 
-2）When referre in a solution:
+2）When reference in a solution:
   <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral,...">
     <Private>...</Private>
   </Reference>
