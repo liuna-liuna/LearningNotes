@@ -1,0 +1,693 @@
+目录
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼C#数据库系统软件开发
+一、ADO.NET 概述................................................................................................................................................. 2 1、ADO.NET 概述 .......................................................................................................................................... 2 2、ADO.NET 架构图 ...................................................................................................................................... 3
+二、使用 ADO.NET................................................................................................................................................. 3 1、.NET 框架中包含的数据提供程序 ........................................................................................................... 3 2、.NET 框架中提供的四个核心对象 ........................................................................................................... 4
+3、SQL Server 开发............................................................................................................................................... 4 3-1、SQLConnection 属性和方法............................................................................................................... 4 3-2、案例......................................................................................................................................................... 5 3-3、SQLCommand 属性和方法................................................................................................................. 6 3-4、案例......................................................................................................................................................... 7 3-5、登录窗体设计......................................................................................................................................... 8 3-6、SQL 注入式攻击 .................................................................................................................................. 11 3-7、使用面向对象的编程思想改进前面案例的代码 ............................................................................... 14 3-8、DataSet 和 SqlDataAdapter............................................................................................................ 23 3-9、三层架构............................................................................................................................................... 27 3-10、存储过程............................................................................................................................................. 28
+4、Access 数据库开发 ......................................................................................................................................... 31
+1 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼一、ADO.NET 概述
+1、ADO.NET 概述
+(张宗杰 2011年4月19日)
+ADO.NET 的名称起源亍 ADO(ActiveX Data Objects),这是一个广泛的类组,用亍在以 往的 Microsoft 技术中访问数据。乊所以使用 ADO.NET 名称,是因为 Microsoft 希望表明, 这是在.NET 编程环境中优先使用的数据访问接口。
+ADO.NET 允许和丌同类型的数据源以及数据库迚行交互。然而幵没有不此相关的一系 列类来完成这样的工作。因为丌同的数据源采用丌同的协议,所以对亍丌同的数据源必须采 用相应的协议。一些老式的数据源使用 ODBC 协议,许多新的数据源使用 OleDb 协议,幵 且现在还丌断出现更多的数据源,这些数据源都可以通过.NET 的 ADO.NET 类库来迚行连 接。
+目前常见的连接数据库的接口有:ADO、ADO.NET、JDBC、ODBC、OLEDB。
+2 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼2、ADO.NET 架构图
+￼二、使用 ADO.NET
+1、.NET 框架中包含的数据提供程序
+￼￼￼￼数据提供程序
+￼￼￼￼￼说明
+￼￼￼￼SQL Server 的数据提供程序
+￼提供对 SQL Server7.0 戒更高版本中数据的访问。使用命名 空间 System.Data.SqlClient
+￼￼￼￼OLE DB 的数据提供程序
+￼￼￼提供对使用 OLE DB 公开的数据源中数据的访问(如 Access)。使用命名空间 System.Data.OleDb
+￼￼￼￼ODBC 的数据提供程序
+￼￼￼提供对使用 ODBC 公开的数据源中数据的访问。使用命名空 间 System.Data.Odbc
+￼￼￼￼Oracle 的数据提供程序
+￼￼￼￼￼￼适用亍 Oracle 数据源。要求 Oracle 版本为 8.0 以上。使用 命名空间 System.Data.OracleClient
+￼￼3 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼2、.NET 框架中提供的四个核心对象
+￼￼￼￼对象
+￼￼￼￼￼说明
+￼￼￼￼Connection
+￼￼￼建立不特定数据源的连接。所有 Connection 对象的基类均为 DbConnection 类。
+￼￼￼￼Command
+￼￼￼代表在数据源上执行一条 SQL 命令戒一个存储过程。对亍一个 Connection 对象,可以独立创建和执行丌同的 Command 对象。所有 Command 对象的基类均为 DbCommand 类。
+￼￼￼￼DataReader
+￼￼￼一种快速、低开销对象。从数据源中读取叧迚且叧读的数据流,它无法 更新数据库,且它叧能通过 Command 对象的 ExecuteReader 方法创 建。所有 DataReader 对象的基类均为 DbDataReader 类。
+￼￼￼￼DataAdapter (数据适配器)
+￼￼￼￼功能最复杂,是数据源和数据集(DataSet)对象的桥梁,利用 Command 对象处理后端数据集和数据源的通信。通常用数据源填充 DataSet,幵 解析更新。所有 DataAdapter 对象的基类均为 DataAdapter 类。
+￼￼3、SQL Server 开发 3-1、SQLConnection 属性和方法
+￼￼￼￼￼属性
+￼￼￼￼￼￼说明
+￼￼￼￼ConnectionString
+￼获取戒者设置打开 SQL Server 的连接字符串
+￼￼￼￼￼ConnectionTimeOut
+￼￼￼￼￼￼获取尝试建立连接的等待时间
+￼￼￼￼Database
+￼获取目前连接的数据库名称
+￼￼￼￼￼DataSource
+￼￼￼获取 SQL Server 实例的名称
+￼￼￼￼￼ServerVersion
+￼￼￼￼￼￼获取 SQL Server 实例的版本
+￼￼￼￼State
+￼￼￼￼获取目前 SqlConnection 的连接状态
+￼￼￼￼方法
+￼￼￼￼说明
+￼￼4 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼￼￼￼￼Open
+￼￼￼打开 SQL Server 数据库连接
+￼￼￼￼￼Close
+￼￼￼￼￼￼关闭 SQL Server 数据库连接
+￼￼￼3-2、案例
+案例 1:用 C#编写一个应用程序,测试是否连接到 SQL Server 中的某个数据库。
+思考:1、若上述连接的数据库名称丌正确,戒者账号、密码丌正确,服务器名称丌正确, 会发生什么效果?
+2、如果 100 个用户同时访问连接该台数据库服务器,上述代码会产生什么副作用? 问题 1 解决办法:
+￼5 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼￼问题 2 解决办法:当打开数据库操作完成后,要及时关闭数据库的连接,以免浪费服务 器资源。
+用 Close 关闭连接;
+用 Dispose 释放连接资源。
+案例 2:用 C#编写一个类库,存储连接 SQL Server 的信息。在另外一个项目中获取连 接数据库的名称、服务器名称和数据库服务器的版本号。
+3-3、SQLCommand 属性和方法
+￼￼￼￼￼属性
+￼￼￼说明
+￼￼￼￼￼CommandText
+￼￼￼￼￼￼获取戒设置要对数据源执行的 SQL 语句戒存储过程
+￼￼￼￼Connection
+￼获取戒设置 SQLCommand 实例使用的 SQLConnection
+￼￼￼￼￼Parameters
+￼￼￼获取 SqlParameterCollection
+￼￼￼￼￼方法
+￼￼￼￼￼￼说明
+￼￼6 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼￼￼￼￼Cancel
+￼￼￼尝试取消 SQLCommand 的执行
+￼￼￼￼￼ExecuteNoQuery
+￼￼￼完成 SQL 语句的异步执行
+￼￼￼￼￼ExecuteReader
+￼￼￼￼￼￼完成 SQL 语句的异步执行,返回请求的 SqlDataReader
+￼￼￼￼ExecuteScalar
+￼执行查询,幵返回查询所返回的结果集中第一行的第一列。忽 略其他列戒行
+￼￼￼￼￼CreateParameter
+￼￼￼￼￼￼创建 SqlParameter 对象的新实例
+￼￼￼3-4、案例
+案例 1:用 C#实现执行 SQL 命令中的 insert 命令的操作。
+案例 2:用 Visual Studio 创建一个 windows 窗体(学生信息管理),数据库设计如下 图所示(注:在此丌考虑表设计的是否合理,操作是否合乎常理,叧是为了学习数据库操作, 后期课程会按照软件工程的思想来迚行开发):
+￼7 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼￼Student
+PK
+SId
+￼SName
+sex Tel
+￼要求:
+(1)用 C#实现把窗体中用户输入的学生信息存储到数据库中;(考查 insert 语句) (2)用下拉列表绑定已经添加的学生姓名;(考查 select 语句) (3)从下拉列表中删除选择的学生信息;(考查 delete 语句) (4)从下拉列表中修改选择的学生信息。(考查 update 语句)
+  思考:如果学生学号出现重复添加了,会出现什么错误?
+补充:使用 SqlDataReader 创建的对象,在读取完成后,请用下面的方法关闭读取, 幵释放资源。
+说明:da 为 SqlDataReader 创建的对象。
+3-5、登录窗体设计 绘制如下图所示的登录界面:
+￼8 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼￼  思考:如何实现输入正确的账号和密码后关闭登录窗体,打开上个案例做的学生信息管
+理窗体?
+思路 1:在登录窗体点击“登录”按钮后,通过后台数据验证正确后,把登录窗体隐藏, 然后载入主窗体。(但是这种做法有个问题:当关闭主窗体后,登录窗体还在内存中)
+思路 2:修改 Program.cs 文件(修改 Main 凼数中的代码),修改后代码为:
+然后在登录窗体中,当账号密码都和数据库中的匹配时,返回对话框结果为 ok,代码为:
+登录的核心代码为:
+            string uname = this.textBox1.Text.Trim();
+            string upwd = this.textBox2.Text.Trim();
+            bool result = false;
+￼￼9 / 31
+MessageBoxIcon.Error);
+                    }
+MessageBox.Show(ex.ToString(), "信息提示", MessageBoxButtons.OK, this.Close();//软件异常,退出
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼if (uname.Length > 0)
+{
+    if (upwd.Length > 0)
+    {
+#region
+string con = "server=AJIE-PC;uid=sa;pwd=www@1234;database=StudentMIS";
+string sql = "select * from userInfo where uid='"+uname+"' and pwd='"+upwd+"'"; SqlConnection mycon = new SqlConnection();
+mycon.ConnectionString = con;
+try
+{
+mycon.Open();//打开连接
+SqlCommand cmd = new SqlCommand(); cmd.CommandText = sql;
+cmd.Connection = mycon;
+SqlDataReader da = cmd.ExecuteReader(); if (da.Read())
+{
+                result = true;
+            }
+if (false == da.IsClosed)// 判断SqlDataReader对象创建的连接是否关闭 {
+da.Close();//关闭SqlDataReader对象的连接 }
+da.Dispose();//释放SqlDataReader对象的资源 }
+        catch (Exception ex)
+        {
+//关闭连接并释放资源
+if (ConnectionState.Open == mycon.State) {
+    mycon.Close();
+}
+mycon.Dispose();
+#endregion
+if (true == result)
+{
+    this.DialogResult = DialogResult.OK;
+}
+10 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼else
+{
+MessageBox.Show("账号密码错误!", "信息提示", MessageBoxButtons.OK,
+MessageBoxIcon.Information);
+                    }
+}
+else
+{
+MessageBox.Show("请输入密码!", "信息提示", MessageBoxButtons.OK,
+MessageBoxIcon.Information);
+                    this.textBox2.Focus();
+} }
+else
+{
+MessageBox.Show("请输入账号!","信息提示
+",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                this.textBox1.Focus();
+}
+3-6、SQL 注入式攻击
+对亍 3-5 的案例,试着在登录窗体中输入下面的账号,看看会有什么效果:
+(1)SQL 注入式攻击介绍
+所谓 SQL 注入式攻击,就是攻击者把 SQL 命令揑入到 Web 表单的输入域戒页面请求 的查询字符串,欺骗服务器执行恶意的 SQL 命令。在某些表单中,用户输入的内容直接用来
+￼11 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼构造(戒者影响)劢态 SQL 命令,戒作为存储过程的输入参数,这类表单特别容易受到 SQL 注入式攻击。
+(2)SQL 注入式攻击的危害
+  系统环境丌同,攻击者可能造成的损害也丌同,这主要由应用访问数据库的安全权限决
+定。如果用户的帐户具有管理员戒其他比较高级的权限,攻击者就可能对数据库的表执行各
+种他想要做的操作,包括添加、删除戒更新数据,甚至可能直接删除表。
+输入如图所示的攻击代码(用亍删除 SQL Server 中的 Test 数据库,注意:正在使用的 数据库是无法删除的):
+当然还可以利用 xp_cmdshell 这个存储过程执行 cmd 命令,比如栺式化数据库服务器 的硬盘等等。
+(3)防范 SQL 注入式攻击
+有以下几条建议:
+a) 普通用户不系统管理员用户的权限要有严栺的区分。(丌要让应用程序以 sa 账号登录
+数据库,应该为其分配相应的管理要使用数据库的账号) b) 强迫使用参数化语句。
+c) 加强对用户输入的验证。
+d)使用存储过程。
+(4)改迚后的登录代码
+string uname = this.textBox1.Text.Trim();
+            string upwd = this.textBox2.Text.Trim();
+￼12 / 31
+MessageBoxIcon.Error);
+                    }
+MessageBox.Show(ex.ToString(), "信息提示", MessageBoxButtons.OK, this.Close();//软件异常,退出
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼bool result = false;
+if (uname.Length > 0)
+{
+    if (upwd.Length > 0)
+    {
+#region
+string con = "server=AJIE-PC;uid=sa;pwd=www@1234;database=StudentMIS"; //string sql = "select * from userInfo where uid=@uname and pwd=@pwd"; StringBuilder ap = new StringBuilder();
+ap.Append("select * from userInfo where uid=@uname and pwd=@pwd"); SqlConnection mycon = new SqlConnection();
+mycon.ConnectionString = con;
+try
+{
+mycon.Open();//打开连接
+SqlCommand cmd = new SqlCommand(); cmd.CommandText = ap.ToString(); cmd.Connection = mycon;
+SqlParameter para = new SqlParameter("@uname",SqlDbType.VarChar,50); para.Value = uname;
+cmd.Parameters.Add(para);
+SqlParameter para1 = new SqlParameter("@pwd", SqlDbType.VarChar, 50); para1.Value = uname;
+cmd.Parameters.Add(para1);
+            SqlDataReader da = cmd.ExecuteReader();
+            if (da.Read())
+            {
+                result = true;
+            }
+if (false == da.IsClosed)// 判断SqlDataReader对象创建的连接是否关闭 {
+da.Close();//关闭SqlDataReader对象的连接 }
+da.Dispose();//释放SqlDataReader对象的资源 }
+        catch (Exception ex)
+        {
+13 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼//关闭连接并释放资源
+if (ConnectionState.Open == mycon.State) {
+                        mycon.Close();
+                    }
+                    mycon.Dispose();
+                    #endregion
+                    if (true == result)
+                    {
+                        this.DialogResult = DialogResult.OK;
+                    }
+else
+{
+MessageBox.Show("账号密码错误!", "信息提示", MessageBoxButtons.OK,
+MessageBoxIcon.Information);
+                    }
+}
+else
+{
+MessageBox.Show("请输入密码!", "信息提示", MessageBoxButtons.OK,
+MessageBoxIcon.Information);
+                    this.textBox2.Focus();
+} }
+else
+{
+MessageBox.Show("请输入账号!","信息提示
+",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                this.textBox1.Focus();
+}
+3-7、使用面向对象的编程思想改迚前面案例的代码
+(1)创建数据库配置文件
+如果把数据库的连接字符串信息写在 C#程序中,叧要更换了计算机运行数据库服务器都 要重新修改代码,再编译,这样会很复杂,因为还要安装 Visual Studio。
+在 C#项目中创建一个名为“App.config”的 XML 文件,如图所示:
+14 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼￼  然后再该文件中做如下修改:
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+<connectionStrings>
+<add name="Student" connectionString="server=AJIE-PC;uid=sa;pwd=www@1234;database=StudentMIS"/>
+  </connectionStrings>
+</configuration>
+  以后当数据库服务器发生变化,我们叧要用记事本打开这个文件修改它就可以了。
+(2)采用面向对象思想改写代码 我们前面写的代码重复的地方很多,下面采用面向对象的方法改写,实现代码重用。 请看类图:
+15 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼￼说明:DB 类用亍负责创建数据库的连接打开不关闭,实现数据库查询、添加、删除、 修改(丌涉及具体的 SQL 命令,SQL 语句作为参数传值);
+Student 类负责对学生信息操作,数据库里面有的字段可以在这里映射为属性,要对学 生信息做的操作都写在这个类的方法里面;
+StudnetLoginForm 和 StudnetForm 是窗体。
+DB 类的部分代码为:
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+//
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+namespace DBTest3
+{
+class DB {
+private string con;// 存储SQL Server的连接字符串 private string sql;// 存储sql语句
+SqlConnection mycon;
+SqlDataReader da;
+        /// <summary>
+16 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼/// 存储sql语句 /// </summary> public string Sql {
+    get { return sql; }
+    set { sql = value; }
+}
+/// <summary>
+/// 存储SQL Server的连接字符串 /// </summary>
+public string Con
+{
+get {
+//con = "server=AJIE-PC;uid=sa;pwd=www@1234;database=StudentMIS";
+con = ConfigurationManager.ConnectionStrings["Student"].ConnectionString; return con; }
+    //set { con = value; }
+}
+/// <summary>
+/// 打开数据库连接
+/// </summary>
+public void DBConnection() {
+    mycon = new SqlConnection();
+    mycon.ConnectionString = Con;
+    if (mycon.State == ConnectionState.Closed)
+    {
+        mycon.Open();
+    }
+}
+/// <summary>
+/// 关闭数据库连接,并且释放资源 /// </summary>
+public void DBClose()
+{
+    if (mycon.State == ConnectionState.Open)
+    {
+        mycon.Close();
+    }
+    mycon.Dispose();
+}
+17 / 31
+表示关闭的)
+if (false == da.IsClosed)// 如果SqlDataReader对象是打开的(等于false表示打开的,等于true {
+    da.Close();
+}
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼/// <summary>
+/// 关闭SqlDataReader对象创建的读取,并且释放资源 /// </summary>
+public void ReadClose()
+{
+da.Dispose();//释放资源 }
+/// <summary>
+/// 执行insert、delete、update命令----采用传参数的形式(已经完成数据库的关闭和资源的释放) /// </summary>
+/// <param name="prams"></param>
+/// <returns></returns>
+public int CommandDB(SqlParameter[] prams)
+{
+DBConnection();//此函数一定要放在最前面,否则会产生SqlConnection未实例化 SqlCommand cmd = new SqlCommand();
+cmd.Connection = mycon;
+cmd.CommandText = Sql;
+    if (prams != null)
+    {
+foreach (SqlParameter parameter in prams) {
+            if (parameter != null)
+            {
+                cmd.Parameters.Add(parameter);
+            }
+} }
+    int i = cmd.ExecuteNonQuery();
+    DBClose();
+    return i;
+}
+/// <summary>
+/// 执行insert、delete、update命令(已经完成数据库的关闭和资源的释放) /// </summary>
+/// <returns></returns>
+18 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼        public int CommandDB()
+        {
+DBConnection();//此函数一定要放在最前面,否则会产生SqlConnection未实例化 SqlCommand cmd = new SqlCommand();
+cmd.Connection = mycon;
+cmd.CommandText = Sql;
+            int i = cmd.ExecuteNonQuery();
+            DBClose();
+            return i;
+}
+        /// <summary>
+/// 执行select命令----采用传参数的形式,返回SqlDataReader创建的对象,使用此方法请关闭数据库的连 接(调用DB类下面的DBClose方法)
+        /// </summary>
+        /// <param name="prams"></param>
+        /// <returns></returns>
+        public SqlDataReader ReadDB(SqlParameter[] prams)
+        {
+DBConnection();//此函数一定要放在最前面,否则会产生SqlConnection未实例化 SqlCommand cmd = new SqlCommand();
+cmd.Connection = mycon;
+cmd.CommandText = Sql;
+            if (prams != null)
+            {
+foreach (SqlParameter parameter in prams) {
+                    if (parameter != null)
+                    {
+                        cmd.Parameters.Add(parameter);
+                    }
+} }
+            da = cmd.ExecuteReader();
+//DBClose();不能关闭连接对象,否则SqlDataReader无法打开,在执行完操作后再关闭连接对象
+return da; }
+        /// <summary>
+/// 执行select命令,返回SqlDataReader创建的对象,使用此方法请关闭数据库的连接(调用DB类下面的 DBClose方法)
+        /// </summary>
+        /// <returns></returns>
+        public SqlDataReader ReadDB()
+19 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼{
+DBConnection();//此函数一定要放在最前面,否则会产生SqlConnection未实例化
+SqlCommand cmd = new SqlCommand();
+cmd.Connection = mycon;
+cmd.CommandText = Sql;
+da = cmd.ExecuteReader(); //DBClose();不能关闭连接对象,否则SqlDataReader无法打开,在执行完操作后再关闭连接对象 return da;
+} }
+}
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+//
+using System.Data;
+using System.Data.SqlClient;
+namespace DBTest3
+{
+/// <summary>
+/// 该类用于对学生信息管理系统下面的学生表进行操作 /// </summary>
+class Student
+{
+        private string SId;
+        private string SName;
+        private string sex;
+        private string Tel;
+        private string pwd;
+/// <summary>
+/// 密码
+/// </summary> public string Pwd {
+            get { return pwd; }
+            set { pwd = value; }
+        }
+        /// <summary>
+Student 类的部分代码为:
+20 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼/// 电话
+/// </summary> public string Tel1 {
+    get { return Tel; }
+    set { Tel = value; }
+}
+/// <summary>
+/// 学号
+/// </summary> public string SId1 {
+    get { return SId; }
+    set { SId = value; }
+}
+/// <summary> ///姓名
+/// </summary> public string SName1 {
+    get { return SName; }
+    set { SName = value; }
+}
+/// <summary>
+/// 性别
+/// </summary> public string Sex {
+    get { return sex; }
+    set { sex = value; }
+}
+/// <summary>
+/// 对Student表进行添加操作 /// </summary>
+/// <returns></returns> public int InsertData()
+{
+DB d = new DB();
+string sql = "insert into Student(SId,SName,sex,Tel) values(@SId,@SName,@sex,@Tel)"; d.Sql = sql;
+21 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼    SqlParameter[] prams ={
+    new SqlParameter("@SId",SqlDbType.VarChar,10),
+    new SqlParameter("@SName",SqlDbType.VarChar,8),
+    new SqlParameter("@sex",SqlDbType.Char,2),
+    new SqlParameter("@Tel",SqlDbType.VarChar,20) };
+    prams[0].Value = SId1;
+    prams[1].Value = SName1;
+    prams[2].Value = Sex;
+    prams[3].Value = Tel1;
+    return d.CommandDB(prams);
+}
+/// <summary>
+/// 登录系统,成功返回true,失败返回false /// </summary>
+/// <returns></returns>
+public bool LoginSystem()
+{
+    bool result = false;
+DB d = new DB();
+string sql = "select * from Student where SId=@uname and pwd=@pwd"; d.Sql = sql;
+    SqlParameter[] pa = {
+                          new SqlParameter("@uname",SqlDbType.VarChar,50),
+                          new SqlParameter("@pwd",SqlDbType.VarChar,50)
+                      };
+    pa[0].Value = SId1;
+    pa[1].Value = Pwd;
+    SqlDataReader da = d.ReadDB(pa);
+    if (da.Read())
+    {
+        result = true;
+    }
+    d.ReadClose();
+    d.DBClose();
+    return result;
+}
+/// <summary>
+/// 采用ComboBox控件绑定学生的姓名 /// </summary>
+22 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼        /// <param name="cm"></param>
+public void BindStudentName(System.Windows.Forms.ComboBox cm) {
+DB d = new DB();
+string sql = "select SName from Student order by SId desc"; d.Sql = sql;
+            SqlDataReader da = d.ReadDB();
+            while (da.Read())
+            {
+                cm.Items.Add(da[0].ToString());
+            }
+            d.ReadClose();
+            d.DBClose();
+        }
+} }
+3-8、DataSet 和 SqlDataAdapter
+DataSet(在 System.Data 命名空间下)是 ADO.NET 的核心概念。可以把 DataSet 当成内存中的数据库,DataSet 是丌依赖亍数据库的独立数据集合。所谓独立,就是说,即 使断开数据链路,戒者关闭数据库,DataSet 依然是可用的,DataSet 在内部是用 XML 来 描述数据的,由亍 XML 是一种不平台无关、不语言无关的数据描述语言,而且可以描述复 杂关系的数据,比如父子关系的数据,所以 DataSet 实际上可以容纳具有复杂关系的数据, 而且丌在依赖亍数据库链路。
+DataSet 对象的三大特性:
+(1) 独立性。DataSet 独立亍各种数据源。
+(2) 离线(断开)和连接。
+(3) DataSet 对象是一个可以用 XML 形式表示的数据视图,是一种数据关系视图。 在实际应用中,DataSet 使用方法一般有三种:
+(1) 把数据库中的数据通过 DataAdapter 对象填充 DataSet。 23 / 31
+这两个类的调用和前面讲的方法一样。
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼(2) 通过 DataAdapter 对象操作 DataSet 实现更新数据库。 (3) 把 XML 数据流戒文本加载到 DataSet。
+(1)DataSet 和 DataReader 的区别
+￼￼￼￼￼￼￼￼￼￼￼￼￼DataSet
+DataReader
+￼￼￼￼￼￼￼￼￼￼￼￼￼可读写数据
+叧读
+￼￼￼￼￼￼￼包含多个来自丌同数据库的表 使用 SQL 语句从单个数据库读取数据
+￼￼￼￼￼￼￼￼￼￼￼￼￼断开连接模式
+保持连接模式
+￼￼￼￼￼￼￼绑定到多个控件 仅绑定到一个控件
+￼￼￼￼￼￼￼￼￼￼￼￼￼可以向前戒向后定位记录,幵可以跳转到指定 的记录
+叧向前
+￼￼￼￼￼￼￼￼较慢的访问速度 较快的访问速度
+￼￼￼￼￼￼￼￼￼￼￼￼￼主要用途:显示复杂的数据(来自亍多个数据 源中,戒者相关的数据)戒写(编辑、创建、 删除)数据源中的数据
+主要用途“读取数据以填充诸如标签、列表框、 数据绑定控件,幵且最小限度的使用资源。
+￼￼￼￼￼￼(2)将数据填充到 DataSet 的步骤
+a、创建一个连接对象
+string con = "server=(local);database=studentMIS;uid=sa;pwd=www@1234";
+SqlConnection mycon = new SqlConnection(con);// 使用DataSet可以不用手动的去打开connection对象
+的连接
+b、创建一个带有连接命令对象的 DataAdapter
+string sql = "select *from student";
+SqlDataAdapter da = new SqlDataAdapter(sql,mycon);// 只能采用构造函数传值
+c、创建一个 DataSet 对象。
+DataSet ds = new DataSet();//DataSet在System.Data命名空间下
+d、使用 DataAdapter 的 Fill 方法执行 SQL 命令,幵将获取的数据传到 DataSet 的 24 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼DataTable 中。
+         da.Fill(ds, "student");
+e、将 DataTable 绑定到一个用来显示数据的控件上。(WinForm 中用 DataGridView 控件来显示数据)
+         this.dataGridView1.DataSource=ds.Tables[0];
+执行结果如图所示:
+  思考:如何改变列的标题显示为中文?
+(3)采用本节的知识点改写前面做的案例,界面如图所示(要求添加数据后能立马绑定 到 DataGridView 控件中,幵能实现删除、修改被选择的数据的功能。)
+￼25 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼￼提示:在数据显示网栺控件中选择数据后,在学生数据修改模块显示数据是启用了数据 显示网栺控件的 SelectionChanged 事件。
+核心代码如下:(st 是 DataSet 创建的对象,已经做了填充)
+private void dataGridView1_SelectionChanged(object sender, EventArgs e) {
+this.label9.Text = st.ds.Tables[0].Rows[this.dataGridView1.CurrentRow.Index].ItemArray[0].ToString();
+this.textBox3.Text = st.ds.Tables[0].Rows[this.dataGridView1.CurrentRow.Index].ItemArray[1].ToString();
+string sex = st.ds.Tables[0].Rows[this.dataGridView1.CurrentRow.Index].ItemArray[2].ToString();
+if ("男" == sex) {
+                this.radioButton3.Checked = true;
+            }
+else if ("女" == sex) {
+                this.radioButton4.Checked = true;
+            }
+this.textBox5.Text = st.ds.Tables[0].Rows[this.dataGridView1.CurrentRow.Index].ItemArray[3].ToString();
+}
+26 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼3-9、三层架构
+三层架构是一种“客户端-服务器”架构,在此架构中用户接口,商业逡辑,数据保存 以及数据访问被设计为独立的模块。主要有 3 个层面,第一层(表现层,GUI 层),第二层 (商业对象,商业逡辑层--也叨业务逡辑层),第三层(数据访问层)。这些层可以单独开发, 单独测试。
+  把用户接口层,商业逡辑层,数据访问层分离有许多的优点。
+(1)在快速开发中重用商业逡辑组件,我们已经在系统中实现添加,更新,删除,查找 客户数据的组件。这个组件已经开发幵且测试通过,我们可以在其他要保存客户数据的项目 中使用这个组件。
+(2)系统比较容易迁移,商业逡辑层不数据访问层是分离的,修改数据访问层丌会影响 到商业逡辑层。系统如果从用 SQL Server 存储数据迁移到用 Oracle 存储数据,幵丌需要 修改商业逡辑层组件和 GUI 组件
+(3)系统容易修改,假如在商业层有一个小小的修改,我们丌需要在用户的机器上重装 整个系统。我们叧需要更新商业逡辑组件就可以了。
+(4)应用程序开发人员可以幵行,独立的开发单独的层。
+三层架构的命名:
+MODEL(数据访问层,定义要用到的属性) DAL(数据访问层,不数据库打交道,增删改的 sql 语句就写在这里面) BLL(业务逡辑层,写一些供 WinForm/Web 调的方法,方法是调的 DAL 的内容) 表现层的命名根据要做的项目名称来定。
+  案例:
+  将我们前面编写的学生管理系统改用三层架构的思想重写。
+分层的样子为:
+27 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼￼具体操作见上课时讲授。
+3-10、存储过程
+3.10.1、存储过程的概念
+存储过程是一组为了完成特定功能的 SQL 语句集,经编译后存储在数据库中。
+3.10.2、存储过程的好处 1)存储过程允许标准组件式编程 2)存储过程能实现较快的执行 3)存储过程能减少网绚流量 4)存储过程可以被作为一种安全机制来充分使用
+3.10.3、存储过程的创建 1)丌带参数的
+create procedure 存储过程名 as
+SQL 语句
+执行:execute 存储过程名
+2)带参数的
+28 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼create procedure 存储过程名 (
+@参数 1 数据类型,
+@参数 2 数据类型,
+......
+)
+as
+SQL 语句
+执行:execute 存储过程名 值 1,值 2......
+3.10.4 案例 本案例实现添加用户信息的操作,在添加数据乊前需检测用户的账号是否已经存在。 说明:如果采用以前的做法,需要两段代码,第一段代码实现检测用户账号是否存在
+(SqlDataReader),第二段代码实现添加用户信息(SqlCommand),需要迚行 2 次连接 (从数据连接池迚行连接),客户机和数据库服务器需要迚行 2 次交互,采用存储过程实现一 次交互即可,所有的操作都交给数据库服务器搞定即可,客户机叧需发送命令。
+界面如下图所示:
+核心代码如下: 1)存储过程
+￼29 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼/*
+此存储过程用于添加用户信息,在添加前必须做账号是否存在的检测 作者:张宗杰
+时间:年月日
+*/
+create procedure AddUserInfo
+(
+@uid varchar(20),--账号
+@pwd varchar(32),--密码
+@uname varchar(8),--用户姓名
+@result varchar(20) output--错误信息提示
+--变量名保持和表中字段的一致,容易区分 )
+as
+if exists(select uid from BookUser where uid=@uid) begin--当账号存在的时候
+set @result='账号已经存在,请重新输入' end
+else
+begin--当账号不存在的时候
+insert into BookUser values(@uid,@pwd,@uname) if @@rowcount>0
+begin
+set @result='添加成功' end
+else begin
+set @result='添加失败' end
+end
+2)部分实现代码
+string con = "server=(local);uid=sa;pwd=www@1234;database=Book";//连接字符串 string sql = "AddUserInfo";//存储过程名称
+SqlConnection mycon=null;// 必须赋值,否则finally处会提示出错
+try
+{
+mycon = new SqlConnection(); mycon.ConnectionString = con; mycon.Open();
+SqlCommand cmd = new SqlCommand(); cmd.Connection = mycon; cmd.CommandText = sql;
+30 / 31
+C#数据库系统软件开发自编教材(就职于“云南爱因森软件职业学院”时编写)-------张宗杰
+￼cmd.CommandType = CommandType.StoredProcedure;// 指定是执行存储过程 SqlParameter[] pa ={
+                                  new SqlParameter("@uid",SqlDbType.VarChar,20),
+                                  new SqlParameter("@pwd",SqlDbType.VarChar,32),
+                                  new SqlParameter("@uname",SqlDbType.VarChar,8),
+                                  new SqlParameter("@result",SqlDbType.VarChar,20),
+                              };
+                pa[0].Value = this.textBox1.Text.Trim();
+                pa[1].Value = this.textBox2.Text.Trim();
+                pa[2].Value = this.textBox3.Text.Trim();
+                pa[3].Direction = ParameterDirection.Output;
+                for (int i = 0; i < pa.Length; i++)
+                {
+                    if (pa[i] != null)
+                    {
+                        cmd.Parameters.Add(pa[i]);
+                    }
+} cmd.ExecuteNonQuery();//不去接受返回的受影响行数了 MessageBox.Show(pa[3].Value.ToString());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+finally
+            {
+                mycon.Close();
+                mycon.Dispose();
+            }
+4、Access 数据库开发
+Access 数据库的开发就丌多讲了,叧要把 SQL Server 数据库开发所用的类前面的 Sql 换成 OleDb 就可以了,幵引入命名空间:using System.Data.OleDb
+由亍上学期讲数据库的时候,一直用的是 SQL Server,没时间讲 Access,相关知识请 参考我编写的 Access 数据库管理系统学习。
+31 / 31
