@@ -1,0 +1,691 @@
+c#连接sql2000示范
+
+//定义连接字符串               
+            string strConnection = "user id=sa;password=sd;initial catalog=Tele_Sale;Server=168.10.10.86;Connect Timeout=30";
+            //用连接字符串创建一个数据库连接对象
+            SqlConnection objConnection = new SqlConnection(strConnection);
+            //使用数据库连接对象连接数据库
+            objConnection.Open();
+            //基于数据库连接对象创建一个sql命令
+            SqlCommand SqlCmd = new SqlCommand("select * from MissInfo where MissID='234'", objConnection);
+            //创建一个sql数据集并从sql命令中读出数据
+            SqlDataReader DataReader = SqlCmd.ExecuteReader();
+            //使用数据集中的字段内容
+            DataReader.Read();
+            MessageBox.Show( DataReader[0].ToString() );
+            MessageBox.Show( DataReader[1].ToString() );
+            MessageBox.Show( DataReader[2].ToString() ); 
+            //关闭数据库连接
+            objConnection.Close(); 
+c# 登录模块示例代码
+  //检查工号是否为空
+            if (txt_User.Text == "")
+            {
+                MessageBox.Show("请先输入工号", "系统提示");
+                txt_User.Focus();
+                return;
+            }
+            else if (txt_Pwd.Text == "")
+            {
+                MessageBox.Show("请输入密码", "系统提示");
+                txt_Pwd.Focus();
+                return;
+            }
+            //定义连接字符串               
+            string strConnection = "Server=168.10.10.86;initial catalog=Tele_Sale;user id=sa;password=sd;Connect Timeout=30";
+            //用连接字符串创建一个数据库连接对象
+            SqlConnection objConnection = new SqlConnection(strConnection);
+            //使用数据库连接对象连接数据库
+            objConnection.Open();
+            //基于数据库连接对象创建一个sql命令
+            SqlCommand SqlCmd = new SqlCommand("select * from MissInfo where MissID='"+txt_User.Text+"'", objConnection);
+            //创建一个sql数据集并从sql命令中读出数据
+            SqlDataReader DataReader = SqlCmd.ExecuteReader();
+            /*
+            //判断记录集是否为空
+            if (DataReader.HasRows==false)
+            {
+                MessageBox.Show("该工号不存在", "系统提示");
+                return;
+            }
+            */
+            //使用数据集中的字段内容
+            if (DataReader.Read())
+            {
+                //读取密码
+                if (DataReader[2].ToString() != txt_Pwd.Text)
+                {
+                    MessageBox.Show("对不起，您输入的工号或密码错误！", "系统提示");
+                }
+                else
+                {
+                    MessageBox.Show("欢迎使用营销管理系统!", "系统提示");
+                    //打开主程序界面
+                    this.Hide();
+                    Form2 f2 = new Form2();
+                    f2.ShowDialog();
+                    this.Close();
+                    
+                }
+            }
+            else
+            {
+                MessageBox.Show("该工号不存在", "系统提示");
+            }
+            //关闭数据库连接
+            objConnection.Close(); 
+在C#下使用sql语句(查询，插入，更新，删除……)讲解
+在C#下使用sql语句(查询，插入，更新，删除……)
+需要说明的是，我使用的是sql server 2000为服务器。
+按照以下的几步，就可以很顺利的连接到服务器，执行基本的sql操作了。
+第一步 连接服务器
+SqlConnection SqlConn = new SqlConnection("Server = (local); Integrated Security = True;" + "Database = hospital");
+SqlConn.Open();
+第二步 新建命令
+SqlCommand SqlCmd = SqlConn.CreateCommand();
+第三步 给问题文本赋值
+SqlCmd.CommandText = "insert into Users(Telephone) values('08512345699'）"
+这里的字符串就是需要执行的sql命令
+第四步 执行命令
+分为三种命令，相应调用不同的方法：
+1 不需要查询的（插入，更新，删除）
+SqlCmd.ExecuteNonQuery();
+该函数会返回收到影响的总行数。
+2 只需要查询一个值的
+SqlCmd.ExecuteScalar();
+该函数会返回使用的sql语言查询的结果
+3 需要同时查询得到多个值的
+SqlDataReader QuesReader = SqlCmd.ExecuteReader();  //新建一个SqlDataReader
+QuesReader.Read();        //读取一行数据到Reader中
+thisQues[0] = (string)QuesReader["Text"];  //将Reader中的数据读取走
+QuesReader.Close();   //关闭Reader
+第五步 关闭连接
+SqlConn.Close();
+C#执行SQL命令（无返回值）示例代码
+//定义连接字符串               
+            string strConnection = "Server=168.10.10.86;initial catalog=Tele_Sale;user id=sa;password=sd;Connect Timeout=30";
+            //用连接字符串创建一个数据库连接对象
+            SqlConnection objConnection = new SqlConnection(strConnection);
+            //使用数据库连接对象连接数据库
+            objConnection.Open();
+            //基于数据库连接对象创建一个sql命令
+            SqlCommand SqlCmd = new SqlCommand("update MissInfo set MissName='技术主管' where MissID='234'", objConnection);
+            //执行不返回结果的sql命令
+            SqlCmd.ExecuteNonQuery();
+            //关闭数据库连接
+            objConnection.Close();
+C#查询模块示例代码
+if (txt_User.Text.Trim() == "")
+            {
+                MessageBox.Show("请输入查询工号");
+                return;
+            }
+            //定义连接字符串               
+            //string strConnection = "Server=168.10.10.86;initial catalog=Tele_Sale;user id=sa;password=sd;Connect Timeout=30";
+            string strConnection = "Server=168.10.10.86;database=Tele_Sale;uid=sa;pwd=sd;";
+            //用连接字符串创建一个数据库连接对象
+            SqlConnection Conn = new SqlConnection(strConnection);
+            //打开数据库连接
+            Conn.Open();
+            //数据适配器( SqlDataadapter 的作用是实现 DataSet 和 DB 之间的桥梁 )
+            SqlDataAdapter MyAdapter = new SqlDataAdapter("select * from MissInfo where MissID='"+txt_User.Text.Trim()+"'", Conn);
+            //创建数据记录集( 可以把DataSet当成内存中的数据库，DataSet是不依赖于数据库的独立数据集合。)
+            DataSet MyDataSet = new DataSet();
+            //将数据适配器中的数据填充到数据记录集
+            MyAdapter.Fill(MyDataSet, "MyTable");
+            //指定数据表格控件的数据源记录集
+            dataGridView1.DataSource = MyDataSet;
+            //指定数据表格控件的数据源表名
+            dataGridView1.DataMember = "MyTable";
+            //关闭数据库连接
+            Conn.Close();
+
+c# datagridview导出到excel示例代码
+public class ExportExcel
+    {
+        #region 导出全部数据到Excel中，可弹出保存对话框，但没用SaveFileDialog
+        public static void printAll(DataGridView dgv)
+        {
+            //导出到execl   
+            try
+            {
+                //没有数据的话就不往下执行   
+                if (dgv.Rows.Count == 0)
+                {
+                    return;
+                }
+                //实例化一个Excel.Application对象   
+                Excel.Application excel = new Excel.Application();
+                //新增加一个工作簿，Workbook是直接保存，不会弹出保存对话框，加上Application会弹出保存对话框，值为false会报错   
+                excel.Application.Workbooks.Add(true);
+                //让后台执行设置为不可见，为true的话会看到打开一个Excel，然后数据在往里写   
+                excel.Visible = false;
+                //生成Excel中列头名称   
+                for (int i = 0; i < 9; i++)
+                {
+                    //输出DataGridView列头名 
+                    excel.Cells[1, i + 1] = dgv.Columns[i].HeaderText;
+                }
+                //把DataGridView当前页的数据保存在Excel中   
+                if (dgv.Rows.Count > 0)
+                {
+                    //控制Excel中行，上下的距离，就是可以到Excel最下的行数，比数据长了报错，比数据短了会显示不完   
+                    for (int i = 0; i < dgv.Rows.Count; i++)
+                    {
+                        //控制Excel中列，左右的距离，就是可以到Excel最右的列数，比数据长了报错，比数据短了会显示不完   
+                        for (int j = 0; j < 9; j++)
+                        {
+                            string str = dgv.Rows[i].Cells[j].Value.ToString();
+                            //i控制行，从Excel中第2行开始输出第一行数据，j控制列，从Excel中第1列输出第1列数据，"'" +是以string形式保存，所以遇到数字不会转成16进制   
+                            excel.Cells[i + 2, j + 1] = "'" + str;
+                        }
+                    }
+                }
+                //设置禁止弹出保存和覆盖的询问提示框   
+                excel.DisplayAlerts = false;
+                excel.AlertBeforeOverwriting = false;
+                //保存工作簿，值为false会报错   
+                excel.Application.Workbooks.Add(true).Save();
+                //保存excel文件   
+                excel.Save("D:" + "\\KKHMD.xls");
+                //确保Excel进程关闭   
+                excel.Quit();
+                excel = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误提示");
+            }
+        }
+C#DataGridView如何选择一整行(属性讲解)
+设置DataGridView的属性SelectionMode为FullRowSelect 
+这样就使DataGridView不是选择一个字段，而是选择一整行了 
+
+设置DataGridView的属性MultiSelect为false 
+这样就使DataGridView不能够选择多行，只能选择一行了 
+想得到某列的值是要判断DataGridView是否有选中的行
+if (dataGridView1.SelectedCells.Count != 0)
+            {
+                //得到选中行的索引
+                int intRow = dataGridView1.SelectedCells[0].RowIndex;
+                 //得到列的索引
+                int intColumn = dataGridView1.SelectedCells[0].ColumnIndex;
+                 //得到选中行某列的值
+                string str = dataGridView1.CurrentRow.Cells[2].Value.ToString();
+                MessageBox.Show(str);
+            }
+C# datagridview使用方法 讲解
+SqlConnection conn = new SqlConnection("Server=(local);DataBase=test;User=sa;Pwd=sa");
+            SqlDataAdapter da = new SqlDataAdapter("select * from test", conn);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            dataGridView1.DataSource = ds.Tables[0];
+①　DataGridView 取得或者修改当前单元格的内容：
+当前单元格指的是 DataGridView 焦点所在的单元格，它可以通过 DataGridView 对象的 CurrentCell 属性取得。如果当前单元格不存在的时候，返回Nothing(C#是null)
+// 取得当前单元格内容
+Console.WriteLine(DataGridView1.CurrentCell.Value);
+// 取得当前单元格的列 Index
+Console.WriteLine(DataGridView1.CurrentCell.ColumnIndex);
+// 取得当前单元格的行 Index
+Console.WriteLine(DataGridView1.CurrentCell.RowIndex);
+另外，使用 DataGridView.CurrentCellAddress 属性（而不是直接访问单元格）来确定单元格所在的行：DataGridView.CurrentCellAddress.Y 和列： DataGridView.CurrentCellAddress.X 。这对于避免取消共享行的共享非常有用。
+当前的单元格可以通过设定 DataGridView 对象的 CurrentCell 来改变。可以通过 CurrentCell 来设定
+DataGridView 的激活单元格。将 CurrentCell 设为 Nothing(null) 可以取消激活的单元格。
+
+// 设定 (0, 0) 为当前单元格
+DataGridView1.CurrentCell = DataGridView1[0, 0];
+在整行选中模式开启时，你也可以通过 CurrentCell 来设定选定行。
+
+/// <summary>
+/// 向下遍历
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void button4_Click(object sender, EventArgs e)
+...{
+int row = this.dataGridView1.CurrentRow.Index + 1;
+if (row > this.dataGridView1.RowCount - 1)
+row = 0;
+this.dataGridView1.CurrentCell = this.dataGridView1[0, row]; 
+}
+/// <summary>
+/// 向上遍历
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void button5_Click(object sender, EventArgs e)
+...{
+int row = this.dataGridView1.CurrentRow.Index - 1;
+if (row < 0)
+row = this.dataGridView1.RowCount - 1;
+this.dataGridView1.CurrentCell = this.dataGridView1[0, row]; 
+}
+* 注意: this.dataGridView 的索引器的参数是: columnIndex, rowIndex 或是 columnName, rowIndex
+这与习惯不同。
+②　DataGridView 设定单元格只读：
+1） 使用 ReadOnly 属性
+如果希望，DataGridView 内所有单元格都不可编辑， 那么只要：
+
+[C#]
+// 设置 DataGridView1 为只读
+DataGridView1.ReadOnly = true;
+此时，用户的新增行操作和删除行操作也被屏蔽了。
+如果希望，DataGridView 内某个单元格不可编辑， 那么只要：
+
+[C#]
+// 设置 DataGridView1 的第2列整列单元格为只读
+DataGridView1.Columns[1].ReadOnly = true;
+// 设置 DataGridView1 的第3行整行单元格为只读
+DataGridView1.Rows[2].ReadOnly = true;
+// 设置 DataGridView1 的[0，0]单元格为只读
+DataGridView1[0, 0].ReadOnly = true;
+2） 使用 EditMode 属性
+DataGridView.EditMode 属性被设置为 DataGridViewEditMode.EditProgrammatically 时，用户就不能手动编辑单元格的内容了。但是可以通过程序，调用 DataGridView.BeginEdit 方法，使单元格进入编辑模式进行编辑。
+
+[C#]
+DataGridView1.EditMode = DataGridViewEditMode.EditProgrammatically;
+3） 根据条件设定单元格的不可编辑状态
+当一个一个的通过单元格坐标设定单元格 ReadOnly 属性的方法太麻烦的时候，你可以通过 CellBeginEdit 事件来取消单元格的编辑。
+[C#]
+// CellBeginEdit 事件处理方法
+private void DataGridView1_CellBeginEdit(object sender,
+DataGridViewCellCancelEventArgs e)
+{
+DataGridView dgv = (DataGridView)sender;
+//是否可以进行编辑的条件检查
+if (dgv.Columns[e.ColumnIndex].Name == "Column1" &&
+!(bool)dgv["Column2", e.RowIndex].Value)
+{
+// 取消编辑
+e.Cancel = true;
+}
+}
+
+③　DataGridView 不显示最下面的新行：
+
+通常 DataGridView 的最下面一行是用户新追加的行（行头显示 * ）。如果不想让用户新追加行即不想显示该新行，可以将 DataGridView 对象的 AllowUserToAddRows 属性设置为 False。
+
+[C#]
+// 设置用户不能手动给 DataGridView1 添加新行
+DataGridView1.AllowUserToAddRows = false;
+但是，可以通过程序： DataGridViewRowCollection.Add 为 DataGridView 追加新行。
+补足： 如果 DataGridView 的 DataSource 绑定的是 DataView, 还可以通过设置 DataView.AllowAdd
+属性为 False 来达到同样的效果。
+
+
+④　DataGridView 判断新增行：
+
+DataGridView的AllowUserToAddRows属性为True时也就是允许用户追加新行的场合下，DataGridView的最后一行就是新追加的行(*行)。使用 DataGridViewRow.IsNewRow 属性可以判断哪一行是新追加的行。另外，通过DataGridView.NewRowIndex 可以获取新行的行序列号。在没有新行的时候，NewRowIndex = -1。
+⑤　DataGridView 行的用户删除操作的自定义：
+
+1） 无条件的限制行删除操作。
+默认时，DataGridView 是允许用户进行行的删除操作的。如果设置 DataGridView对象的AllowUserToDeleteRows属性为 False 时， 用户的行删除操作就被禁止了。
+
+[C#]
+// 禁止DataGridView1的行删除操作。
+DataGridView1.AllowUserToDeleteRows = false;
+但是，通过 DataGridViewRowCollection.Remove 还是可以进行行的删除。
+补足： 如果 DataGridView 绑定的是 DataView 的话，通过 DataView.AllowDelete 也可以控制行的删除。
+2） 行删除时的条件判断处理。
+用户在删除行的时候，将会引发 DataGridView.UserDeletingRow 事件。在这个事件里，可以判断条件并取消删除操作。
+[C#]
+// DataGridView1 的 UserDeletingRow 事件
+private void DataGridView1_UserDeletingRow(
+object sender, DataGridViewRowCancelEventArgs e)
+{
+// 删除前的用户确认。
+if (MessageBox.Show("确认要删除该行数据吗？", "删除确认",
+MessageBoxButtons.OKCancel,
+MessageBoxIcon.Question) != DialogResult.OK)
+{
+// 如果不是 OK，则取消。
+e.Cancel = true;
+}
+}
+
+
+
+⑥　DataGridView 行、列的隐藏和删除：
+
+1） 行、列的隐藏
+
+[C#]
+// DataGridView1的第一列隐藏
+DataGridView1.Columns[0].Visible = false;
+// DataGridView1的第一行隐藏
+DataGridView1.Rows[0].Visible = false;
+2） 行头、列头的隐藏
+[C#]
+// 列头隐藏
+DataGridView1.ColumnHeadersVisible = false;
+// 行头隐藏
+DataGridView1.RowHeadersVisible = false;
+3） 行和列的删除
+[C#]
+' 删除名为"Column1"的列
+DataGridView1.Columns.Remove("Column1");
+' 删除第一列
+DataGridView1.Columns.RemoveAt(0);
+' 删除第一行
+DataGridView1.Rows.RemoveAt(0);
+4） 删除选中行
+[C#]
+foreach (DataGridViewRow r in DataGridView1.SelectedRows)
+{
+if (!r.IsNewRow)
+{
+DataGridView1.Rows.Remove(r);
+}
+}
+
+
+
+⑦ DataGridView 禁止列或者行的Resize：
+
+1） 禁止所有的列或者行的Resize
+
+[C#]
+// 禁止用户改变DataGridView1的所有列的列宽
+DataGridView1.AllowUserToResizeColumns = false;
+//禁止用户改变DataGridView1の所有行的行高
+DataGridView1.AllowUserToResizeRows = false;
+但是可以通过 DataGridViewColumn.Width 或者 DataGridViewRow.Height 属性设定列宽和行高。
+2） 禁止指定行或者列的Resize
+[C#]
+// 禁止用户改变DataGridView1的第一列的列宽
+DataGridView1.Columns[0].Resizable = DataGridViewTriState.False;
+// 禁止用户改变DataGridView1的第一列的行宽
+DataGridView1.Rows[0].Resizable = DataGridViewTriState.False;
+&S658; 关于 NoSet
+
+当 Resizable 属性设为 DataGridViewTriState.NotSet 时， 实际上会默认以 DataGridView 的 AllowUserToResizeColumns 和 AllowUserToResizeRows 的属性值进行设定。比如： DataGridView.AllowUserToResizeColumns = False 且 Resizable 是 NoSet 设定时，Resizable = False 。
+
+判断 Resizable 是否是继承设定了 DataGridView 的 AllowUserToResizeColumns 和 AllowUserToResizeRows 的属性值， 可以根据 State 属性判断。如果 State 属性含有 ResizableSet，那么说明没有继承设定。
+
+3） 列宽和行高的最小值的设定
+
+[C#]
+// 第一列的最小列宽设定为 100
+DataGridView1.Columns[0].MinimumWidth = 100;
+// 第一行的最小行高设定为 50
+DataGridView1.Rows[0].MinimumHeight = 50;
+4) 禁止用户改变行头的宽度以及列头的高度
+
+[C#]
+// 禁止用户改变列头的高度
+DataGridView1.ColumnHeadersHeightSizeMode =
+DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+// 禁止用户改变行头的宽度
+DataGridView1.RowHeadersWidthSizeMode =
+DataGridViewRowHeadersWidthSizeMode.EnableResizing;
+
+
+
+⑧ DataGridView 列宽和行高自动调整的设定：
+1) 设定行高和列宽自动调整
+
+[C#]
+// 设定包括Header和所有单元格的列宽自动调整
+DataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+// 设定包括Header和所有单元格的行高自动调整
+DataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+AutoSizeColumnsMode 属性的设定值枚举请参照 msdn 的 DataGridViewAutoSizeRowsMode 说明。
+2）指定列或行自动调整
+[C#]
+// 第一列自动调整
+DataGridView1.Columns[0].AutoSizeMode =
+DataGridViewAutoSizeColumnMode.DisplayedCells;
+AutoSizeMode 设定为 NotSet 时，默认继承的是 DataGridView.AutoSizeColumnsMode 属性。
+3) 设定列头的高度和行头的宽度自动调整
+[C#]
+// 设定列头的宽度可以自由调整
+DataGridView1.ColumnHeadersHeightSizeMode =
+DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+// 设定行头的宽度可以自由调整
+DataGridView1.RowHeadersWidthSizeMode =
+DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
+4） 随时自动调整
+a， 临时的，让列宽自动调整，这和指定AutoSizeColumnsMode属性一样。
+[C#]
+// 让 DataGridView1 的所有列宽自动调整一下。
+DataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+// 让 DataGridView1 的第一列的列宽自动调整一下。
+DataGridView1.AutoResizeColumn(0, DataGridViewAutoSizeColumnMode.AllCells);
+上面调用的 AutoResizeColumns 和 AutoResizeColumn 当指定的是DataGridViewAutoSizeColumnMode.AllCells 的时候， 参数可以省略。即：
+DataGridView1.AutoResizeColumn(0) 和 DataGridView1.AutoResizeColumns()
+b，临时的，让行高自动调整
+[C#]
+// 让 DataGridView1 的所有行高自动调整一下。
+DataGridView1.AutoResizeRows(DataGridViewAutoSizeRowsMode.AllCells);
+//让 DataGridView1 的第一行的行高自动调整一下。
+DataGridView1.AutoResizeRow(0, DataGridViewAutoSizeRowMode.AllCells);
+上面调用的 AutoResizeRows 和 AutoResizeRow 当指定的是DataGridViewAutoSizeRowMode.AllCells 的时候，参数可以省略。即：DataGridView1.AutoResizeRow (0) 和 DataGridView1.AutoResizeRows()
+c，临时的，让行头和列头自动调整
+关于性能：
+通过 AutoSizeColumnsMode 或者 AutoSizeRowsMode 属性所指定的单元格进行自动调整时，如果调整次数过于多那么将可能导致性能下降，尤其是在行和列数比较多的情况下。在这时用 DisplayedCells 代替 AllCells 能减少非所见的单元格的调整，从而提高性能。
+[C#]
+// 列头高度自动调整
+DataGridView1.AutoResizeColumnHeadersHeight();
+// 行头宽度自动调整
+DataGridView1.AutoResizeRowHeadersWidth(
+DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
+
+⑨ DataGridView 冻结列或行
+1） 列冻结
+DataGridViewColumn.Frozen 属性为 True 时， 该列左侧的所有列被固定，横向滚动时固定列不随滚动条滚动而左右移动。这对于重要列固定显示很有用。 [C#]
+// DataGridView1的左侧2列固定
+DataGridView1.Columns[1].Frozen = true;
+但是，DataGridView.AllowUserToOrderColumns = True 时，固定列不能移动到非固定列，反之亦然。
+2） 行冻结
+DataGridViewRow.Frozen 属性为 True 时， 该行上面的所有行被固定，纵向滚动时固定行不随滚动条滚动而上下移动。
+[C#]
+// DataGridView1 的上3行固定
+DataGridView1.Rows[2].Frozen = true;
+⑩ DataGridView 列顺序的调整
+
+设定 DataGridView 的 AllowUserToOrderColumns 为 True 的时候，用户可以自由调整列的顺序。
+当用户改变列的顺序的时候，其本身的 Index 不会改变，但是 DisplayIndex 改变了。你也可以通过程序改变 DisplayIndex 来改变列的顺序。 列顺序发生改变时会引发 ColumnDisplayIndexChanged 事件：
+
+[C#]
+// DataGridView1的ColumnDisplayIndexChanged事件处理方法
+private void DataGridView1_ColumnDisplayIndexChanged(object sender,
+DataGridViewColumnEventArgs e)
+{
+Console.WriteLine("{0} 的位置改变到 {1} ",
+e.Column.Name, e.Column.DisplayIndex);
+}
+
+DataGridView 行头列头的单元格
+[C#]
+// 改变DataGridView1的第一列列头内容
+DataGridView1.Columns[0].HeaderCell.Value = "第一列";
+// 改变DataGridView1的第一行行头内容
+DataGridView1.Rows[0].HeaderCell.Value = "第一行";
+// 改变DataGridView1的左上头部单元内容
+DataGridView1.TopLeftHeaderCell.Value = "左上";
+另外你也可以通过 HeaderText 来改变他们的内容。
+[C#]
+// 改变DataGridView1的第一列列头内容
+DataGridView1.Columns[0].HeaderText = "第一列";
+
+DataGridView 剪切板的操作
+DataGridView.ClipboardCopyMode 属性被设定为 DataGridViewClipboardCopyMode.Disable 以外的情况时，「Ctrl + C」按下的时候，被选择的单元格的内容会拷贝到系统剪切板内。格式有： Text， UnicodeText，Html， CommaSeparatedValue。可以直接粘贴到 Excel 内。
+ClipboardCopyMode 还可以设定 Header部分是否拷贝： EnableAlwaysIncludeHeaderText 拷贝Header部分、EnableWithoutHeaderText 则不拷贝。默认是 EnableWithAutoHeaderText ， Header 如果选择了的话，就拷贝。
+1） 编程方式实现剪切板的拷贝
+Clipboard.SetDataObject(DataGridView1.GetClipboardContent())
+2) DataGridView 的数据粘贴
+实现剪切板的拷贝比较容易，但是实现 DataGridView 的直接粘贴就比较难了。「Ctrl + V」按下进行粘贴时，DataGridView 没有提供方法，只能自己实现。
+以下，是粘贴时简单的事例代码，将拷贝数据粘贴到以选择单元格开始的区域内。
+[C#]
+//当前单元格是否选择的判断
+if (DataGridView1.CurrentCell == null)
+return;
+int insertRowIndex = DataGridView1.CurrentCell.RowIndex;
+// 获取剪切板的内容，并按行分割
+string pasteText = Clipboard.GetText();
+if (string.IsNullOrEmpty(pasteText))
+return;
+pasteText = pasteText.Replace(" ", " ");
+pasteText = pasteText.Replace(' ', ' ');
+pasteText.TrimEnd(new char[] { ' ' });
+string[] lines = pasteText.Split(' ');
+bool isHeader = true;
+foreach (string line in lines)
+{
+// 是否是列头
+if (isHeader)
+{
+isHeader = false;
+continue;
+}
+// 按 Tab 分割数据
+string[] vals = line.Split(' ');
+// 判断列数是否统一
+if (vals.Length - 1 != DataGridView1.ColumnCount)
+throw new ApplicationException("粘贴的列数不正确。");
+DataGridViewRow row = DataGridView1.Rows[insertRowIndex];
+// 行头设定
+row.HeaderCell.Value = vals[0];
+// 单元格内容设定
+for (int i = 0; i < row.Cells.Count; i++)
+{
+row.Cells[i].Value = vals[i + 1];
+}
+// DataGridView的行索引+1
+insertRowIndex++;
+}
+
+DataGridView 单元格的ToolTip的设置
+
+DataGridView.ShowCellToolTips = True 的情况下， 单元格的 ToolTip 可以表示出来。对于单元格窄小，无法完全显示的单元格， ToolTip 可以显示必要的信息。
+1） 设定单元格的ToolTip内容
+[C#]
+// 设定单元格的ToolTip内容
+DataGridView1[0, 0].ToolTipText = "该单元格的内容不能修改";
+// 设定列头的单元格的ToolTip内容
+DataGridView1.Columns[0].ToolTipText = "该列只能输入数字";
+// 设定行头的单元格的ToolTip内容
+DataGridView1.Rows[0].HeaderCell.ToolTipText = "该行单元格内容不能修改";
+2） CellToolTipTextNeeded 事件
+在批量的单元格的 ToolTip 设定的时候，一个一个指定那么设定的效率比较低， 这时候可以利用 CellToolTipTextNeeded 事件。当单元格的 ToolTipText 变化的时候也会引发该事件。但是，当DataGridView的DataSource被指定且VirualMode=True的时候，该事件不会被引发。
+[C#]
+// CellToolTipTextNeeded事件处理方法
+private void DataGridView1_CellToolTipTextNeeded(object sender,
+DataGridViewCellToolTipTextNeededEventArgs e)
+{
+e.ToolTipText = e.ColumnIndex.ToString() + ", " + e.RowIndex.ToString();
+}
+DataGridView 的右键菜单（ContextMenuStrip）
+DataGridView, DataGridViewColumn, DataGridViewRow, DataGridViewCell 有 ContextMenuStrip 属性。可以通过设定 ContextMenuStrip 对象来控制 DataGridView 的右键菜单的显示。 DataGridViewColumn 的 ContextMenuStrip 属性设定了除了列头以外的单元格的右键菜单。 DataGridViewRow 的 ContextMenuStrip 属性设定了除了行头以外的单元格的右键菜单。DataGridViewCell 的 ContextMenuStrip 属性设定了指定单元格的右键菜单。 [C#]
+// DataGridView 的 ContextMenuStrip 设定
+DataGridView1.ContextMenuStrip = this.ContextMenuStrip1;
+// 列的 ContextMenuStrip 设定
+DataGridView1.Columns[0].ContextMenuStrip = this.ContextMenuStrip2;
+// 列头的 ContextMenuStrip 设定
+DataGridView1.Columns[0].HeaderCell.ContextMenuStrip = this.ContextMenuStrip2;
+// 行的 ContextMenuStrip 设定
+DataGridView1.Rows[0].ContextMenuStrip = this.ContextMenuStrip3;
+// 单元格的 ContextMenuStrip 设定
+DataGridView1[0, 0].ContextMenuStrip = this.ContextMenuStrip4;
+对于单元格上的右键菜单的设定，优先顺序是：　Cell > Row > Column > DataGridView
+CellContextMenuStripNeeded、RowContextMenuStripNeeded　事件
+利用　CellContextMenuStripNeeded　事件可以设定单元格的右键菜单，尤其但需要右键菜单根据单元格值的变化而变化的时候。比起使用循环遍历，使用该事件来设定右键菜单的效率更高。但是，在DataGridView使用了DataSource绑定而且是VirtualMode的时候，该事件将不被引发。
+[C#]
+//　CellContextMenuStripNeeded事件处理方法
+private void DataGridView1_CellContextMenuStripNeeded(object sender,
+DataGridViewCellContextMenuStripNeededEventArgs e)
+{
+DataGridView dgv = (DataGridView)sender;
+if (e.RowIndex < 0)
+{
+//　列头的ContextMenuStrip设定
+e.ContextMenuStrip = this.ContextMenuStrip1;
+}
+else if (e.ColumnIndex < 0)
+{
+//　行头的ContextMenuStrip设定
+e.ContextMenuStrip = this.ContextMenuStrip2;
+}
+else if (dgv[e.ColumnIndex, e.RowIndex].Value is int)
+{
+//　如果单元格值是整数时
+e.ContextMenuStrip = this.ContextMenuStrip3;
+}
+}
+同样，可以通过　RowContextMenuStripNeeded　事件来设定行的右键菜单。
+[C#]
+//　RowContextMenuStripNeeded事件处理方法
+private void DataGridView1_RowContextMenuStripNeeded(object sender,
+DataGridViewRowContextMenuStripNeededEventArgs e)
+{
+DataGridView dgv = (DataGridView)sender;
+//　当"Column1"列是Bool型且为True时、设定其的ContextMenuStrip
+object boolVal = dgv["Column1", e.RowIndex].Value;
+Console.WriteLine(boolVal);
+if (boolVal is bool && (bool)boolVal)
+{
+e.ContextMenuStrip = this.ContextMenuStrip1;
+}
+}
+CellContextMenuStripNeeded　事件处理方法的参数中、「e.ColumnIndex=-1」表示行头、「e.RowIndex=-1」表示列头。RowContextMenuStripNeeded则不存在「e.RowIndex=-1」的情况。
+DataGridView 的单元格的边框、 网格线样式的设定
+1) DataGridView 的边框线样式的设定
+DataGridView 的边框线的样式是通过 DataGridView.BorderStyle 属性来设定的。 BorderStyle 属性设定值是一个
+BorderStyle 枚举： FixedSingle（单线，默认）、Fixed3D、None。
+2) 单元格的边框线样式的设定
+单元格的边框线的样式是通过 DataGridView.CellBorderStyle 属性来设定的。 CellBorderStyle 属性设定值是
+DataGridViewCellBorderStyle 枚举。（详细参见 MSDN）
+另外，通过 DataGridView.ColumnHeadersBorderStyle 和 RowHeadersBorderStyle 属性可以修改 DataGridView 的头部的单元格边框线样式。 属性设定值是 DataGridViewHeaderBorderStyle 枚举。（详细参见 MSDN）
+3） 单元格的边框颜色的设定
+单元格的边框线的颜色可以通过 DataGridView.GridColor 属性来设定的。默认是 ControlDarkDark 。但是只有在 CellBorderStyle 被设定为 Single、SingleHorizontal、SingleVertical 的条件下才能改变其边框线的颜色。同样，ColumnHeadersBorderStyle 以及 RowHeadersBorderStyle 只有在被设定为 Single 时，才能改变颜色。
+4） 单元格的上下左右的边框线式样的单独设定
+CellBorderStyle只能设定单元格全部边框线的式样。要单独改变单元格某一边边框式样的话，需要用到DataGridView.AdvancedCellBorderStyle属性。如示例：
+同样，设定行头单元格的属性是： AdvancedRowHeadersBorderStyle，设定列头单元格属性是：AdvancedColumnHeadersBorderStyle。
+&e327; DataGridView 单元格表示值的自定义
+通过CellFormatting事件，可以自定义单元格的表示值。（比如：值为Error的时候，单元格被设定为红色）
+下面的示例：将“Colmn1”列的值改为大写。
+[C#]
+//CellFormatting 事件处理方法
+private void DataGridView1_CellFormatting(object sender,
+DataGridViewCellFormattingEventArgs e)
+{
+DataGridView dgv = (DataGridView)sender;
+// 如果单元格是“Column1”列的单元格
+if (dgv.Columns[e.ColumnIndex].Name == "Column1" && e.Value is string)
+{
+// 将单元格值改为大写
+string str = e.Value.ToString();
+e.Value = str.ToUpper();
+// 应用该Format，Format完毕。
+e.FormattingApplied = true;
+}
+}CellFormatting事件的DataGridViewCellFormattingEventArgs对象的Value属性一开始保存着未被格式化的值。当Value属性被设定表示用的文本之后，把FormattingApplied属性做为True，告知DataGridView文本已经格式化完毕。如果不这样做的话，DataGridView会根据已经设定的Format，NullValue，DataSourceNullValue，FormatProvider属性会将Value属性会被重新格式化一遍。
+&e328; DataGridView 用户输入时，单元格输入值的设定
+通过 DataGridView.CellParsing 事件可以设定用户输入的值。下面的示例：当输入英文文本内容的时候，立即被改变为大写。
+[C#]
+//CellParsing 事件处理方法
+private void DataGridView1_CellParsing(object sender,
+DataGridViewCellParsingEventArgs e)
+{
+DataGridView dgv = (DataGridView)sender;
+//单元格列为“Column1”时
+if (dgv.Columns[e.ColumnIndex].Name == "Column1" &&
+e.DesiredType == typeof(string))
+{
+//将单元格值设为大写
+e.Value = e.Value.ToString().ToUpper();
+//解析完毕
+e.ParsingApplied = true;
+}
+}
+DataGridView 新加行的默认值的设定
+需要指定新加行的默认值的时候，可以在DataGridView.DefaultValuesNeeded事件里处理。在该事件中处理除了可以设定默认值以外，还可以指定某些特定的单元格的ReadOnly属性等。
+[C#]
+// DefaultValuesNeeded 事件处理方法
+private void DataGridView1_DefaultValuesNeeded(object sender,
+DataGridViewRowEventArgs e)
+{
+// 设定单元格的默认值
+e.Row.Cells["Column1"].Value = 0;
+e.Row.Cells["Column2"].Value = "-";
+
