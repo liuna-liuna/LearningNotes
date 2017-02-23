@@ -1,0 +1,79 @@
+＃
+＃ aggregate functions in T-SQL
+#
+1) 系统提供的：avg, count, count_big, min, max, sum, 
+              checksum_agg, grouping, binary_checksum,
+              stdev, stdevp, var, varp.
+              
+  SQL Server 2012中新加的聚合函数：first_value, last_value, lead, lag.
+  ex.
+    select first_value(lastname) over(order by ID Desc) from Employees;
+    select first_value(lastname) over(partition by Department order by ID Desc) from Employees;
+      # over 作用：同时显示基本列和聚合以后得到的列。
+      #  而单纯定聚合如 avg等只显示聚合以后得到的列。
+    
+    # 1、查询某个区域在后续年度的销售业绩的差异。
+    select Territory, FiscalYear, Profit as CurrentProfit,
+          lead(Profit, 1, 0) over(order by Territory) as NextProfit
+    from Profits
+    where Territory = 'CN';
+      > Territory FiscalYear CurrentProfit NextProfit
+               CN   2011        551           925
+               CN   2012        925           0
+    
+    # 2、查询每个区域2011, 2012在后续年度的销售业绩的差异。
+    select Territory, FiscalYear, Profit as CurrentProfit,
+          lead(Profit, 1, 0) over(partition by Territory order by FiscalYear) as NextProfit
+    from Profits
+    where FiscalYear in (2011, 2012);
+      > Territory FiscalYear CurrentProfit NextProfit
+               CN     2011      551          925
+               CN     2012      925          0
+               EU     2011      227          50
+               EU     2012      50          0
+               US     2011      87          595
+               US     2012      595          0
+
+    
+  # ref:  SqlServer2012中First_Value函数简单分析 http://www.jb51.net/article/54317.htm
+  # ref:  SqlServer2012中LEAD函数简单分析  http://www.2cto.com/database/201204/128154.html
+  # ref:  SQLServer中OVER结合排名函数或聚合函数的使用  http://www.itfarmer.com.cn/971.html
+  # ref:  SQL Server 2012 开发新特性：分析函数  http://jimshu.blog.51cto.com/3171847/1176191/
+  
+  
+  Transact-SQL编程语言提供下列聚合函数：
+    AVG 返回指定组中的平均值，空值被忽略。
+    例：select prd_no,avg(qty) from sales group by prd_no
+    2. COUNT 返回指定组中项目的数量。
+    例：select count(prd_no) from sales
+    3. MAX 返回指定数据的最大值。
+    例：select prd_no,max(qty) from sales group by prd_no
+    4. MIN 返回指定数据的最小值。
+    例：select prd_no,min(qty) from sales group by prd_no
+    5. SUM 返回指定数据的和，只能用于数字列，空值被忽略。
+    例：select prd_no,sum(qty) from sales group by prd_no
+    6. COUNT_BIG 返回指定组中的项目数量，与COUNT函数不同的是COUNT_BIG返回bigint值，而COUNT返回的是int值。
+    例：select count_big(prd_no) from sales
+    7. GROUPING 产生一个附加的列，当用CUBE或ROLLUP运算符添加行时，输出值为1.当所添加的行不是由CUBE或ROLLUP产生时，输出值为0.
+    例：select prd_no,sum(qty),grouping(prd_no) from sales group by prd_no with rollup
+    8. BINARY_CHECKSUM 返回对表中的行或表达式列表计算的二进制校验值，用于检测表中行的更改。
+    例：select prd_no,binary_checksum(qty) from sales group by prd_no
+    9. CHECKSUM_AGG 返回指定数据的校验值，空值被忽略。
+    例：select prd_no,checksum_agg(binary_checksum(*)) from sales group by prd_no
+    10. CHECKSUM 返回在表的行上或在表达式列表上计算的校验值，用于生成哈希索引。
+    11. STDEV 返回给定表达式中所有值的统计标准偏差。
+    例：select stdev(prd_no) from sales
+    12. STDEVP 返回给定表达式中的所有值的填充统计标准偏差。
+    例：select stdevp(prd_no) from sales
+    13. VAR 返回给定表达式中所有值的统计方差。
+    例：select var(prd_no) from sales
+    14. VARP 返回给定表达式中所有值的填充的统计方差。
+    例：select varp(prd_no) from sales
+
+  # ref:  http://blog.csdn.net/xuxurui007/article/details/7745700
+  # ref:  http://baike.baidu.com/item/%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0
+  # ref:  实例详解Sql Server 所有聚合函数--【叶子】   http://blog.csdn.net/maco_wang/article/details/7012222
+ 
+
+2) 自己定义聚合函数：C#写source code编译成dll，deploy到SQLServer上；SQLServer sp_config 'clr enable' 1,或者手动注册，使用。
+
