@@ -1,0 +1,23 @@
+#
+# difference between cube and rollup in SQLServer
+#
+1) CUBE 会对所有的分组字段进行统计，如上例，先对日期求小计，也就是统计每天的产品总金额，
+                                然后统计每个产品的总金额，最后给出总的合计。
+ 
+    ROLLUP 按照分组顺序，先对第一个字段operatedate分组，在组内进行统计，最后给出合计。 
+    ex.
+    select
+      case when grouping(OperateDate) = 1 then '小记'
+        else convert(varchar(10), OperateDate, 120)
+      end as 日期,
+      case when grouping(ProductName) = 1 then '小记'
+        else ProductName
+      end as 产品名称,
+      sum(Amount)/sum(Num) as 平均价格,
+      sum(Amount) as 金额,
+      sum(Num) as 数量
+    from Sales
+    group by OperateDate, ProductName
+    with rollup /* with cube */;
+  
+# ref:  SqlServer中Cube RollUp的用法  http://www.2cto.com/database/201210/163455.html
