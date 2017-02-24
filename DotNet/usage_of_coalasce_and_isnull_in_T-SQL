@@ -1,0 +1,45 @@
+#
+# usage_of_coalesce_and_isnull_in_T-SQL
+#
+1) coalesce(expression1, expression2, [...expressionn])    # 返回其参数中第一个非空表达式 returns the first nonnull expression among its arguments,
+
+2) isnull(expression1, expression2])    # replaces NULL with the specified replacement value.
+
+3) COALESCE('', 0)  # return 0
+    COALESCE(' ', 0)  # return 0
+    COALESCE(null, 0) # return 0
+    COALESCE(123, 0)  # return 123
+
+    ISNULL('', 0) # return ''
+    ISNULL(null, 0) # return 0
+    ISNULL(123, 0)  # return 123
+    
+4) examples:
+  4.1)
+    DECLARE @sql VARCHAR(8000)
+    
+    SELECT @sql = COALESCE(@sql, ' ') + 'KILL ' + CAST(spid AS VARCHAR(10)) + ';'
+    FROM sys.sysprocesses
+    WHERE DBID = DB_ID('DB1')
+    
+    PRINT @sql -- EXEC(@sql)
+    
+  4.2)
+    USE NOCOUNT ON;   # don't show the numbers of lines affected by T-SQL => to improve performance
+    DECLARE 
+      @x VARCHAR(3) = NULL,
+      @y VARCHAR(10) = '12345678';
+    
+    SELECT 
+      COALESCE(@x, @y) AS COALESCExy, COALESCE(@y, @x) AS COALESCEyx,
+      ISNULL(@x, @y) AS ISNULLxy, ISNULL(@y, @x) AS ISNULLyx;
+    
+    # output:
+    COALESCExy      COALESCEyx      ISNULLxy        ISNULLyx
+    ----------      ----------      --------        ----------
+    1234567890      1234567890      123             1234567890
+                              
+
+# ref:  一个非常有用的函数——COALESCE   http://blog.csdn.net/dba_huangzj/article/details/8300784
+# ref:  SQL Server ISNULL函数和Coalesce函数替换空值的区别 http://www.cnblogs.com/ChengDong/archive/2012/08/09/2629697.html
+# ref:  COALESCE vs. ISNULL http://sqlmag.com/t-sql/coalesce-vs-isnull
