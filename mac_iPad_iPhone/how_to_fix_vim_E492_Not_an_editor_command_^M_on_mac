@@ -1,0 +1,19 @@
+#
+# vim E492: Not an editor command: ^M on mac
+#
+1) vim settings are set up in ~/.vimrc, however, vim complained error when vim file1:
+  vim E492: Not an editor command: ^M
+  
+  # root cause:
+  line ending on Windows is \r\n, on Mac (and all unix/linux) is \n. 
+  Mac couldn't parse \r => complained as ^M error.
+  
+  # fix:
+  in ~/.vimrc:
+    %s/\r//g
+    :set fileformat=unix    # set the fileformat to unix
+    :wq!
+    
+  => done.
+  
+# ref:  http://www.cnblogs.com/ini_always/archive/2012/03/03/2378554.html
