@@ -1,0 +1,23 @@
+#
+# why error AttributeError: addinfourl instance has no attribute '__exit__' in urllib, urllib2 in Python2.7
+#
+1) >>> with urllib.urlopen(url2) as u:
+...     print(u2.read())
+... 
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: addinfourl instance has no attribute '__exit__'
+
+Root cause:
+  in Python 2.7, with urllib.urlopen(...) is not supported.
+  and urllib, urllib2 has no readall() function, use read().
+  
+Fix:
+  u1 = urllib2.urlopen(url1)
+  print(u1.read())
+  
+  u2 = urllib.urlopen(url2)
+  for line in u2:
+    print(line.read())
+    
+    
