@@ -1,0 +1,88 @@
+#
+# usage of path processing functions in os and os.path
+#
+1) in os:
+  os.chdir, os.mkdir, os.listdir, os.rename, os.remove, os.unlink, os.rmdir, os.walk,
+  os.curdir, os.getcwd, os.path, os.sep, os.pathsep.
+
+2）in os.path:
+  basename, curdir, dirname, abspath, realpath, relpath, exists, join, split, splitdrive, splitext, walk,
+  altsep, commonprefix, defpath, devnull, expanduser, expandvars, extsep, genericpath, 
+  getatime, getctime, getmtime, getsize, 
+  isabs, isdir, isfile, islink, ismount, lexists, normcase, normpath, samefile, sameopenfile, samestat, supports_unicode_filenames
+  pardir, pathsep, sep, stat, os, sys
+
+3) example using os.walk and os.path.walk:
+  for os.walk:
+    walk(top, topdown=True, onerror=None, followlinks=False)
+      Directory tree generator.
+      
+      For each directory in the directory tree rooted at top (including top
+      itself, but excluding '.' and '..'), yields a 3-tuple
+      
+          dirpath, dirnames, filenames
+     
+  for os.path.walk:
+    walk(top, func, arg)
+    Directory tree walk with callback function.
+    
+    For each directory in the directory tree rooted at top (including top
+    itself, but excluding '.' and '..'), call func(arg, dirname, fnames).
+    dirname is the name of the directory, and fnames a list of the names of
+    the files and subdirectories in dirname (excluding '.' and '..').  func
+    may modify the fnames list in-place (e.g. via del or slice assignment),
+    and walk will only recurse into the subdirectories whose names remain in
+    fnames; this can be used to implement a filter, or to impose a specific
+    order of visiting.  No semantics are defined for, or required of, arg,
+    beyond that arg is always passed to func.  It can be used, e.g., to pass
+    a filename pattern, or a mutable object designed to accumulate
+    statistics.  Passing None for arg is common.
+
+  >>>
+  3.1) os.walk使用实例：删除某个文件夹（当然可以通过os.listdir的递归调用删除）
+    #!/usr/bin/env python
+    # -*- coding: utf-8 -*-
+    
+    def removeDir(topdir):
+        import os, os.path
+        if not os.path.exists(topdir):
+            raise ArgumentError('topdir {0} not existing.'.format(topdir))
+            return
+        if not os.path.isdir(topdir):
+            raise ArgumentError('topdir {0} is not a directory.'.format(topdir))
+            return
+        for root, subdir, files in os.walk(topdir):
+            for f in files:
+                fileFullpath = os.path.join(root, f)
+                print('removing file {0}'.format(fileFullpath))
+                os.remove(fileFullpath)
+            if len(subdir) == 0:
+                print('removing dir {0}'.format(root))
+                os.rmdir(root)
+        print('removing topdir {0}'.format(topdir))
+        os.rmdir(topdir)
+    
+    # removeDir(dir1)
+    
+  3.2) os.path.walk使用实例：遍历文件夹下所有文件（os.path.walk()不能用于删除文件夹（可能是我没想到），
+  因为os.path.walk()先遍历顶级目录，再遍历子目录中的文件）。
+    #!/usr/bin/env python
+    # -*- coding: utf-8 -*-
+    
+    import os
+    def walkDir(args, dir, files):
+        for f in files:
+            fullPath = os.path.join(dir, f)
+            if os.path.isfile(fullPath):
+                print('file={0}'.format(fullPath))
+            elif os.path.isdir(fullPath):
+                print('dir={0}'.format(fullPath))
+            else:
+                pass
+    
+    os.path.walk(topdir, walkDir, None)
+
+  
+
+# ref:  http://blog.csdn.net/emaste_r/article/details/12442675
+# ref:  http://blog.csdn.net/b_h_l/article/details/11241841
