@@ -1,0 +1,123 @@
+#
+# usage of thread, threading, multiprocessing, coroutine and Pool in Python
+#
+1) principle:
+  for CPU-intensive task: multiprocessing
+  for IO-intensive task:  thread, threading, coroutine(greenlet etc.) and 
+                        multiprocessing.Pool, ThreadPoolExecutor, ProcessPoolExecutor( concurrent.futures)
+  
+2) thread: low-level API, threading: wrapper of thread, high-level API.
+  2.1) use thread in a function:
+    import thread
+    thread.start_new_thread(func1, args[, kwars])
+    
+    import threading
+    threads = []
+    for i in xrange(10):
+      t = threading.Thread(target=func1, args=args)
+      threads.append(t)
+      t.setDaemon(1)    # if running in background: 
+                        #     if True, it will finish together with ehe main thread else no. 
+                        # By default is False.
+      t.start()
+    ...
+    for t in threads:
+      t.join()
+    2.2) use thread in a class:
+      class MyThread(threading.Thread):
+        def __init__(self, queue):
+          self.queue = queue
+          self.super(MyThread, self).__init__()
+          
+        def run(self):
+          name, num = queue.pop()
+          print('I am thread: {0} ID: {1}'.format(name, num))
+          time.sleep(1)
+          
+       def main():
+        threads = []
+        for i in xrange(10):
+          t = MyThread('Thread {0}'.format(i), i)
+          threads.append(t)
+          t.setDaemon(1)
+          t.start()
+        ...
+        for t in threads:
+          t.join()
+          
+     2.3) when accessing same resource in threads, using threading.Lock(), threading.RLock().
+        lock = threading.Lock()
+        in run():
+          lock.acquire()
+          ...
+          lock.release()
+          
+        mutex = threading.RLock()
+        in run():
+          if mutex.acquire(1):
+          ...
+          mutex.qcquire()
+          mutex.release()
+          ...
+          mutex.release()      
+          
+3) concurrent.futures.ThreadPoolExecutor andn ProcessPoolExecutor
+    if in Python2, sudo pip install futures
+    3 methods to use it: executor.submit + concurrent.futures.as_completed, 
+      executor.map,
+      executor.submit + concurrent.futures.wait.
+    All 3 uses future.done, future.result.
+    
+    usage example:
+    
+     3.1) from concurrent.futures import ThreadPoolExecutor
+      import time
+      def returnMsg(msg):
+          time.sleep(2)
+          return msg
+      
+      executor = ThreadPoolExecutor(max_workers=2)
+      f1 = executor.submit(returnMsg, 'Hello')
+      f2 = executor.submit(returnMsg, 'World from {0}'.format(executor.__class__.__name__))
+      print(f1.done())
+      time.sleep(3)
+      print(f2.done())
+      print(f1.result())
+      print(f2.result())
+    
+    3.3) from concurrent.futures import ThreadPoolExecutor
+      import time
+      import urllib2
+      
+      def loadUrl(url):
+          u = urllib2.urlopen(url)
+          return u.read()
+      URLs = ['http://www.baidu.com/', 'http://httpbin.org', 'http://example.com/']
+      with ThreadPoolExecutor(3) as executor: 
+      ## 3.1)   futures = {executor.submit(loadUrl, url): url for url in URLs}
+      ##    for f in concurrent.futures.as_completed(futures):
+      ##        url = futures[f]
+      ##        try:
+      ##            data = f.result()
+      ##        except Exception as e:
+      ##            print('Page {0} generated an exception: {1}.'.format(url, e))
+      ##        else:
+      ##            print('Page {0} has {1} bytes.'.format(url, len(data)))
+      ##  
+          futures = [executor.submit(loadUrl, url) for url in URLs]
+      #    print(concurrent.futures.wait(futures))
+          print(concurrent.futures.wait(futures, timeout=None, return_when='FIRST_COMPLETED'))
+          
+          3.2) for url, data in zip(URLs, executor.map(loadUrl, URLs)):
+              print('Page {0} has {1} bytes.'.format(url, len(data)))
+          
+
+4) TODO
+
+# ref:  理解 python 中多线程  http://python.jobbole.com/86822/?utm_source=blog.jobbole.com&utm_medium=relatedPosts
+# ref:  Python并发与并行的新手指南	http://python.jobbole.com/81260/?utm_source=blog.jobbole.com&utm_medium=relatedPosts
+# ref:  Python并发编程之线程池/进程池	http://python.jobbole.com/87272/
+# ref:  
+# ref:  
+# ref:  
+# ref:  
