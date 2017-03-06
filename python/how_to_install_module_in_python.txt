@@ -96,5 +96,61 @@ python -m pip install pylint
     Successfully installed astroid-1.4.9 backports.functools-lru-cache-1.3 colorama-0.3.7 configparser-3.5.0 isort-4.2.5 laz
     y-object-proxy-1.2.2 mccabe-0.5.3 pylint-1.6.4 wrapt-1.10.8
 
+#
+# install pip, futures on Mac
+#
+1) use easy_install to install pip.
+  check if easy_install is installed on Mac 
+    (by default Python is installed on Mac, i.e. easy_install is available;
+    if not, use curl .../ez_setup.py -o - | python)
+  sudo easy_install pip
+  
+  # if easy_install is not installed on Mac, get it:
+    $ curl https://bootstrap.pypa.io/ez_setup.py -o - | python
+    
+    $ ll /usr/bin/easy_install /usr/bin/easy_install-2.6 /usr/bin/easy_install-2.7
+    -rwxr-xr-x  2 root  wheel  925  9 10  2014 /usr/bin/easy_install
+    -rwxr-xr-x  1 root  wheel  454  9 10  2014 /usr/bin/easy_install-2.6
+    -rwxr-xr-x  1 root  wheel  461  9 10  2014 /usr/bin/easy_install-2.7
+    
+    $ sudo easy_install pip
+    Password:
+    Searching for pip
+    Reading https://pypi.python.org/simple/pip/
+    Best match: pip 9.0.1
+    Downloading https://pypi.python.org/packages/11/b6/abcb525026a4be042b486df43905d6893fb04f05aac21c32c638e939e447/pip-9.0.1.tar.gz#md5=35f01da33009719497f01a4ba69d63c9
+    Processing pip-9.0.1.tar.gz
+    Writing /tmp/easy_install-jvVkxJ/pip-9.0.1/setup.cfg
+    Running pip-9.0.1/setup.py -q bdist_egg --dist-dir /tmp/easy_install-jvVkxJ/pip-9.0.1/egg-dist-tmp-jsSxIy
+    /System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/distutils/dist.py:267: UserWarning: Unknown distribution option: 'python_requires'
+    ...
+    Adding pip 9.0.1 to easy-install.pth file
+    Installing pip script to /usr/local/bin
+    Installing pip2.7 script to /usr/local/bin
+    Installing pip2 script to /usr/local/bin
+    
+    Installed /Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg
+    Processing dependencies for pip
+    Finished processing dependencies for pip
+
+# ref:  http://stackoverflow.com/questions/17271319/how-do-i-install-pip-on-macos-os-x
+
+2) sudo python -m pip install -U pip
+    sudo pip install futures
+    
+    $ sudo python -m pip install futures
+      The directory '/Users/***/Library/Caches/pip/http' or its parent directory is not owned by the current user 
+      and the cache has been disabled. Please check the permissions and owner of that directory. 
+      If executing pip with sudo, you may want sudo's -H flag.
+      The directory '/Users/***/Library/Caches/pip' or its parent directory is not owned by the current user 
+      and caching wheels has been disabled. 
+      check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+      Collecting futures
+        Downloading futures-3.0.5-py2-none-any.whl
+      Installing collected packages: futures
+      Successfully installed futures-3.0.5
+
+
+
 
 
