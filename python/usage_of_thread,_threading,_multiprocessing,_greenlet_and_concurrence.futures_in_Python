@@ -3,8 +3,8 @@
 #
 1) principle:
   for CPU-intensive task: multiprocessing
-  for IO-intensive task:  thread, threading, coroutine(greenlet etc.) and 
-                        multiprocessing.Pool, ThreadPoolExecutor, ProcessPoolExecutor( concurrent.futures)
+  for IO-intensive task:  thread, threading, coroutine(greenlet, eventlet, gevent etc.) and 
+                        multiprocessing.Pool, gevent.Pool, ThreadPoolExecutor, ProcessPoolExecutor( concurrent.futures)
   
 2) thread: low-level API, threading: wrapper of thread, high-level API.
   2.1) use thread in a function:
@@ -112,12 +112,25 @@
               print('Page {0} has {1} bytes.'.format(url, len(data)))
           
 
-4) TODO
+4) coroutine: yield -> @asyncio.coroutine + yield from -> asyncio + await
+              -> greenlet -> eventlet, gevent -> gevent.Pool
+              
+ # ref:  Python黑魔法 --- 异步IO（ asyncio） 协程	http://python.jobbole.com/87310/
+# ref:  Python之线程、进程和协程	http://python.jobbole.com/86406/
+# ref:  python中协程	http://python.jobbole.com/87156/
+# ref:  Python并发编程之协程/异步IO	http://python.jobbole.com/87202/
+# ref:  [python协程gevent]之greenlet初识	http://blog.csdn.net/zeroctu/article/details/54893763             
 
 # ref:  理解 python 中多线程  http://python.jobbole.com/86822/?utm_source=blog.jobbole.com&utm_medium=relatedPosts
 # ref:  Python并发与并行的新手指南	http://python.jobbole.com/81260/?utm_source=blog.jobbole.com&utm_medium=relatedPosts
 # ref:  Python并发编程之线程池/进程池	http://python.jobbole.com/87272/
-# ref:  
-# ref:  
-# ref:  
-# ref:  
+
+
+
+
+
+
+
+
+
+
