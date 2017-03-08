@@ -3,7 +3,7 @@
 #
 1) principle:
   for CPU-intensive task: multiprocessing
-  for IO-intensive task:  thread, threading, coroutine(greenlet, eventlet, gevent etc.) and 
+  for IO-intensive task:  thread, threading, coroutine(asyncio, greenlet, eventlet, gevent etc.) and 
                         multiprocessing.Pool, gevent.Pool, ThreadPoolExecutor, ProcessPoolExecutor( concurrent.futures)
   
 2) thread: low-level API, threading: wrapper of thread, high-level API.
@@ -61,7 +61,7 @@
           ...
           mutex.release()      
           
-3) concurrent.futures.ThreadPoolExecutor andn ProcessPoolExecutor
+3) concurrent.futures.ThreadPoolExecutor and ProcessPoolExecutor
     if in Python2, sudo pip install futures
     3 methods to use it: executor.submit + concurrent.futures.as_completed, 
       executor.map,
@@ -114,19 +114,179 @@
 
 4) coroutine: yield -> @asyncio.coroutine + yield from -> asyncio + await
               -> greenlet -> eventlet, gevent -> gevent.Pool
-              
- # ref:  Python黑魔法 --- 异步IO（ asyncio） 协程	http://python.jobbole.com/87310/
+   4.1) asyncio module
+   
+    
+# ref:  Python黑魔法 --- 异步IO（ asyncio） 协程	http://python.jobbole.com/87310/
 # ref:  Python之线程、进程和协程	http://python.jobbole.com/86406/
 # ref:  python中协程	http://python.jobbole.com/87156/
 # ref:  Python并发编程之协程/异步IO	http://python.jobbole.com/87202/
+
+   4.2) 因为协程是一个线程执行，那怎么利用多核CPU呢？
+      最简单的方法是多进程+协程，既充分利用多核，又充分发挥协程的高效率，可获得极高的性能。
+
+        greenlet 指的是使用一个调度器和一些生成器和协程实现协作式用户空间多线程的一种伪并发机制，即所谓到微线程。
+        
+        eventlet 是基于greenlet的一个面向网络的并发处理框架，提供GreenPool、Queue等API，
+                  也提供了Python自带库及其他模块的超轻量并发适应性调整方法，比greenlet使用方便。
+        其基本原理是eventlet调整Python的socket的调用，当发生阻塞时则切换到其他greenlet执行。
+        
+        gevent 是基于greenlet的一个Python网络函数库，提供了一个在libev事件循环顶部的高级别的并发API。
+        特点：基于libev的快速事件循环，Linux上是epoll机制；
+        	基于greenlet的轻量级执行单元；
+        	API复用了Python标准库里的内容；
+        	支持SSL的协作式sockets
+        	可通过线程池或c－ares实现DNS查询
+        	通过monkey patching功能来使得第三方模块变成协作式。
+        
+        libev 提供了指定文件描述符事件发生时调用回调函数的机制。
+        libev 是一个事件循环器：向libev注册感兴趣事件，比如socket可读事件等等，libev会对所注册的事件的源进行管理，并在事件发生时触发相应的程序。
+        
+        不像其他网络库，eventlet和gevent类似，在一个greenlet中隐式开始事件循环。
+        
+        # communicate with a Process using Queue
+          import multiprocessing
+          
+          def f1(q):
+              q.put(['Hello from f1', None])
+          
+          def main():
+              q = multiprocessing.Queue()
+              t = multiprocessing.Process(target=f1, args=(q,))
+              t.start()
+              msg, _ = q.get()
+              print('Got msg from Process: {0}'.format(msg))
+              t.join()
+          
+          if __name__ == '__main__':
+              main()
+          
+          # implement Producer/Consumer pattern using yield
+          import time
+          def Consumer():
+              res = ''
+              while True:
+                  res = yield res
+                  if res is None: return
+                  print('[Consumer] got {0} from Producer.'.format(res))
+                  time.sleep(1)
+                  res = '200 OK.'
+          
+          
+          def Producer(c):
+              c.next()
+              for i in xrange(5):
+                  print('[Produer] produced {0}'.format(i))
+                  res = c.send(i)
+                  print('[Consumer] returns {0}'.format(res))
+              c.close()
+          
+          
+          if __name__ == '__main__':
+              p = Producer(Consumer())
+
+          # use greenlet to do coroutine: manually
+          import greenlet
+          def test1():
+              print('test1: 12')
+              gr2.switch()
+              print('test1: 34')
+              gr2.switch()
+              print('test1: 56')
+          
+          def test2():
+              print('test2: 78')
+              gr1.switch()
+              print('test2: 910')
+          
+          if __name__ == '__main__':
+              gr1 = greenlet.greenlet(test1)
+              gr2 = greenlet.greenlet(test2, gr1)     # gr1 is parent of gr2
+              gr1.switch()
+          
+          
+          # use gevent to do coroutine: automatically
+          import gevent
+          import time
+          def func1():
+              print('\033[31;47;1m[func1] running... 111 \033[0m')
+              gevent.sleep(1)
+              print('\033[31;47;1m[func1] running... 222 \033[0m')
+          
+          def func2():
+              print('\033[34;47;1m[func1] running... 333 \033[0m')
+              gevent.sleep(2)
+              print('\033[34;47;1m[func1] running... 444 \033[0m')
+          
+          
+          if __name__ == '__main__':
+              starttime = time.time()
+              gevent.joinall(
+                  [gevent.spawn(func1),
+                  gevent.spawn(func2)]
+                  )
+              endtime = time.time()
+              print('It takes {0} seconds.'.format(endtime - starttime))
+
+    
+          # use gevent to: create a socket server communicating with clients in coroutine: automatically
+          #   for client
+          import socket
+          def client():
+              ADDR, PORT = 'localhost', 8001
+              client1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+              client1.connect((ADDR, PORT))
+              while 1:
+                  data = raw_input('\033[34;47;1m[Data to Server] >>\033[0m  ').strip()
+                  if len(data) == 0: continue
+                  client1.send(data)
+                  data = client1.recv(1024)
+                  print('\033[31;47;1m[Data Received]\033[0m {0}'.format(data))
+              client1.close()
+          
+          #   for server
+          import gevent
+          import socket
+          from gevent import monkey
+          monkey.patch_all()
+          
+          def handleRequest(conn):
+                  try:
+                      while 1:
+                          data = conn.recv(1024)
+                          if not data or len(data) == 0: break
+                          print('\033[34;47;1m[Server received] {0}\033[0m'.format(data))
+                          res = conn.send('Sent back data: {0}'.format(data))
+                          print('\033[31;47;1m[Server sent back {0} bytes] {1}\033[0m'.format(res, data))
+                  except Exception as e:
+                      print('\033[35;47;2m[Server received exception] {0}\033[0m'.format(e))
+                  finally:
+                      conn.close()
+          
+          def server(port):
+              ADDR, PORT = '127.0.0.1', port
+              server1 = socket.socket()
+              server1.bind((ADDR, PORT))
+              server1.listen(500)
+              while 1:
+                  conn, addr = server1.accept()
+                  task = gevent.spawn(handleRequest, conn)
+          
+          
+          if __name__ == '__main__':
+              server(8001)
+
+
+    
+    
+# ref:  Eventlet vs Greenlet vs gevent?	http://stackoverflow.com/questions/36834234/eventlet-vs-greenlet-vs-gevent
 # ref:  [python协程gevent]之greenlet初识	http://blog.csdn.net/zeroctu/article/details/54893763             
-
 # ref:  理解 python 中多线程  http://python.jobbole.com/86822/?utm_source=blog.jobbole.com&utm_medium=relatedPosts
-# ref:  Python并发与并行的新手指南	http://python.jobbole.com/81260/?utm_source=blog.jobbole.com&utm_medium=relatedPosts
+# ref:  Pyhon并发与并行的新手指南	http://python.jobbole.com/81260/?utm_source=blog.jobbole.com&utm_medium=relatedPosts
 # ref:  Python并发编程之线程池/进程池	http://python.jobbole.com/87272/
-
-
-
+    
+    
+    
 
 
 
