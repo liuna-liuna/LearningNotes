@@ -1,0 +1,28 @@
+#
+# how to write information line by line into a text file
+#
+1) f.writelines(list)
+>>> sample_list = [line+'\n' for line in sample_list]
+    outfile.writelines(sample_list)
+
+2) f.write('...\n') 
+>>> with open('tmp', 'w') as f:
+...     for i in xrange(10):
+...             f.write('line {0}\n'.format(i))
+... 
+>>> import os
+>>> os.system('cat tmp')
+line 0
+line 1
+line 2
+line 3
+line 4
+line 5
+line 6
+line 7
+line 8
+line 9
+0
+
+
+# ref:  http://feeling84321.blog.163.com/blog/static/12788802020119130732309/
