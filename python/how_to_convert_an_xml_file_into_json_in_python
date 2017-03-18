@@ -1,0 +1,42 @@
+#
+# how to convert an xml file into json in python
+#
+1) use xmltodict module
+>>> pip install xmltodict
+
+# usage:
+import xmltodict
+import json
+def pyXmlToJson():
+  xmlStr = """
+<student>
+    <stid>10213</stid>
+    <info>
+        <name>name</name>
+        <mail>xxx@xxx.com</mail>
+        <sex>male</sex>
+    </info>
+    <course>
+        <name>math</name>
+        <score>90</score>
+    </course>
+    <course>
+        <name>english</name>
+        <score>88</score>
+    </course>
+</student>
+  """
+  converted = xmltodict.parse(xmlStr)
+  jsonStr = json.dumps(converted)
+  print('jsonStr=', jsonStr)
+  
+  ## <item1 name='aaa' shelf=1 grid=2/> couldn't be parsed by xmltodict
+  ##  while it works for:
+  <item1 name='aaa'>
+    <shelf>1</shelf>
+    <grid>2</grid>
+  </item1>
+  
+
+# ref:  http://www.tuicool.com/articles/JNnmYj
+
