@@ -1,0 +1,27 @@
+#
+# get, set environment variable in Python
+#
+1) get environment variable from os.environ
+import os
+print(os.environ)
+print(os.environ.has_key('PATH'))
+os.environ['SHELL'] = '/bin/bash'
+'SHELL' in os.environ.key
+
+2) set environment variable from a file in which set A = B is defined 
+import os
+import sys
+import re
+def setEnvBat(file):
+    content = ''
+    with open(file) as f:
+        content = f.read()
+    pattern = re.compile('set (\w+)(?:=)(.*)$', re.MULTILINE)
+    matched = re.findall(pattern, content)
+    for m in matched:
+        print('{0} = {1}'.format(m[0], m[1])
+        os.environ[m[0]] = m[1]
+        
+        
+# ref:  http://stackoverflow.com/questions/4906977/access-environment-variables-from-python
+# ref:  http://stackoverflow.com/questions/5971312/how-to-set-environment-variables-in-python
