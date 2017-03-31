@@ -3,7 +3,7 @@
 #
 1) using sys.modules.keys()
 import sys
-sys.modules.keys()​​​
+sys.modules.keys()
 
 2) An approximation of getting all imports for the current module only would be to inspect globals() for modules:
 
@@ -21,5 +21,29 @@ list(imports())
 	
 4)	 for g in globals().get('modules'):
 		    print g
+
+5) dir() in python CLI.
+
+#
+# how to check installed Python modules
+#
+1) pip list
+
+#
+# how to check available modules in python
+#
+1) >>> for k, v in (sys.modules.items()):
+...     print('%20s: %s' % (k, v))
+... 
+            tokenize: <module 'tokenize' from '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/tokenize.pyc'>
+               heapq: <module 'heapq' from '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/heapq.pyc'>
+
+
+
+2) help('module') in python CLI
+	if it outputs __doc__, 'module' is installed; otherwise no.
+	
+	# ref:	http://blog.csdn.net/fenfenmiao/article/details/54343482
+	
 	
 	
