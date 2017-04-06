@@ -1,0 +1,14 @@
+#
+# usage of lag, lead in RDB
+#
+1) use lag to get field from last row.
+    use lead to get field from next row.
+    offset can be negative <=> lag and lead could do same work.
+    
+    LAG ...
+    LEAD ( scalar_expression [ ,offset ] , [ default ] )     OVER ( [ partition_by_clause ] order_by_clause )
+    
+2) lag, lead is supported at least in SQL Server, PostgreSQL, Oracle. Not in MySql yet.
+
+# ref:  in PostgreSQL:    http://blog.csdn.net/luojinbai/article/details/45487593
+# ref:  in SQL Server:    http://blog.csdn.net/leewhoee/article/details/20264653
