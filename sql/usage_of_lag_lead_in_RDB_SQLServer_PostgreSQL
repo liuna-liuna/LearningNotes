@@ -8,6 +8,17 @@
     LAG ...
     LEAD ( scalar_expression [ ,offset ] , [ default ] )     OVER ( [ partition_by_clause ] order_by_clause )
     
+    example:
+        select value as v1, lead(value, 1) over(order by value) as v2
+        from table1
+        where value > 1
+        order by event_type ASC, time;
+       
+        # [to be validated] select v1-v2 
+        # [to be validated] from (...)
+        
+       # ref:   select alias usage:    http://www.cnblogs.com/Mr_JinRui/archive/2010/05/12/1733662.html
+    
 2) lag, lead is supported at least in SQL Server, PostgreSQL, Oracle. Not in MySql yet.
 
 # ref:  in PostgreSQL:    http://blog.csdn.net/luojinbai/article/details/45487593
