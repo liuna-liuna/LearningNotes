@@ -1,0 +1,38 @@
+#
+# how to calculate and show percentage in sql
+#
+1) in sqlite3, use +-*/ to calculate number, use round() to make sure precision,
+               (use cast() to convert number to varchar,    # not necessary since sqlite takes var as dynamic type.)
+               use || to connect string,
+               use as to define alias.
+   ex.
+   sqlite> select round(100.0 * f1 / f2, 2) || '%' as 'percent(%)' from student;
+            percent(%)
+            ----------
+            10.0%     
+            18.18%    
+            25.0%     
+            33.33%    
+            50.0%  
+          
+   sqlite> select cast(round(100.0 * f1 / f2, 2) as varchar) || '%' as 'percent(%)' from student;
+            percent(%)
+            ----------
+            10.0%     
+            18.18%    
+            25.0%     
+            33.33%    
+            50.0%  
+            
+2) in sql, select cast(sum(a)/sum(b)*100 as varchar(10)) +'%'
+
+  # ref:  https://zhidao.baidu.com/question/756349623930558084.html
+  
+3) in MariaDB, use +-*/ to calculate number, use round() to make sure precision,
+               use concat() to connect string,
+               use as to define alias.
+    ex.
+    select name,  
+           concat(round(100.0 * population/(select population from world where name = 'Germany'), 0), '%') as population
+    from world
+    where continent = 'Europe'
