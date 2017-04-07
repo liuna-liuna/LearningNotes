@@ -1,0 +1,31 @@
+#
+# usage of collate nocase and collate Chinese_PRC_CI_AS_WS in sql
+#
+1) collate 排序规则.
+  ex. collate nocase, collate Chinese_PRC_CI_AS_WS etc.
+  collate can be used in comparing, when creating a table or in select sql statement.
+  
+  什么叫排序规则呢？MS是这样描述的："在 Microsoft SQL Server 2000 中，
+    字符串的物理存储由排序规则控制。排序规则指定表示每个字符的位模式以及存
+    储和比较字符所使用的规则。"
+
+  ex.  
+  select * from student where name = 'aaa' collate nocase;
+        >>> ID          NAME        SEX         AGE         email     
+        >>> ----------  ----------  ----------  ----------  ----------
+        >>> 1           AAA         0           10                    
+
+  create table user
+  (ID integer primary key,
+   NAME text collate nocase,
+   email varchar(20) collate nocase
+   );
+   
+  
+2) collate is supported at least in Sqlite3, SQL Server, MySql.
+
+# ref:  http://blog.gdsyzx.edu.cn/sense/?p=656
+# ref:  http://www.cnblogs.com/Mr_JinRui/archive/2010/05/12/1733662.html
+# ref:  http://blog.csdn.net/thecityofsky/article/details/5736818
+# ref:  http://blog.csdn.net/akof1314/article/details/4763752
+
