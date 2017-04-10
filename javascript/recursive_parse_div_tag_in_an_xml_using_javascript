@@ -1,0 +1,148 @@
+#
+# recursive parse div tag in an xml using javascript
+#
+1) ex. using document.getElementsByTagName(...) to retrieve an array of tags.
+
+Try1. could find only ul > ul instead of ul>ol>ul.
+        <html>
+        <head>
+        <script type="text/javascript">
+        var c=0
+        var t
+        function timedCount()
+        {
+            doc = this.document
+            var c = 0;
+        
+            function dfs(doc) {
+                nodesUl = doc.getElementsByTagName('ul');
+                nodesOl = doc.getElementsByTagName('ol');
+                nodes = nodesUl[0]===undefined?nodesOl:nodesUl;
+                alert('nodesUl is ' + nodesUl[0].innerHTML + '. nodesOl is ' + nodesOl[0].innerHTML
+                  + '. nodes is ' + (nodes===nodesUl));
+        
+                for (var i=0; i<nodes.length; i++) {
+        
+                    if (nodes[i] != undefined) {           
+                        c += 1;
+                        alert('nodes has children. c=' + c);
+                        dfs(nodes[i]);       
+                    } else {       
+                        alert('nodes is null. c=' + c);
+                    }
+                }
+            }
+            dfs(doc)
+            document.getElementById('txt').value = c
+        }
+        </script>
+        </head>
+        
+        <body>
+        
+        <form>
+        <input type="button" value="开始计时！" onClick="timedCount()">
+        <input type="text" id="txt">
+        <ul>
+            <li>
+                <ol>
+                    <li> 2-level ul
+                        <ul>
+                            <li> 3-level ul</li>
+                        </ul>
+                    </li>
+                </ol>
+            </li1>
+        </ul>
+        
+        </form>
+        
+        <p>请点击上面的按钮。输入框会从 0 开始一直进行计时。</p>
+        
+        </body>
+        
+        </html>
+
+Try2. ul>ol>ul works. 
+[TODO] check ol>ul>...
+[TODO] check: c = 1 when document.getElementsByTagName('ul')[0].length>0.
+
+
+      <html>
+      <head>
+      <script type="text/javascript">
+      var c=0
+      var t
+      function timedCount()
+      {
+          nodes = document.getElementsByTagName('ul')[0];
+          alert('before dfs: c=' + c + '.');
+          dfs(nodes);
+          alert('after dfs: c=' + c);
+          //var max = c;
+          //nodes = doc.getElementsByTagName('ol')[0];
+          //c = 0;
+          //dfs(nodes);
+          //max = c>max?c:max;
+      
+          document.getElementById('txt').value = c;
+      
+         
+          function dfs(nodes){  
+              if (nodes === undefined){return;};
+              if (nodes.childNodes===undefined || nodes.childNodes.length===0) {return;}; 
+              
+              for(var i=0; i<nodes.childNodes.length; i++) {
+                  if (nodes.childNodes[i].nodeType === 1) {
+                      ctag = nodes.childNodes[i].tagName.toLowerCase();
+                      alert('i=' + i + '. c=' + c + '. tag=' + ctag + '.');
+                      if (ctag === 'ul' || ctag === 'ol') {c += 1;}
+                      dfs(nodes.childNodes[i]);
+                  }
+              }
+              alert('end: c=' + c + '.');
+          }
+      
+      }
+      </script>
+      </head>
+      
+      <body>
+      
+      <form>
+      <input type="button" value="开始计时！" onClick="timedCount()">
+      <input type="text" id="txt">
+      <ul>
+          <li>
+              <ol>
+                  <li> 2-level ul
+                      <ul>
+                          <li> 3-level ul</li>
+                      </ul>
+                  </li>
+              </ol>
+          </li>
+      </ul>
+      
+      </form>
+      
+      <p>请点击上面的按钮。输入框会从 0 开始一直进行计时。</p>
+      
+      </body>
+      
+      </html>
+
+
+
+
+
+
+# ref:  javascript 这段递归 https://www.zhihu.com/question/21493868
+# ref:  javascript中children和childNodes的区别 
+           https://zhidao.baidu.com/question/1797100232019632027.html?qbl=relate_question_0&word=javascript%20getElementsByTagName%20childNodes
+           http://www.cnblogs.com/zhangbao/p/5881769.html
+           
+           
+           
+
+
