@@ -1,0 +1,91 @@
+#
+# usage of case when in sqlite3 and T-SQL
+#
+1) in sqlite3:
+Example 1.
+SELECT EmployeeID, Name, Address, Department = 
+   (CASE DepartmentID
+    WHEN '1' THEN '财务部'
+    WHEN '2' THEN '研发部'
+    ELSE '未定义'
+   END)
+  FROM employee;
+   
+ Example 2.
+   SELECT CASE RegType WHEN 1 THEN '月卡'   
+                    WHEN 0 THEN '周卡'   
+                    WHEN 2 THEN '季度卡'   
+                    WHEN 3 THEN '年卡'      
+          ELSE '未知卡类型'                         
+          END AS '卡类型'         
+  FROM SL_Register_Info;
+  
+Example 3.
+  SELECT *
+    FROM tb1
+  order by 
+  (
+    case 
+      when id like '2' then 'a'
+      when id like '1111' then 'b'
+      else 'c'
+    end
+  ) desc;
+
+   # ref: http://supershll.blog.163.com/blog/static/370704362013621112141449/
+   # ref: http://blog.csdn.net/love3s/article/details/7991900
+ 
+ 
+ 2) in T-SQL:
+ -- 简单 case 语句
+ SELECT Name,
+   CASE Sex WHEN 1 THEN '男'
+            WHEN 1 THEN '男'
+            ELSE '其他'
+   END AS Sex
+  FROM people;
+ 
+ －－ case查询语句
+  SELECT Name,
+         Sex = 
+   CASE WHEN 1 THEN '男'
+            WHEN 1 THEN '男'
+            ELSE '其他'
+   END AS Sex
+  FROM people;
+  
+  -- 计算中用 case
+  SELECT country,
+     SUM( CASE WHEN sex = '1' THEN population ELSE 0 END),  --男性人口
+     SUM( CASE WHEN sex = '2' THEN population ELSE 0 END)   --女性人口
+    FROM  Table_A
+   GROUP BY country;
+
+  -- check 中用 case
+  例子: 公司A，这个公司有个规定，女职员的工资必须高于1000块。如果用Check和Case来表现的话，如下所示:
+  CONSTRAINT check_salary CHECK
+  ( CASE WHEN sex = '2'
+         THEN CASE WHEN salary > 1000
+                   THEN 1 
+                    ELSE 0 
+               END
+         ELSE 1 
+         END = 1 )
+
+
+  如果单纯使用Check，如下所示:
+    CONSTRAINT check_salary CHECK
+    ( sex = '2' AND salary > 1000 )
+    
+   -- GROUP BY，ORDER BY 也可以用 case 
+
+ 
+ # ref: http://www.cnblogs.com/qixuejia/archive/2010/07/23/1783470.html
+ # ref: http://www.cnblogs.com/kissdodog/p/3154371.html
+ 
+ 
+ 
+ 
+ 
+ 
+ 
