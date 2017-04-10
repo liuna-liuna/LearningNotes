@@ -1,0 +1,46 @@
+#
+# javascript中浏览器对象
+#
+
+
+1.window 表示浏览器的窗口。
+   有innerWidth和innerHeight这两个属性。可以获取浏览器的内部宽高。
+
+   window.innerWidth;
+   window.innerHeight;
+
+   对应的还有outWidth和outHeight这两个属性，获取浏览器窗口的整体的宽高。
+   window.outWidth;
+   window.outHeight;
+
+2.navigator 表示浏览器信息。
+navigator.appName:浏览器名称；
+navigator.appVersion:浏览器版本
+navigator.language:浏览器设置的语言
+navigator.platform：操作系统类型；
+navigator.userAgent:浏览器设定的Use-Agent字符串
+
+3.screen 表示屏幕信息。
+screen.width; //屏幕宽度
+screen.height;  //屏幕宽度
+screen.colorDepth;  //颜色位数
+
+4.location 表示当前页面的URL信息。
+location.href;  //获取当前页面URL整体信息
+location.assign(...)  // 加载一个新页面
+location.reload();  // 重载当前页面
+
+5.document 表示当前的页面信息。
+document.title; 
+document.getElementById(...);  // 按ID获得一个DOM节点
+document.getElementsByTagName(...); // 按Tag名称获得一组DOM节点
+
+还可以获取当前页面的Cookie信息。
+document.cookie;
+
+6.history 表示页面的历史纪录。
+但在任何情况下不使用该对象。
+
+# ref:  http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499832124d97d77b00706461f9daf1a390b75ade1000#0
+
+
