@@ -1,0 +1,40 @@
+#
+# difference between clustered index and nonclustered index in db
+#
+1) clustered index:
+    determines the physical order of rows in the database =>  only one for a table.
+    in SQL Server, primary key constraint is clustered index by default, unique constraint non-clustered index by default.
+    
+   nonclustered index:
+    logical order; can be more than one for a table.
+    it contains a row locator: either a pointer to a row of the data, when the table has no clustered index;
+                               or     a clustered index of the row of the data.
+2) 聚簇索引和非聚簇索引的非叶子节点都是以B+或者二叉树结构存储，能快速查找。
+    聚簇索引：
+     聚集索引根据数据行的键值在表或视图中排序和存储这些数据行。
+     索引定义中包含聚集索引列。
+     每个表只能有一个聚集索引，因为数据行本身只能按一个顺序排序。
+     只有当表包含聚集索引时，表中的数据行才按排序顺序存储。
+     如果表具有聚集索引，则该表称为聚集表。
+     如果表没有聚集索引，则其数据行存储在一个称为堆的无序结构中。
+    
+    非聚簇索引：
+      非聚集索引具有独立于数据行的结构。
+      非聚集索引包含非聚集索引键值，并且每个键值项都有指向包含该键值的数据行的指针。
+      从非聚集索引中的索引行指向数据行的指针称为行定位器。
+      行定位器的结构取决于数据页是存储在堆中还是聚集表中。
+      对于堆，行定位器是指向行的指针。
+      对于聚集表，行定位器是聚集索引键。
+      您可以向非聚集索引的叶级添加非键列以跳过现有的索引键限制（900 字节和 16 键列），并执行完整范围内的索引查询。
+
+3) in T-SQL,
+    CREATE [UNIQUE][CLUSTERED | NONCLUSTERED] INDEX IndexName
+        ON  {TableName}(Column1 [ASC | DESC][,...n])
+  
+  
+  
+  
+   # ref: http://stackoverflow.com/questions/7605707/clustered-vs-non-clustered
+   # ref: https://zhidao.baidu.com/question/617578397273362532.html
+   # ref: http://blog.csdn.net/jiankunking/article/details/21550443
+   # ref: http://www.docin.com/p-1715484652.html
