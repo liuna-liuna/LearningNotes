@@ -1,10 +1,49 @@
 #
 # introduction to Microsoft Azure
 #
-1) Microsoft Azure ([ˈæʒɚ])
-   an OS for cloud.
+1) Microsoft Azure ([ˈæʒɚ], alike measure.)
+   an OS for cloud + development tools, a cloud platform, 
    四大部分：虚拟机、计算、网络、应用。
+   VM: D, S, DS series; 
+         has C: driver, D: is temporary, could attach storage if needed.
+         To start a VM: using Web-based Portal / PowerShell, Python, Shell etc. CLI / Microsoft Azure Studio;
+                        select image, os;
+                        select persistent hard disks;
+                        etc.
+                       
+         
+   Storage: Blob, Drive(Page Blob, like NTFS), Table(Key:Value), Queue(ex. used for Service Bus).
+            Blob can be accessed by URL directly with permission, SharedAccess*.
+               http:\\account.blob....\$container\$blob\...
+               block blob: <=200G, streaming, block id, PutBlob(...)...
+               page blob: <=1T, random read write, offset from blob startpoint, PutPage(...)
+               
+   Virtual Network: on-premise can be extended with cloud.
+                     one public subnet has one public IP, 
+                        all the vms inside that subnet has private IPs and the same public IP.
+                        
+   Web:  Web Role, Worker Role.
    
+   Application: Access Control, AD, 
+                 SQL Azure, SQL Server, .Net, other frameworks, other programming languages etc.
+
+2) Microsoft Azure provides IaaS, PaaS, SaaS.
+   IaaS: network, Storage, Server, Virtualization;
+   PaaS: based on IaaS, OS, MiddleWare, Runtime;
+   SaaS: based on PaaS, Data, application.
+      
+3) Microsoft Azure Architecture
+            Application
+         Fabric Controller
+      Compute + Storage
+
+4) SLA: 99.95%;
+         falult domain, upgrade domain;
+         each VM: 3 copies in the data center, optional 3 in remote data center.
+
+5) advantage:
+         scalable, stable, full-stack Microsoft-based tools.
+         
    # ref: WindowsAzure入门手册2015年11月  http://wenku.baidu.com/link?url=zNSy0OduxjgLR7AMFnQVfj5tZNeoJ-_E5VTR5rOLM5sdDwYJENZxm0L1XzzvmEnkaiIAX8eLtHS3S-u79V91yOc7EM-rHtMuOMccouLA_0a
    # ref: [视频] Windows Azure 入门系列课程  https://www.microsoft.com/china/msdn/events/webcasts/shared/webcast/NewSeries/Azure/WindowsAzure_rm.html
    # ref:   video on youku:   http://v.youku.com/v_show/id_XNTcxODg5NjE2.html?&f=19392091&from=y1.2-3.4.1&spm=a2h0j.8191423.item_XNTcxODg5NjE2.A
