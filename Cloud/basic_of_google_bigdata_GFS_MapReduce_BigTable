@@ -32,7 +32,7 @@
 			
 			provides specific Google API to Google program:
 				in library format. <=> more functionality, no need to switch in operating system core mode.
-				Google program and libranry file are compiled together.
+				Google program and library file are compiled together.
 
 			
 	chunk server: chunks, 64 MB by default, blocks 64 KB by default. 
@@ -80,7 +80,7 @@
 	master collects the output from map, provide it to reduce.
 	
 	Once a task fails, master will roll back to a checkpoint.
-	Once a worker (map or reduce), master sends the task to another worker.
+	Once a worker (map or reduce) fails, master sends the task to another worker.
 	Once the whole master fails, could only restart the MapReduce model processing.
 	
 	
