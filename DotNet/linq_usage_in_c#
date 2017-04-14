@@ -4,11 +4,12 @@
 1) linq = language integrated query, 语言集成查询, since .net 3.5.
     dbml = database mark language, 数据描述语言
     
-2) 4 main components:
+2) 5 main components:
     linq to objects
     linq to sql
     linq to dataset
     linq to xml
+    linq to entities
     
 3) implemented interfaces: IEnumerable, IEnumerable<T>, IQuery, IQuery<T> etc.
 4) Usage example:
@@ -32,8 +33,10 @@
           }
    
  5) linq CRUD command:
-    # Where, Select, Distinct : 有延迟。
-    # Min, Max, Sum, Count, LongCount, Average, Aggregate: 没有延迟。
+    # Where, Select, Distinct, OfType, OrderBy, ThenBy, GroupBy, Union, Intersect, Except, Concat, 
+      Repeat, Take, Skip, DefaultIfEmpty : 有延迟。
+    # Min, Max, Sum, Count, LongCount, Average, Aggregate, First, Last, Single, ElementAt, Any, All, Contains,
+      SequenceEqual, Range, Empty, ToList, ToArray, ToDictionary, ToLookUp: 没有延迟。
     
     for Query:
       Table1DataContext db = new Table1DataContext();
@@ -102,6 +105,7 @@
      # similar for Max, Average, Aggregate as Min.
      
  6) linq grammar:
+     6.1)
      from ... in ...
      join ... in ... on ... equals ... into ...
      where ...
@@ -112,7 +116,15 @@
      * must begin with from, end with select or group.
      * use let ... = ... to keep result of sub-query.
      
-     
+     6.2) There are 2 ways to do query in linq: 
+            query syntax ex. where ...
+            method syntax ex. Where()
+           mapping:
+            where <-> Where(), join <-> Join(), Group <-> Group(), orderby <-> Orderby(), select <-> Select(),
+            distinct <->  Disctinct(), union <-> Union(), intersect <-> Intersect(), except <-> Except(),....
+            
+     6.3) difference between SQL and linq grammar
+            mainly in 3 parts: from, where, select.
      
      
      
