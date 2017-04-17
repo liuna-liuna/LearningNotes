@@ -1,0 +1,34 @@
+#
+# javascript runs in single thread and also in asynchronus steps
+#
+1) javascript runs in single thread, but also do asynchronus.
+    through main thread: stack, heap
+          + task queue
+          + event loop
+          + navigator API
+
+    navigator has other threads too, ex. Event handler, timer etc.
+    setTimeOut() and setInterval() are used to put callback into task queue.
+      setTimeOut(callback, timeout,...) : runs callback in timeout ms.
+      setInterval(...) : runs callback every ...
+    
+    
+2) javascript runs ajax mainly through XmlHttpRequest(), 
+    XmlHttpRequest by default it access urls with same origin.
+    
+    javascripts runs ajax in 3 ways to access resources with other origins:
+      A) flash
+      B) proxy, ex. /proxy?...
+      C) jsonp. Creates 'script' element dynamically, which accesses resources with other origins.
+         jsonp supports only 'GET' and returns only javascript.
+         
+         # ref: http://www.cnblogs.com/dowinning/archive/2012/04/19/json-jsonp-jquery.html
+    
+    from html5, Cross-Origin-Resource-Sharing(CORS) strategy is supported to access resources with other origins.
+      CORS needs that remote that must support Access-Control-Allow-Origin(ACAO).
+      
+
+# ref:  https://www.zhihu.com/question/20866267
+# ref:  https://github.com/pramper/Blog/issues/4
+# ref:  http://www.ruanyifeng.com/blog/2014/10/event-loop.html
+# ref:  http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499861493e7c35be5e0864769a2c06afb4754acc6000
