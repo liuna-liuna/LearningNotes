@@ -1,5 +1,5 @@
 #
-# javascript runs in single thread and also in asynchronus steps
+# javascript runs in single thread and executes jobs asynchronusly
 #
 1) javascript runs in single thread, but also do asynchronus.
     through main thread: stack, heap
