@@ -1,0 +1,47 @@
+#
+# promise object in javascript
+#
+1) Promise，就是一个对象，用来传递异步操作的消息。
+  它代表了某个未来才会知道结果的事件（通常是一个异步操作），并且这个事件提供统一的 API，可供进一步处理。
+
+  Promise最大的意义在于把嵌套的回调变成了链式调用。
+    new promise(function(resolve, reject) {
+      ...;
+    });
+    
+    Promise 对象有两个属性：
+       PromiseStatus: resolved, rejected, pending.
+       PromiseValue:  resolve函数传参值， reject函数传参值。
+
+    Promise 也有一些缺点。
+    首先，无法取消 Promise，一旦新建它就会立即执行，无法中途取消。
+    其次，如果不设置回调函数，Promise 内部抛出的错误，不会反应到外部。
+    第三，当处于 Pending 状态时，无法得知目前进展到哪一个阶段（刚刚开始还是即将完成）。
+    
+   => 可以组合使用Promise，就可以把很多异步任务以并行和串行的方式组合起来执行。
+    
+   1.1) Promise风格API跟回调风格的API不同，它的参数跟同步的API是一致的，
+        但是它的返回值是个Promise对象，要想得到真正的结果，需要在then的回调里面拿到。
+   
+   1.2) 并行 Promise.all(job1, job2, job3).then(...).catch(...);
+      所有的Promise对象多状态都变化（或resolved 或 rejected）了，才继续执行。
+   
+   1.3) Promise.all() 跟then的配合，可以视为调用部分参数为Promise提供的函数。
+     function print(a, b, c) {
+        console.log(a + b + c);
+     }
+     现在我们调用print函数，其中a和b是需要异步获取的：
+      var c = 10;
+      print(geta(), getb(), 10); //这是同步的写法
+      Promise.all([geta(), getb(), 10]).then(print); //这是 primise 的异步写法
+
+    1.4) Promise.race()
+      Promise.race() 返回跑得快的Promise对象多返回值。
+
+
+# ref:  http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345008539155e93fc16046d4bb7854943814c4f9dc2000
+# ref:  http://www.cnblogs.com/libin-1/p/5947602.html
+# ref:  http://liubin.org/promises-book/#ch2-promise-race
+
+
+
