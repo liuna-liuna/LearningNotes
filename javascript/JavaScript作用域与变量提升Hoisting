@@ -1,0 +1,83 @@
+#
+# JavaScript作用域与变量提升Hoisting
+#
+1) 在javascript，变量有4种基本方式进入作用域：
+    1.1 语言内置：所有的作用域里都有this和arguments；(译者注：经过测试arguments在全局作用域是不可见的)
+    1.2 形式参数：函数的形式参数会作为函数体作用域的一部分；
+    1.3 函数声明：像这种形式：function foo(){}；
+    1.4 变量声明：像这样：var foo；
+  JavaScript没有块作用域，如for循环没有作用域，基本分为全局作用域和函数作用域。
+    ex. for (var i=0; i<arr.length; i++) {
+            ...;
+        }
+        alert(i); // i can be accessed here.
+        
+        in ES6, using let instead of var to make it works like a block scope.
+                  for (let i=0; i<arr.length; i++) {
+                      ...;
+                  }
+                  alert(i); // i can NOT be accessed here.
+ 
+ 
+ 2）变量提升Hoisting：所有的变量提升到函数最开始，赋值不会被提升。
+        ex. 
+        function foo() {  
+            if (false) {  
+                var x = 1;  
+            }  
+            return;  
+            var y = 1;  
+        } 
+        
+        ==>
+          function foo() {  
+              var x, y;  
+              if (false) {  
+                  x = 1;  
+              }  
+              return;  
+              y = 1;  
+          }  
+ 
+ 3) 函数的声明比变量的声明具有高的优先级。这并不是说给那个变量赋值不管用，而是声明不会被忽略了。
+    但是当变量的声明和赋值一起定义时，变量的声明具有更高的优先级。
+ 
+        <script>  
+        function a(){     
+        }  
+        var a;  
+        alert(a);//打印出a的函数体  
+        </script>  
+          
+        <script>  
+          
+        var a;  
+        function a(){     
+        }  
+        alert(a);//打印出a的函数体  
+        </script>  
+        //但是要注意区分和下面两个写法的区别:  
+        <script>  
+        var a=1;  
+        function a(){     
+        }  
+        alert(a);//打印出1  
+        </script>  
+          
+        <script>  
+        function a(){     
+        }  
+          
+        var a=1;  
+          
+        alert(a);//打印出1  
+        </script>  
+
+
+ 
+ 
+ 
+ 
+ 
+# ref:  https://mp.weixin.qq.com/s?__biz=MjM5ODI5Njc2MA==&mid=2655807855&idx=1&sn=d50582c2de0dab2a5e9b9e463f7769ae&scene=0&key=27e59116b734781cf2b32bd4bdc3a7cef8919dedf167e798ba38d3a57008450954b033af9123552b87153dbab470f0196107f3dba0678507d8c318c9c75fbf7808df37277430e2be55d9aee418b6c08a&ascene=0&uin=Mjc0NzUwNjM0Ng%3D%3D&devicetype=iMac+MacBookAir3%2C2+OSX+OSX+10.10.5+build(14F27)&version=12020010&nettype=WIFI&fontScale=100&pass_ticket=BEXY89koUWPhhGwK3w8iKWSEOK4uZpLGneh8d4kcQhyWHyw%2BWIEfCDbUxjYHDexg
+# ref:  http://blog.csdn.net/sunxing007/article/details/9034253
