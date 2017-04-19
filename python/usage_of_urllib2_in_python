@@ -27,5 +27,31 @@ Exmaple:
 	auth=HTTPBasicAuthHandler()
 	auth.add_password()
 	opener=build_opener(auth,proxy)
-
+	
 # ref doc: http://www.jb51.net/article/46495.htm
+
+4) usage of urllib.quote, urllib.unquote, urllib.urlencode:
+	when there is unicode character in url ex. Chinese character, can use urllib.quote / unquote to transform it;
+	when needs parameters such like ...?a=1&b=2 in url, can use urllib.urlencode to do it, 
+		urlencode accepts only key-value pair format input.
+		
+	ex. 
+		print urlopen( '***:8080/computer/{}'.format
+		              (urllib2.quote('Name1(computer1)(stop running temporary)')) ).read();
+	
+		>>> urllib.quote('http://www.baidu.com')
+		'http%3A//www.baidu.com'
+		>>> urllib.unquote('http%3A//www.baidu.com')
+		'http://www.baidu.com'
+		
+		>>> params1 = urllib.urlencode({'spam': 1, 'eggs': 2, 'bacon': 0})
+		>>> params1
+		'eggs=2&bacon=0&spam=1'
+
+
+
+	
+	
+	# ref:	http://blog.csdn.net/haoni123321/article/details/15814111/
+	# ref:	http://blog.csdn.net/wuwenjunwwj/article/details/39522791
+	
