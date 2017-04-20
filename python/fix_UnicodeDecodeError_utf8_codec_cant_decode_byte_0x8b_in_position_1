@@ -1,0 +1,52 @@
+#
+# fix UnicodeDecodeError: 'utf8' codec can't decode byte 0x8b in position 1
+#
+1) how to fix UnicodeDecodeError: 'utf8' codec can't decode byte 0x8b in position 1:
+
+Phenomenon:
+    >>> print(data.decode('utf-8'))
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/encodings/utf_8.py", line 16, in decode
+        return codecs.utf_8_decode(input, errors, True)
+    UnicodeDecodeError: 'utf8' codec can't decode byte 0x8b in position 1: invalid start byte
+
+Root-rause:
+    The content is enzipped in gzip when transferred.
+  
+Solution:   use gzip.GzipFile(fileobj = StringIO.StringIO(rawdata)) to unzip it.
+      import urllib2
+      import chardet
+      
+      url = 'http://www.sina.com.cn'
+      opener = urllib2.urlopen(url)
+      rawdata = opener.read()
+      
+      # check encoding if it can be parsed
+      charType = chardet.detect(rawdata)
+      print(charType)     # when gzip,  => {'confidence': 0.0, 'language': None, 'encoding': None}
+      
+      headers = opener.info()     # or opener.headers
+      print(headers['Content-Encoding'])      # gzip
+      
+      import gzip
+      import StringIO
+      
+      tmpFileObj = StringIO.StringIO(rawdata)
+      gz = gzip.GzipFile(fileobj = tmpFileObj)
+      data = gz.read()
+      gz.close()
+      print(data)
+      
+      charType = chardet.detect(rawdata)
+      print(charType)     # {'confidence': 0.99, 'language': '', 'encoding': 'utf-8'}
+
+    
+
+
+# ref:  http://blog.sina.com.cn/s/blog_b7907b4a010156to.html
+# ref:  http://blog.csdn.net/wangzhaopeng0316/article/details/8254057
+
+
+
+
