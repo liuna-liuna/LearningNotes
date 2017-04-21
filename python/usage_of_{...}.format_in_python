@@ -1,0 +1,43 @@
+#
+# usage of '{...}'.format in python
+#
+1) 1.1) '{...}'.format provides more settings than '%s...' % (...).
+   1.2) difference in outputing a tuple:
+   
+    >>> print('tuple {0}'.format((0,)))
+    tuple (0,)
+    >>> print('tuple %s' % (0,))
+    tuple 0
+    >>> print('tuple (%d,)' % (0,))
+    tuple (0,)
+
+2) examples
+    print('{0} = {1}'.format(k, v))
+    >>> print('{0:s}'.format('abc'))
+    abc
+    
+    print('{0:<8}: {1}'.format(k, v))   # < left aligned, = center aligned, > right aligned
+    
+    >>> print('{0:.2f}'.format(1.234))
+    1.23
+    >>> print('{0:.2e}'.format(1.234))
+    1.23e+00
+    >>> print('{0:.2g}'.format(1.234))
+    1.2
+    >>> print('{0:.2n}'.format(1.234))
+    1.2
+    >>> print('{0:n}'.format(1.23456789))
+    1.23457
+    >>> print('{0:n}'.format(123456789.2345))
+    1.23457e+08
+    >>> print('{0:g}'.format(123456789.2345))
+    1.23457e+08
+    
+    >>> print('{:,}'.format(123456789.2345))
+    123,456,789.235
+    >>> print('{0:,}'.format(123456789.2345))
+    123,456,789.235
+
+
+
+# ref:  http://www.jb51.net/article/63672.htm
