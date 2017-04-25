@@ -1,0 +1,28 @@
+#
+# use signal module in python
+#
+1) module signal deals with signal processing, could be used well on Unix like platforms.
+    import signal
+    
+2) use signal.signal(signo, sig_handler) to bind a signal handler to signal.
+    ex.
+      signal.signal(signal.SIGALRM, myHandler)
+      signal.signal(signal.SIGTSTP, myHandler)
+      ...
+      signal.pause()
+      ...
+      
+    built-in handler ex. signal.SIG_IGN(ignore), signal.SIG_DFL(default).
+    
+3) signal names are same as that on linux <=> could use 'man 7 signal' to read details.
+    ex.
+      signal.SIGKILL, .SIGSTP:  cann't be bound by signal.signal(), unchangable.
+      signal.SIGALRM, .SIGTERM etc.
+
+4) SIGTERM, SIGKILL difference: SIGTERM does cleanup while SIGKILL no. 
+ 
+    
+    
+# ref:  http://www.cnblogs.com/vamei/archive/2012/10/06/2712683.html
+# ref:  http://blog.csdn.net/alvine008/article/details/24454159
+
