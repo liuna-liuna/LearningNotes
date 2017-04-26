@@ -1,0 +1,14 @@
+#
+# meaning of tag meta in html
+#
+1) <meta> is used in html <head> to accelerate running of the SearchEngine etc.
+
+2) <meta> mainly has 'name' and 'http-equiv' two categories.
+    for <meta name="..." content="...">:
+        name could be keywords, description, robots, author etc.
+        
+    for <meta http-equiv="..." content="...">:
+        http-equiv could be content-type, content-language, refresh, expires, 
+                            pragma, set-cookie, window-target, cache-control etc.
+
+# ref:  http://www.jb51.net/web/70787.html
