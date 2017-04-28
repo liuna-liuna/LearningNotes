@@ -1,0 +1,17 @@
+#
+# calculate execution time of a program in Python
+#
+1) calculate execution time of a program: 
+    datetime.datetime.now() ... - ... datetime.datetime.now()
+    time.time() ... - ... time.time()
+
+2) calculate CPU time of a program execution:
+    time.clock() ... - ... time.clock()
+  
+3) usage of date, datetime, 
+     datetime.date, datetime.time, datetime.datetime, datetime.timedelta, datetime.tzinfo  
+    
+    # see ref.
+    
+# ref:  http://blog.csdn.net/wangshuang1631/article/details/54286551
+# ref:  http://blog.csdn.net/longerzone/article/details/37574367
