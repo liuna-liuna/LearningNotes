@@ -1,0 +1,25 @@
+#
+# default encoding for filename and filecontent in python
+#
+1) default encoding for filename and filecontent can be checked through module sys.
+
+    sys.getdefaultencoding():     for filecontent
+    sys.getfilesystemencoding():  for filename
+    
+    >>> sys.getdefaultencoding()
+    'ascii'
+    >>> sys.getfilesystemencoding()
+    'utf-8'
+    
+    >>> print(sys.getdefaultencoding.__doc__)
+    getdefaultencoding() -> string
+    
+    Return the current default string encoding used by the Unicode 
+    implementation.
+    
+    
+    >>> print( sys.getfilesystemencoding.__doc__)
+    getfilesystemencoding() -> string
+    
+    Return the encoding used to convert Unicode filenames in
+    operating system filenames.
