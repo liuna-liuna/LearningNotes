@@ -1,0 +1,23 @@
+#
+# how to play audio or run application in CLI on mac
+#
+1) use /usr/bin/afplay $audiofile to play an audio file
+    use open $appfile $args
+      or open ./$appname.app --args --AppCmdLineArgs ...
+      to run an application
+      
+      ex. 
+        afplay audiofile.mp3 &
+        open /path/to/audiofile.mp3
+ 
+        
+        killall afplay
+        killall iTunes
+2) play a reminder from CLI on mac:
+        say 'Hello from Mac'
+        printf "\a\a\a" 
+        echo -e "\a\a\a"
+        afplay $audiofile
+            
+# ref:  http://osxdaily.com/2010/12/07/command-line-mp3-player-in-mac-os-x/
+# ref:  http://stackoverflow.com/questions/1308755/launch-an-app-on-os-x-with-command-line
