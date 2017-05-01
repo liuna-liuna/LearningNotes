@@ -1,0 +1,21 @@
+#
+# how to deal with escaped character from raw_input in python
+#
+1) when get \n \t from raw_input(), how to print it as a new line, a tab?
+    use string_escape in Python2, unicode_escape in Python3.
+    raw_input is in Python2, input in Python3.
+    
+  ex. 
+    s3 = raw_input('Input a string with escape flag: ')   # get 'hello\nworld'
+    print('s3with_escape_input => {0}'.format(s3))
+    s3de = s3.decode('string_escape')
+    print('s3de => {0}'.format(s3de))
+    
+    =>
+      Input a string with escape flag: hello\nworld
+      s3with_escape_input => hello\nworld
+      s3de => hello
+      world
+
+# ref:  http://stackoverflow.com/questions/4020539/process-escape-sequences-in-a-string-in-python
+# ref:  http://stackoverflow.com/questions/2969044/python-string-escape-vs-unicode-escape
