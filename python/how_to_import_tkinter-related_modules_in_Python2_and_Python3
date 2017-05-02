@@ -1,0 +1,25 @@
+#
+# how to import tkinter-related modules in Python2 and Python3
+#
+1) seperate modules in Python2 ex. Tkinter, ttk, tk*
+   one modules in Python3 ex. tkinter, tkinter.*
+   
+   ex.
+    import os, sys
+    try:
+        from tkinter import *
+    except ImportError:  #Python 2.x
+        PythonVersion = 2
+        from Tkinter import *
+        from tkFont import Font
+        from ttk import *
+        from tkMessageBox import *
+        import tkFileDialog
+    else:  #Python 3.x
+        PythonVersion = 3
+        from tkinter.font import Font
+        from tkinter.ttk import *
+        from tkinter.messagebox import *
+        
+        
+# ref:  https://zhidao.baidu.com/question/502932163.html
