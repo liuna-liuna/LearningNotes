@@ -1,0 +1,51 @@
+#
+# how to fix PIL.ImageTk PhotoImage RuntimeError: Too early to create image in Python 2.7
+#
+1) Phenomenon:
+
+    >>> from PIL import Image, ImageTk
+    >>> image1_path = r'/.../NatGeo01.jpg'
+    >>> ImageTk.PhotoImage(Image.open(image1_path))
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "/Library/Python/2.7/site-packages/PIL/ImageTk.py", line 124, in __init__
+        self.__photo = tkinter.PhotoImage(**kw)
+      File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk/Tkinter.py", line 3366, in __init__
+        Image.__init__(self, 'photo', name, cnf, master, **kw)
+      File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk/Tkinter.py", line 3303, in __init__
+        raise RuntimeError, 'Too early to create image'
+    RuntimeError: Too early to create image
+    
+2) Root cause:  Tkinter has to be instantiated before you call ImageTk.PhotoImage():
+    <=> No TKinter.Tk() or Tkinter.Toplevel() is called before ImageTk.PhotoImage().
+
+3) fix: run .Tk() or .Toplevel() before ImageTk.PhotoImage().
+    
+    Example1.
+       import Tkinter as tk
+       root1 = tk.Tk()
+       image1_opened = Image.open(image1_path)
+       image1_photo = ImageTk.PhotoImage(image1_opened)
+       # or image2_photo = ImageTk.PhotoImage(Image.open(image2_path))
+       label1 = tk.Label(root1, image=image1_photo)
+       label1.pack(expand=tk.YES, fill=tk.BOTH)
+
+    Example2.
+        for file in os.listdir(imgdir):
+            pix = Toplevel()
+            pix.title(os.path.basename(file))
+            try:
+                fpath = os.path.join(imgdir, file)
+                imgobj = PhotoImage(file=fpath)
+                Label(pix, image=imgobj).pack(expand=YES, fill=BOTH)
+                print('Image size of {0}: width={1}, height={2}'.format(fpath, imgobj.width(), imgobj.height()))
+                global savephotos
+                savephotos.append(imgobj)
+            except:
+                Label(pix, text='Skipping {0}\n{1}\n{2}'.format(file, sys.exc_info()[0], sys.exc_info()[1])).pack()
+
+
+# ref:  http://stackoverflow.com/questions/1236540/how-do-i-use-pil-with-tkinter
+# ref:  http://codego.net/307067/
+
+
