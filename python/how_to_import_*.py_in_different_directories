@@ -1,0 +1,20 @@
+#
+# how to import *.py in different directories
+#
+1) two steps:
+    add one __init__.py with __all__ or empty under a directory
+    add the directory into sys.path
+    
+    ex.
+      touch ***/__init__.py
+      in *.py:
+          # consts
+          SELF_PY_TOPPATH = '/.../Py...'
+          
+          import sys
+          sys.path.insert(0, SELF_PY_TOPPATH)
+          from ***.*** import ...
+
+
+
+# ref:  http://blog.csdn.net/zhili8866/article/details/52980924
