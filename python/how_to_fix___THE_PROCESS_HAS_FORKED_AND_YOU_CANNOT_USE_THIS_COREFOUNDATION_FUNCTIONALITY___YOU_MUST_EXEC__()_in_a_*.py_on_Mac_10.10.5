@@ -1,0 +1,53 @@
+#
+# how to fix __THE_PROCESS_HAS_FORKED_AND_YOU_CANNOT_USE_THIS_COREFOUNDATION_FUNCTIONALITY___YOU_MUST_EXEC__()
+#         in a *.py on Mac 10.10.5
+#
+1) Phenomon:
+
+    $ ./***.py
+    2017-05-04 12:45:50.409 Python[8548:675551] CoreText CopyPropertiesForFontsMatchingRequest received mig IPC error (10000003) from font server
+    2017-05-04 12:45:50.415 Python[8548:675551] Invalid font server IPC destination! Namespace changed? Retrying (0)...
+    2017-05-04 12:45:50.418 Python[8548:675551] CoreText CopyPropertiesForFontsMatchingRequest received mig IPC error (1000000C) from font server
+    The process has forked and you cannot use this CoreFoundation functionality safely. You MUST exec().
+    Break on __THE_PROCESS_HAS_FORKED_AND_YOU_CANNOT_USE_THIS_COREFOUNDATION_FUNCTIONALITY___YOU_MUST_EXEC__() to debug.
+
+2) Root cause:
+    It depends on when Tkinter is imported:
+      once Tkinter connects to X Server (usually a socket) in the main process,
+      it takes current process as the main interface and worked only here;
+      after a process is forked, current process has become parents, 
+      the Tkinter connection to X server still takes the parent process, not the forked-out process.
+      
+   <=>     Tkinter with Tk 8.5 isn't thread-safe in Python2.7 on Mac,
+           This is a Tkinter bug and a Python bug, which is fixed in Python3.2, 3.3.
+    
+3) Fix: import Tkinter after the multiprocessing.Process is forked.
+    ex.
+        
+        from multiprocessing import Process
+        def appStart():
+          import Tkinter as tk
+          
+          class Application(tk.Frame):
+            def __init__(self, master=None, **options):
+              tk.Frame.__init__(self, master, **options)
+              self.pack()
+              ...
+              
+          app = Application()
+          app.master.title(...)
+          app.mainloop()
+          
+        if __name__ == '__main__':
+          p = Process(target=appStart)
+          p.start()
+
+4) PS:  GUI code is better ONLY done in the main process, other codes in processes,
+          both could communicate via Queue etc.
+
+
+# ref:  http://stackoverflow.com/questions/8106002/using-the-python-multiprocessing-module-for-io-with-pygame-on-mac-os-10-7
+# ref:  http://stackoverflow.com/questions/23599087/multiprocessing-python-core-foundation-error
+
+
+
