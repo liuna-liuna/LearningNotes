@@ -1,0 +1,20 @@
+#
+# how to resize an image in Python through PIL
+#
+1) through PIL Image.open().resize(), PhotoImage()
+
+    ex.
+    
+        NORMALIZED_IMG_SIZE = (self.winfo_screenwidth(), self.winfo_screenheight())
+            
+        class ViewOne(Toplevel):
+        def __init__(self, imgdir='', imgfile=''):
+           Toplevel.__init__(self)
+           self.title(imgfile)
+           piobj = PhotoImage(Image.open(os.path.join(imgdir, imgfile)).resize(NORMALIZED_IMG_SIZE))
+           Label(self, image=piobj).pack(expand=YES, fill=BOTH)
+           global save1photo
+           save1photo = piobj
+
+# ref:  http://stackoverflow.com/questions/28464331/resizing-images-with-imagetk-photoimage-with-tkinter-python
+
