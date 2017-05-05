@@ -1,0 +1,32 @@
+#
+# how to get screen resolution on Mac, Windows and Linux
+#
+1) get platfrom through sys.platform: 
+      'darwin' means Mac.
+      'win32' Windows
+      'linux'(?[To be confirmed]) Linux
+      
+2) get screen resolution through python library:
+    
+  on Mac:
+      PIL Tk().winfo_screenwidth() and .winfo_screenheight()
+    # or 
+      import AppKit
+      [(screen.frame().size.width, screen.frame().size.height)
+          for screen in AppKit.NSScreen.screens()]
+          
+  on Windows:
+      import win32api
+      print('width = {0}, height = {1}'.format(win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1)))
+    # or
+      import ctypes
+      user32 = ctypes.windll.user32
+      screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+      
+  on Linux:
+      in CMI: xrandr | grep -i 'x'
+      
+      
+# ref:  http://stackoverflow.com/questions/3129322/how-do-i-get-monitor-resolution-in-python
+# ref:  http://stackoverflow.com/questions/20838201/resize-display-resolution-using-python-with-cross-platform-support/20881688
+
