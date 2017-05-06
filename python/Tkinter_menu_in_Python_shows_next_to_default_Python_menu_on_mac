@@ -5,10 +5,11 @@
     top-level menu:  often used in top-level window.
     top-level frame and Menubutton: often embedded in a gui box.
     
-2) on Mac, the menu / menubar shows in Python, next to a default built-in Python menu,
+2) on Mac, the top-level menu way shows in Python, next to a default built-in Python menu,
             instead of at the poped up window or gui box.
-            
-   on Windows, Linux, at the poped up window or gui box.
+           top-level frame and Menubutton shows at the poped up window or gui box.
+           
+   on Windows, Linux, both at the poped up window or gui box.
    
 3) how to Remove default “Python” submenu with Tkinter Menu on Mac OSX: ex. could use py2app.
     please refer to 
