@@ -1,0 +1,16 @@
+#
+# Tkinter menu in Python shows next to default Python menu on mac
+# 
+1) menu / menubar can be done in Tkinter in two ways:
+    top-level menu:  often used in top-level window.
+    top-level frame and Menubutton: often embedded in a gui box.
+    
+2) on Mac, the menu / menubar shows in Python, next to a default built-in Python menu,
+            instead of at the poped up window or gui box.
+            
+   on Windows, Linux, at the poped up window or gui box.
+   
+3) how to Remove default “Python” submenu with Tkinter Menu on Mac OSX: ex. could use py2app.
+    please refer to 
+    # ref:  http://stackoverflow.com/questions/8695926/remove-default-python-submenu-with-tkinter-menu-on-mac-osx/8696687.
+    
