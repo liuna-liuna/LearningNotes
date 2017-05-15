@@ -1,0 +1,19 @@
+#
+# how to de-import a module in Python
+#
+1) del sys.modules[modname]; delattr(mvalue, modname)
+    
+    ex.
+    import sys
+    
+    def deimport(modname):
+    	del sys.modules[modname]
+    	for mvalue in sys.modules.values():
+    		if mvalue:
+    			try:
+    				delattr(mvalue, modname)
+    			except AttributeError:
+    				pass
+        
+# ref:  http://stackoverflow.com/questions/1668223/how-to-de-import-a-python-module
+
