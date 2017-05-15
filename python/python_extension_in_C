@@ -1,0 +1,19 @@
+#
+# python extension in C
+#
+1) steps: taking hello, ${input} as an example.
+
+    Step1. create a hello.c
+    Step2. create makefile.hello
+           make -f makefile.hello
+    # or
+           create a setup.py
+           python setup.py build
+           python setup.py install
+    Step3. import hello
+            print(hello.message('C'))
+            print(hello.message('module ' + hello.__file__))
+
+2) an example refer to LearningNotes/python/pythonlet/.
+
+# ref:  http://blog.csdn.net/xiarendeniao/article/details/9374931
