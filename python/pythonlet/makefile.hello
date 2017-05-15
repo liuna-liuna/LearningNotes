@@ -1,0 +1,15 @@
+PYTHON_INSTALL_PATH = /System/Library/Frameworks/Python.framework/Versions/2.7
+PYLIB = $(PYTHON_INSTALL_PATH)/bin
+PYINC = $(PYTHON_INSTALL_PATH)/include/python2.7
+
+hello.so: hello.c
+	gcc hello.c -I$(PYINC) -L$(PYLIB) -lpython2.7 -g -shared -o hello.so
+
+# for Python 3.4
+# hello.dll: hello.c
+	#gcc hello.c -I$(PYINC) -L$(PYLIB) -lpython2.7 -g -shared -o hello.dll
+
+clean:
+	rm -f hello.dll core
+
+
