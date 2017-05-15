@@ -1,0 +1,20 @@
+#
+# gcc c compiler syntax
+#
+1) gcc options
+  
+  ex.
+    gcc -c  only compile not link
+    gcc -g  debug info to be used by GDB, default level. -g1: minimum, -g3: maximum
+    gcc -I${Include_Dir}
+    gcc -L${Library_Dir}
+    gcc -l${library_file}   ex. gcc -lpython2.7
+    gcc -o  output
+    gcc -O  Optimum, default level. -O0: no optimum, -O2: medium, -O3: high, -Os: size.
+    gcc -shared Shared dll(on Windows) / so (on Linux & Mac)
+    gcc -w  no warning info
+    gcc -Wall all warning info.
+
+
+# ref:  http://www.rapidtables.com/code/linux/gcc.htm
+
