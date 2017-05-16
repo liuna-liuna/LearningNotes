@@ -1,0 +1,122 @@
+#
+# python embedding in C
+#
+1) three methods as communicate media between python and C:
+    Method1. Python expression and instruction
+    Method2. Callable PyObject
+    Method3. code file
+    
+    ex.
+    Example 1. use PyRun_SimpleString(...)
+      // ================================================================================
+      #include <Python.h>
+      
+      int main(int argc, char *argv[]) {
+      	printf("embed_simple\n");
+      	Py_Initialize();
+      	PyRun_SimpleString("import sys");
+      	PyRun_SimpleString("sys.path.insert(0, '/Volumes/Data/Learning/Python/cext/embed')");
+      	PyRun_SimpleString("import usermod");
+      	PyRun_SimpleString("print(usermod.message)");
+      	PyRun_SimpleString("x = usermod.message");
+      	PyRun_SimpleString("print(usermod.transform(x))");
+      	Py_Finalize();
+      }
+
+    Example 2. use PyImport_ImportModule(...), PyModule_GetDict(...), PyObject_SetAttrString(...), PyRun_String(...).
+        #include <Python.h>
+    
+        int main(int argc, char *argv[]) {
+        	printf("embed_string\n");
+        
+        	char *cstr;
+        	PyObject *pmod, *pstr, *pdict;
+        
+        	Py_Initialize();
+        
+        	PySys_SetPath(".");
+        	// PyRun_SimpleString("import sys");
+        	// PyRun_SimpleString("sys.path.insert(0, '/Volumes/Data/Learning/Python/cext/embed')");
+        
+        	pmod = PyImport_ImportModule("usermod");
+        	pdict = PyModule_GetDict(pmod);
+        	pstr = PyRun_String("message", Py_eval_input, pdict, pdict);
+        	PyArg_Parse(pstr, "s", &cstr);
+        	printf("%s\n", cstr);
+        
+        	PyObject_SetAttrString(pmod, "X", pstr);
+        	(void) PyRun_String("print(transform(X))", Py_file_input, pdict, pdict);
+        	Py_DECREF(pmod);
+        	Py_DECREF(pstr);
+        
+        	Py_Finalize();
+        
+        }
+
+    
+    Example 3. use PyImport_ImportModule(...), PyObject_GetAttrString(...), PyArg_Parse(...), Py_BuildValue(...),
+                  PyEval_CallObject(...).
+        #include <Python.h>
+    
+        int main(int argc, char *argv[]) {
+        	printf("embed_object\n");
+        	
+        	char *cstr;
+        	PyObject *pmod, *pfunc, *pargs, *pstr;
+        	
+        	Py_Initialize();
+        
+        	PyRun_SimpleString("import sys");
+        	PyRun_SimpleString("sys.path.insert(0, '/Volumes/Data/Learning/Python/cext/embed')");
+        	pmod = PyImport_ImportModule("usermod");
+        	pstr = PyObject_GetAttrString(pmod, "message");
+        	PyArg_Parse(pstr, "s", &cstr);
+        	printf("%s\n", cstr);
+        	Py_DECREF(pstr);
+        
+        	pfunc = PyObject_GetAttrString(pmod, "transform");
+        	pargs = Py_BuildValue("(s)", cstr);
+        	pstr = PyEval_CallObject(pfunc, pargs);
+        	PyArg_Parse(pstr, "s", &cstr);
+        	printf("%s\n", cstr);
+        	Py_DECREF(pmod);
+        	Py_DECREF(pfunc);
+        	Py_DECREF(pargs);
+        	Py_DECREF(pstr);
+        	
+        	Py_Finalize();
+        	return 0;
+        
+        }
+
+
+
+    Example 4. use PyDict_New(...), PyDict_SetItemString(...), PyDict_GetItemString(...), PyArg_Parse(...).
+        #include <Python.h>
+    
+        int main(int argc, char *argv[]) {
+        	printf("embed_dict\n");
+        	Py_Initialize();
+        
+        	int cval;
+        	PyObject *pdict, *pval;
+        	pdict = PyDict_New();
+        	PyDict_SetItemString(pdict, "__builtins__", PyEval_GetBuiltins());
+        	PyDict_SetItemString(pdict, "Y", PyLong_FromLong(2));
+        	PyRun_String("X = 99", Py_file_input, pdict, pdict);
+        	PyRun_String("X = X + Y", Py_file_input, pdict, pdict);
+        	pval = PyDict_GetItemString(pdict, "X");
+        	PyArg_Parse(pval, "i", &cval);
+        	printf("%d\n", cval);
+        	Py_DECREF(pdict);
+        
+        	Py_Finalize();
+        	return 0;
+        
+        }
+    
+
+
+# ref:  Embedding Python in Another Application   https://docs.python.org/3/extending/embedding.html
+# ref:  use gcc for linux application under MAC   http://www.jianshu.com/p/99b057d5566f
+
