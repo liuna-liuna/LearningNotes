@@ -1,0 +1,20 @@
+#
+# how to fix Segmentation fault: 11 in python embedded in C program under MAC
+#
+1) Phenomenon:
+    $./embed_string 
+      embed_string
+      Segmentation fault: 11
+    
+2) Root Cause 1: PyImport_ImportModule failed to load a module
+    
+    <= pmod = PyImport_ImportModule("usermod");
+    
+3) Fix 1: add current directory into PythonPath.
+  Method 1.   PySys_SetPath(".");
+
+  Method 2.   	PyRun_SimpleString("import sys");
+                PyRun_SimpleString("sys.path.insert(0, '/Volumes/Data/Learning/Python/cext/embed')");
+
+# ref:  http://stackoverflow.com/questions/7283964/embedding-python-into-c-importing-modules
+
