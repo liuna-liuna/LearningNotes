@@ -1,0 +1,24 @@
+#
+# similarities and differences between puppet and chef
+#
+1. Similarities:
+    1) both base on Ruby.
+    2) both are C/S structure, client communicates with server in ssl certificates.
+    3) both abstracts details and differences of os, providing interface for all oses.
+    4) both are done in two steps: first on server or master, generate resource lists for clients, 
+                                    then on clients, apply the resource lists.
+    5) both can be extended: Puppet in module, Chef in cookbook.
+    6) both can do testing.
+
+
+2. Differences:
+    1) Puppet uses Ruby and Domain Specific Language (DSL), Chef uses Ruby.
+    2) Puppet must declare explicit dependencies, Chef same as in Ruby, in instructions' order.
+    3) Puppet is easier to install and requires less softwares, Chef needs couchdb, RabbitMQ, Soir,
+        these softwares requires java, erlang.
+    4) configurations in Puppet is in file format, in Chef in database couchdb and using index soir to get and set.
+    5) Puppet is used by Google, RedHat.
+
+# ref:  http://blog.sina.com.cn/s/blog_5374d6e30100sum0.html
+# ref:  https://pierrerambaud.com/blog/devops/chef-vs-puppet
+
