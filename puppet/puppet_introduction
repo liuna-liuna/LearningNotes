@@ -20,13 +20,42 @@
 	    提供一个简洁的但是强大的框架来完成系统管理任务
 	    系统管理任务可以描述成puppet语言,因此可以相互分享代码,就像分享其他语言的代码一样,比如python, c等
 
-2)	Puppet server : on Linux
+2)	Puppet可以单机使用，也可以是C/S结构。
+	Puppet server : on Linux
 	Puppet agent:	on Linux, Windows, OS X.
 	
 	# ref:	https://docs.puppet.com/puppet/latest/puppet_collections.html
 	
 3) 	Puppet把系统里面的文件，软件包，服务，用户，组，计划任务，SSH密钥，Nagios配置等看作是"资源",
 	Puppet的作用就是管理这些资源以及资源之间的相互联系.	
+
+4)	步骤：	
+	主要分两步：创建目录册、应用目录册：
+		安装 ruby, ruby-lib, ruby-shadow, puppet-server, puppet-agent, puppet factor
+		配置Puppet Server /etc/puppet/puppet.conf (somewhat like INI), 
+							/etc/puppet/manifests/site.pp,
+							/etc/puppet/modules/$module/init.pp
+		配置防火墙 /etc/hosts
+				  ex. in netfiler:
+				  	-A Input -p tcp -dport 8140 -m state -state NEW -s 192.168.0.0/24 -j ACCEPT
+					
+		生成SSL证书 puppet cert # or puppetca
+					in /etc/puppet/ssl/
+					
+		配置Puppet Agent /etc/puppet/manifests/nodes.pp (contents class, definition...; requires定义dependencies),
+						include nodes.pp
+		创建模块 /etc/puppet/modules/$module/(files, templates, manifests)
+		连接Agent到Master	puppet agent --server... --no-daemonize --onetime --verbose
+	
+	Log is in /var/log/messages or /var/log/daemon.log.
+	
+5)	常用命令
+	after 2.6:
+		puppet master
+		puppet agent --server...
+		puppet cert list
+		puppet facter
+
 
 
 #	ref doc:
