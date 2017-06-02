@@ -1,0 +1,44 @@
+#
+# what is Merkle Tree / Merkle Hashing algorithm
+#
+1) Merkle Tree，通常也被称作Hash Tree，顾名思义，就是存储hash值的一棵树。
+    Merkle树的叶子是数据块(例如，文件或者文件的集合)的hash值。
+    非叶节点是其对应子节点串联字符串的hash。
+
+2) Merkle Tree可以看做Hash List的泛化（Hash List可以看作一种特殊的Merkle Tree，即树高为2的多叉Merkle Tree）。
+    Merkle Tree和Hash List的主要区别是，可以直接下载并立即验证Merkle Tree的一个分支。
+    
+    在p2p网络下载网络之前，先从可信的源获得文件的Merkle Tree树根。
+    一旦获得了树根，就可以从其他从不可信的源获取Merkle tree。通过可信的树根来检查接受到的Merkle Tree。
+    如果Merkle Tree是损坏的或者虚假的，就从其他源获得另一个Merkle Tree，直到获得一个与可信树根匹配的Merkle Tree。
+    如果文件非常大，那么Merkle tree和Hash list都很大，但是Merkle tree可以一次下载一个分支，然后立即验证这个分支，如果分支验证通过，就可以下载数据了。
+    而Hash list只有下载整个hash list才能验证。 
+ 
+3) Merkle Tree的特点
+
+    MT是一种树，大多数是二叉树，也可以多叉树，无论是几叉树，它都具有树结构的所有特点；
+    Merkle Tree的叶子节点的value是数据集合的单元数据或者单元数据HASH。
+    非叶子节点的value是根据它下面所有的叶子节点值，然后按照Hash算法计算而得出的。
+    
+    Merkle Tree的操作： 增删改查。
+    
+4) 通常，加密的hash方法像SHA-2和MD5用来做hash。
+    但如果仅仅防止数据不是蓄意的损坏或篡改，可以改用一些安全性低但效率高的校验和算法，如CRC。
+
+    Second Preimage Attack: 
+      Merkle tree的树根并不表示树的深度，这可能会导致second-preimage attack，即攻击者创建一个具有相同Merkle树根的虚假文档。
+      一个简单的解决方法在Certificate Transparency中定义：
+        当计算叶节点的hash时，在hash数据前加0x00。当计算内部节点是，在前面加0x01。
+        另外一些实现限制hash tree的根，通过在hash值前面加深度前缀。
+        因此，前缀每一步会减少，只有当到达叶子时前缀依然为正，提取的hash链才被定义为有效。
+        
+    Merkle Tree的应用
+      数字签名
+      P2P网络
+      Trusted Computing
+      IPFS(InterPlanetary File System)是很多NB的互联网技术的综合体，
+        如DHT( Distributed HashTable，分布式哈希表)，Git版本控制系统，Bittorrent等。
+        
+
+
+# ref:  图文详解哈希树-Merkle Tree（默克尔树）算法解析   https://my.oschina.net/tantexian/blog/839601
