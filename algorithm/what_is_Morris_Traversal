@@ -1,0 +1,77 @@
+#
+# what is Morris Traversal
+#
+1) Morris Traversal方法可以在O(n)时间内用O(1)空间完成二叉树遍历。
+
+  实现二叉树的前中后序遍历，有两个要求：
+    1. O(1)空间复杂度，即只能使用常数空间；
+    2. 二叉树的形状不能被破坏（中间过程允许改变其形状）。
+
+    通常，实现二叉树的前序（preorder）、中序（inorder）、后序（postorder）遍历有两个常用的方法：
+      一是递归(recursive)，二是使用栈实现的迭代版本(stack+iterative)。
+    这两种方法都是O(n)的空间复杂度（递归本身占用stack空间或者用户自定义的stack），所以不满足要求。
+
+   Morris Traversal方法可以在O(n)时间内用O(1)空间完成二叉树遍历。 
+    要使用O(1)空间进行遍历，最大的难点在于，遍历到子节点的时候怎样重新返回到父节点（假设节点中没有指向父节点的p指针），
+    由于不能用栈作为辅助空间。
+    为了解决这个问题，Morris方法用到了线索二叉树（threaded binary tree）的概念。
+    在Morris方法中不需要为每个节点额外分配指针指向其前驱（predecessor）和后继节点（successor），
+    只需要利用叶子节点中的左右空指针指向某种顺序遍历下的前驱节点或后继节点就可以了。
+
+2) Morris中序遍历
+    Pseudo-code:
+          1. Initialize current as root   
+          2. While current is not NULL  
+             If current does not have left child  
+                a) Print current’s data  
+                b) Go to the right child, i.e., current = current->right  
+             Else  
+                a) Make current as right child of the rightmost node in current's left subtree  
+                b) Go to this left child, i.e., current = current->left  
+          When we do 2.Else, for the first round it will execute 2.Else.a/b. 
+          When finish the steps and return back, we check again and reset the rightmost node in current's left subtree as null. 
+          That is the following statement:  
+                a') Find the rightmost node in current's left subtree (its right child is current) 
+                    and set its right child as null 
+                a'') Print current’s data 
+                b') Go to the right child 
+      
+    An example: Validate Binary Search Tree 
+        https://leetcode.com/problems/validate-binary-search-tree/#/description
+        
+        # Definition for a binary tree node.
+        # class TreeNode(object):
+        #     def __init__(self, x):
+        #         self.val = x
+        #         self.left = None
+        #         self.right = None
+        
+        class Solution(object):
+            def isValidBST(self, root):
+                """
+                :type root: TreeNode
+                :rtype: bool
+                """
+                ans = True
+                pre, cur = None, root
+                while cur:
+                    if not cur.left:
+                        pre, cur = cur, cur.right
+                    else: 
+                        pd = cur.left
+                        while pd.right and pd.right is not cur:
+                            pd = pd.right
+                        if not pd.right:
+                            pd.right, cur = cur, cur.left
+                        else:
+                            pd.right, pre, cur = None, cur, cur.right
+                    if pre and cur and pre.val >= cur.val:
+                        ans = False
+                return ans
+        
+ 
+# ref:  Morris Traversal方法遍历二叉树（非递归，不用栈，O(1)空间）http://www.cnblogs.com/AnnieKim/archive/2013/06/15/MorrisTraversal.html
+# ref:  Morris Traversal: 非递归不用栈实现对树的中序遍历         http://blog.csdn.net/tanzhangwen/article/details/40375029
+
+
+
