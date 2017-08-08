@@ -1,0 +1,49 @@
+#
+# what is np.convolve
+#
+1) definition of convolution
+    Convolution is a mathematical operator primarily used in signal processing. 
+    Numpy simply uses this signal processing nomenclature to define it, hence the "signal" references. 
+    An array in numpy is a signal. 
+    The convolution of two signals is defined as the integral of the first signal, reversed, sweeping over ("convolved onto")
+    the second signal and multiplied (with the scalar product) at each position of overlapping vectors. 
+    The first signal is often called the kernel, especially when it is a 2-D matrix in image processing or neural networks, 
+    and the reversal becomes a mirroring in 2-D (NOT transpose).
+
+2) 卷积：分析数学中的一项重要计算，定义为一个函数翻转、平移后与另一个函数的乘积的积分。
+    ex. print(np.convolve.__doc__)
+    >>> 
+        References
+        ----------
+        .. [1] Wikipedia, "Convolution", http://en.wikipedia.org/wiki/Convolution.
+    
+        Examples
+        --------
+        Note how the convolution operator flips the second array
+        before "sliding" the two across one another:
+    
+        >>> np.convolve([1, 2, 3], [0, 1, 0.5])
+        array([ 0. ,  1. ,  2.5,  4. ,  1.5])
+    
+        Only return the middle values of the convolution.
+        Contains boundary effects, where zeros are taken
+        into account:
+    
+        >>> np.convolve([1,2,3],[0,1,0.5], 'same')
+        array([ 1. ,  2.5,  4. ])
+    
+        The two arrays are of the same length, so there
+        is only one position where they completely overlap:
+    
+        >>> np.convolve([1,2,3],[0,1,0.5], 'valid')
+        array([ 2.5])
+ 
+3) usage in stocks-related computation in Python
+    ex. in computing sma(simple moving average):
+          weights = np.ones(N)/N
+          c = np.loadtxt('data.csv', delimiter=',', usecols=(6,), unpack=True)
+          sma = np.convolve(weights, c)[N-1: -N+1]
+          
+
+# ref:  https://stackoverflow.com/questions/20036663/understanding-numpys-convolve
+# ref:  https://en.wikipedia.org/wiki/Convolution
