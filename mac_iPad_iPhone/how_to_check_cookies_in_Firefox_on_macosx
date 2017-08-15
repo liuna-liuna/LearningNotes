@@ -1,0 +1,7 @@
+#
+# how to check cookies in Firefox on mac os x
+#
+open a webpage through firefox -> primary options at the most right of path menu
+  -> Network -> Show Cookies -> search the webpage url -> get its cookie.
+  
+# ref:  http://jingyan.baidu.com/article/0320e2c1c299011b87507bf4.html
