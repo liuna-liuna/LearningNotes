@@ -1,0 +1,101 @@
+#
+# brief_summary_of_numpy_methods
+#
+1) for array:
+    a = np.arange(10)
+    a = np.array([1, 2, 3]), a = np.array([[1, 2, 3], [4 ,5 6]]), a = np.array([1, 2], dtype=int),
+    b = a.reshape(2, 3), a.shape = (2, 3), a.resize(2, 3)
+    hstack((a, b)) == concatenate((a, b), axis=1)
+    vstack((a, b)) == concatenate((a, b), axis=0)
+    hsplit, vsplit, dsplit, split
+    a.tolist()
+    np.msort(a), np.sort(a), np.argsort(a)
+    np.sort_complex(a)
+    indices = np.searchsorted(a, b), np.insert(a, indices, b)
+    a.astype(int)
+    np.where(cond), np.argwhere(cond), np.condition(cond), np.extract(cond, a), np.take(a, indices)
+    np.argmin(a), np.argmax(a)
+    np.maximum(a, b, c), np.minimum(a, b, c)
+    a.fill(b)
+    np.exp(a)
+    np.arange(start, end_exclude, step), np.linspace(start, end_include, N)
+    np.mod(a, n) == a%n, np.fmod(a, n)
+    np.mean(a), np.average(n)
+    np.pth(a) = max(a) - min(a)
+    np.var(a), np.std(a), np.sqrt(a),
+    np.log(a),
+    np.dot(a),
+    np.clip(x, y),
+    a.prod(), a.cumprod(),
+    np.sign(a), np.piecewise(a, [cond], [return]),
+    np.array_equal(a, b),
+    np.isreal(a),
+    np.trim_zeros(a),
+    np.rint(a).
+    
+2) attributes of array:
+    a.ndim, 
+    a.shape,
+    a.size,
+    a.itemsize,
+    a.nbytes,
+    a.flat = 1,
+    a.T,
+    a.dtype.
+    
+3) for matrix:
+    np.mat('1 2 3; 4 5 6'), np.matrix, np.bmat('A B', 'A B'),
+    np.eye(n),
+    np.zeros((2, 3)), np.ones((2, 3)), np.empty(...),
+    np.zeros_like(a, dtype=int), np.ones_like(...), np.empty_like(...),
+    np.random.rand(3, 2),
+    a.T, a.I, a.trace(), a.diagonal(),
+    np.dot(a, b), np.inner(a, b), np.outer(a, b),
+    np.cov(x), np.cov(x, y),
+    np.corrcoef(x, y).
+    
+4) for polymonial:
+    poly = np.polyfit(x, a, n),
+    np.polyder(poly),
+    np.deriv(m=n),
+    np.roots(poly),
+    np.polyval(poly, x[n]),
+    np.polysub(a, b).
+    
+5) for linear algebra:
+    a = np.linalg.lstsq(x, b) <=> a*x=b,
+    np.linalg.inv(A), np.linalg.pinv(A),
+    np.linalg.det(A),
+    np.linalg.solve(A, b) <=> Ax=b,
+    np.linalg.eigvals(A),
+    np.linalg.eig(A),
+    np.linalg.svd(A).
+    
+6) for probability distribution:
+    np.random.binomial(n, p, size=N),
+    np.random.hypergeometric(ngood, nbad, nsample, size=N),
+    np.random.norm(mean, std, N),
+    np.random.lognorm(mean, sigma, N).
+    
+7) for matplotlib:
+    import matplotlib as plt
+    plt.plot(x, y), plt.subplot(abc), plt.xlabel('x'), plt.ylable('y(x)'), plt.title('Demo'),
+    plt.hist(a, b),
+    plt.scatter(x, y, c=plt.cm.spring, s=x*10),
+    fig = plt.figure(), ax = fig.add_subplot(abc),
+    ax.xaxis.set_major_locator(...),
+    ax.annotate(...),
+    plt.grid(True),
+    plt.legend(loc='best', fancybox=True),
+    plt.semilogx(), plt.semilogy(), plt.loglog().
+    
+    
+    
+    
+    
+    
+
+# ref:   numpy基本方法总结 http://blog.csdn.net/blog_empire/article/details/39298557
+# ref:   numpy矩阵处理     http://blog.csdn.net/blog_empire/article/details/39207687
+
+
