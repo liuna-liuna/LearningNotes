@@ -1,0 +1,52 @@
+#
+# how to install matplotlib.finance or mpl_finance (after matplotlib 2.0)
+#
+1) for matplotlib version < 2.0:
+    sudo pip install matplotlib
+    import matplotlib as mpl
+    mpl.finance.quotes_historical_yahoo_ohlc(...)
+    
+2) for matplotlib version > 2.0, .finance is in an independent module mpl_finance:
+    download form https://github.com/matplotlib/mpl_finance
+    python setup.py install
+    import mpl_finance
+    mpl_finance.quotes_historical_yahoo_ohlc(...)
+    
+3) if meeting an exception 'ImportError: cannot import name _thread' in 'from six.moves import _thread'
+    in import matplotlib:
+    Phenomenon:
+      >>> import matplotlib
+          Traceback (most recent call last):
+            File "/my/path/to/script/my_script.py", line 15, in <module>
+              import matplotlib.pyplot as plt
+            File "/Library/Python/2.7/site-packages/matplotlib/pyplot.py", line 34, in <module>
+              from matplotlib.figure import Figure, figaspect
+            File "/Library/Python/2.7/site-packages/matplotlib/figure.py", line 40, in <module>
+              from matplotlib.axes import Axes, SubplotBase, subplot_class_factory
+            File "/Library/Python/2.7/site-packages/matplotlib/axes/__init__.py", line 4, in <module>
+              from ._subplots import *
+            File "/Library/Python/2.7/site-packages/matplotlib/axes/_subplots.py", line 10, in <module>
+              from matplotlib.axes._axes import Axes
+            File "/Library/Python/2.7/site-packages/matplotlib/axes/_axes.py", line 22, in <module>
+              import matplotlib.dates as _  # <-registers a date unit converter
+            File "/Library/Python/2.7/site-packages/matplotlib/dates.py", line 126, in <module>
+              from dateutil.rrule import (rrule, MO, TU, WE, TH, FR, SA, SU, YEARLY,
+            File "/Library/Python/2.7/site-packages/dateutil/rrule.py", line 14, in <module>
+              from six.moves import _thread
+          ImportError: cannot import name _thread
+          
+      Fix:
+          sudo pip uninstall python-dateutil
+          sudo pip install python-dateutil==2.2
+          # or
+          pip install --ignore-installed six
+          
+
+# ref:  Candlestick OCHL graph  https://stackoverflow.com/questions/42373104/candlestick-ochl-graph
+# ref:  matplotlib on github  https://github.com/matplotlib/matplotlib
+# ref:  mpl_finance on github  https://github.com/matplotlib/mpl_finance
+# ref:  Matplotlib issue on OS X (“ImportError: cannot import name _thread”)  
+#         https://stackoverflow.com/questions/27630114/matplotlib-issue-on-os-x-importerror-cannot-import-name-thread/27634264
+
+
+
