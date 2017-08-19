@@ -1,0 +1,19 @@
+#
+# functions for finance in numpy
+#
+1) functions for finance in numpy:
+    fv,
+    pv,
+    npv,
+    pmt,
+    nper,
+    rate,
+    irr,
+    mirr.
+
+2) functions in matplotlib.finance or mpl_finance (after matplotlib 2.0):
+    quotes = quotes_historical_yahoo(symbol, startdate, enddate),
+    candlestick(ax, quotes).
+    
+# ref:  Python数据分析_Numpy中的金融函数  http://www.jianshu.com/p/9ad131856078
+# ref:  matplotlib.finance      http://matplotlib.org/api/finance_api.html
