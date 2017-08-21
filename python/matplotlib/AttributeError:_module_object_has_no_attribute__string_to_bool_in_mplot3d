@@ -1,0 +1,53 @@
+#
+# how to fix AttributeError: 'module' object has no attribute '_string_to_bool' in mplot3d
+#
+1) Phenomenon:
+    from mpl_toolkits.mplot3d import Axes3D
+    from matplotlib import cm
+    import numpy as np
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    u = np.linspace(-1, 1, 100)
+    x, y = np.meshgrid(u, u)
+    z = x**2 + y**2
+    ax.plot_surface(x, y, z, rstride=4, cstride=4, cmap=cm.YlGnBu_r)
+    plt.show()
+    
+    
+      Traceback (most recent call last):
+        File "./3d.py", line 11, in <module>
+          ax = fig.add_subplot(111, projection='3d')
+        File "/Library/Python/2.7/site-packages/matplotlib/figure.py", line 1021, in add_subplot
+          a = subplot_class_factory(projection_class)(self, *args, **kwargs)
+        File "/Library/Python/2.7/site-packages/matplotlib/axes/_subplots.py", line 73, in __init__
+          self._axes_class.__init__(self, fig, self.figbox, **kwargs)
+        File "/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/mpl_toolkits/mplot3d/axes3d.py", line 91, in __init__
+          *args, **kwargs)
+        File "/Library/Python/2.7/site-packages/matplotlib/axes/_base.py", line 551, in __init__
+          self.cla()
+        File "/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/mpl_toolkits/mplot3d/axes3d.py", line 1045, in cla
+          Axes.cla(self)
+        File "/Library/Python/2.7/site-packages/matplotlib/axes/_base.py", line 1068, in cla
+          self.grid(False)  # Disable grid on init to use rcParameter
+        File "/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/mpl_toolkits/mplot3d/axes3d.py", line 1256, in grid
+          self._draw_grid = maxes._string_to_bool(b)
+      AttributeError: 'module' object has no attribute '_string_to_bool'
+
+
+    
+2) Root-Cause:
+    "in older release the toolkits were stored in a seperate folder mpl_toolkits 
+    which have since been moved into the matplotlib folder. 
+    Thus this version is not overwritten when installing a new version of matplotlib 
+    and wrongly picked up when importing the toolkits."
+
+3) Fix / Workaround:
+    
+    " 1) rename (or delete) the folder mplot3d (so matplotlib thinks it's not there):
+        /System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/mpl_toolkits/mplot3d-old
+
+      2) update matplotlib with specifiying mplot3d:
+        pip install --upgrade matplotlib[mplot3d]
+
+# ref:  https://stackoverflow.com/questions/25383698/error-string-to-bool-in-mplot3d-workaround-found/26880260
