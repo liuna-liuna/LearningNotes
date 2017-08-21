@@ -6,7 +6,7 @@
     import matplotlib.pyplot as plt
     from matplotlib.dates import MonthLocator, DayLocator, DateFormatter
     
-        plt.plot(x, y), plt.subplot(abc), plt.xlabel('x'), plt.ylable('y(x)'), plt.set_title('Demo'),
+        plt.plot(x, y), plt.subplot(abc), plt.xlabel('x'), plt.ylable('y(x)'), plt.title('Demo'),
         plt.hist(a, b),
         plt.scatter(x, y, c=plt.cm.spring, s=x*10, alpha=0.5),
         fig = plt.figure(), ax = fig.add_subplot(abc),
@@ -14,6 +14,7 @@
         mon_locator = MonthLocator, day_locator = DayLocator, major_formatter = DateFormatter('%b %Y')
         ax.xaxis.set_major_locator(mon_locator), ax.xaxis.set_minor_locator(day_locator), 
         ax.xaxis.set_major_formatter(major_formatter),
+        ax.set_title('Demo1')
         fig.autofmt_xdate(),
         
         ax.annotate('x', xy=xpoints, xytext=(-50, 30), textcoords='offset point', arrowprops=dict(arrowstyle='->')),
