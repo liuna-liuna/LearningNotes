@@ -1,0 +1,106 @@
+#
+# brief summary of matplotlib in python
+#
+1) brief summary of matplotlib.pyplt:
+
+    import matplotlib.pyplot as plt
+    from matplotlib.dates import MonthLocator, DayLocator, DateFormatter
+    
+        plt.plot(x, y), plt.subplot(abc), plt.xlabel('x'), plt.ylable('y(x)'), plt.set_title('Demo'),
+        plt.hist(a, b),
+        plt.scatter(x, y, c=plt.cm.spring, s=x*10, alpha=0.5),
+        fig = plt.figure(), ax = fig.add_subplot(abc),
+        
+        mon_locator = MonthLocator, day_locator = DayLocator, major_formatter = DateFormatter('%b %Y')
+        ax.xaxis.set_major_locator(mon_locator), ax.xaxis.set_minor_locator(day_locator), 
+        ax.xaxis.set_major_formatter(major_formatter),
+        fig.autofmt_xdate(),
+        
+        ax.annotate('x', xy=xpoints, xytext=(-50, 30), textcoords='offset point', arrowprops=dict(arrowstyle='->')),
+        plt.grid(True),
+        plt.legend(loc='best', fancybox=True),
+        plt.semilogx(), plt.semilogy(), plt.loglog(),
+        plt.fill_between(x, y1, y, where=y>y.mean(), alpha=0.4).
+
+2) of matplotlib.finance ( or mpl_finance after matplotlib 2.0):
+      import mpl_finance 
+      import datetime
+      
+      # [Not works since yahoo API changed.] today = datetime.date.today()
+      # [Not works since yahoo API changed.] quotes = mpl_finance.quotes_historical_yahoo_ohlc('DISH', 
+      # [Not works since yahoo API changed.]         (today.year-1, today.month, today.day), today)
+      # [Not works since yahoo API changed.] mpl_finance.candlestick_ohlc(ax, quotes)
+
+      instead use following commands:
+          import requests, time
+          import pandas as pd
+          import matplotlib.pyplot as plt
+          
+          def datetime_timestamp(dt):
+              ts = time.mktime(time.strptime(dt, '%Y-%m-%d %H:%M:%S'))
+              return str(int(ts))
+           
+          begin = datetime_timestamp('2016-08-19 09:00:00')
+          end = datetime_timestamp('2017-08-19 09:00:00')
+          cookies = {*:***}
+          crumb = '***'
+          url1 = 'https://query1.finance.yahoo.com/v7/finance/download/IBM?period1=' + begin + '&period2='
+                  + end + '&interval=1d&events=history&crumb=' + crumb
+          s = requests.Session()
+          response = s.get(url1, cookies=cookies, verify=False)
+          
+          with open('IBM.csv', 'w') as f:
+            f.write(response.text)
+            
+          es = pd.read_csv('IBM.csv', index_col=0, parse_dates=True, sep=',', dayfirst=True) 
+          data = pd.DataFrame({IBM: es['Adj Close][:]}) 
+          data.info()
+          
+          data.plot(subplots=True, grid=True, styple='b', figsize=(8, 6))
+          plt.show()
+      
+3) for 3D of mpl_toolkits.mplot3d:
+        from mpl_toolkits.mplot3d import Axes3D
+        import matplotlib.pyplot as plt
+        import numpy as np
+        from matplotlib import cm
+        
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        u = np.linspace(-1, 1, 100)
+        x, y = np.meshgrid(u, u)
+        z = x**2 + y**2
+        ax.plot_surface(x, y, z, rstride=4, cstride=4, cmap=YlGnBu_r)
+        plt.show()
+        
+        ax.contourf(x, y, z).
+        
+4) for animation of matplotlib.animation:
+        import matplotlib.animation as animation
+        import matplotlib.pyplot as plt
+        import numpy as np
+        
+        N = 10
+        x, y, z = np.random.rand(N), np.random.rand(N), np.random.rand(N)
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        circles, triangles, dots = ax.plot(x, 'ro', y, 'g^', z, 'b.')
+        ax.set_ylim(0, 1)
+        plt.axis('off')
+        
+        def update(data):
+            circles.set_ydata(data[0])
+            triangles.set_ydata(data[1])
+            return circles, triangles
+          
+        def generate():
+            while True: yield np.random.rand(2, N)
+            
+        anim = animation.FuncAnimation(fig, update, generate, interval=150)
+        plt.show()
+
+# ref:  【python数据挖掘课程】十五.Matplotlib调用imshow()函数绘制热图   
+#         http://blog.csdn.net/Eastmount/article/details/73392106?locationNum=5&fps=1
+# ref:   matplotlib 画图  http://blog.csdn.net/blog_empire/article/category/2556533
+# ref:    matplotlib.pyplot.hist parameters   http://blog.csdn.net/claroja/article/details/72910163
+
