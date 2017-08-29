@@ -1,0 +1,15 @@
+#
+# how to install mongodb on Mac OS X
+#
+1) download .tgz
+    curl -O http://downloads.mongo.org/osx/mongodb-osx-x86_64_2.6.3.tgz
+   decompress it:
+    tar -xvzf mongodb-osx-x86_64_2.6.3.tgz
+   create db path:
+    mkdir data/db
+   start the db:
+    ./mongod --dbpath $path_to_db
+   open a mongodb shell:
+    ./mongo
+
+# ref:  http://blog.csdn.net/lxd875697126/article/details/37660449
