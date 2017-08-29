@@ -1,0 +1,23 @@
+#
+# how to fix 'str object has no attribute css_to_xpath Exception'
+#
+1) Phenomenon:
+    Exception: str object has no attribute css_to_xpath Exception
+
+2) Root cause:
+    'with lxml 2.4 (not released yet) when lxml.cssselect becomes a thin wrapper around cssselect. 
+    The CSSSelector class and HtmlElement.cssselect method remain for compatibility.'
+    
+3) Fix:
+    usage example:
+        import lxml.html, lxml.cssselect
+        
+        tree = lxml.html.fromstring(html)
+        row = []
+        for f in FIELDS:
+            selector = tree.cssselect(r'table > tr#places_%d__row > td.w2p_fw' % f)
+            if selector:
+                row.append(selector[0].text_content)
+        return row
+    
+# ref:  https://stackoverflow.com/questions/8458052/convert-css-selector-to-xpath-in-python
