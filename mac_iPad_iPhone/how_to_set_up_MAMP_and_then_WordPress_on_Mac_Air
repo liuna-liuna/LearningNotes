@@ -1,0 +1,146 @@
+#
+# how to set up MAMP and then WordPress
+#
+1) set up MAMP (Mac + Apache + MySql + Php)
+    1.1) Mac: Mac Air, OS X 10.10.5
+    1.2) Apache: part of Mac OS already.
+          usage:  apachectl start
+                  apachectl stop
+                  apachectl restart
+          validate:
+                  input 'localhost' in browser, it should show 'It works!'.
+          enable php module:
+                  in /etc/apache2/httpd.conf, uncomment:
+                        LoadModule php5_module libexec/apache2/libphp5.so
+          [TO BE VALIDATED] validate:
+                  新建一个index.php,里面echo phpinfo() ，
+                  input 'localhost' in browser, it should show 'PHP Version ...'.
+                  
+    1.3) MySql: install and configure.
+            install:
+                brew install mysql
+                rm TMPDIR
+                mysql_install_db --verbose --user=`whoami` --basedir="$(brew --prefix mysql)" --datadir=/usr/local/mysql/data
+                chown -R /usr/local/var/mysql/
+            start mysql:
+                mysql.server start
+                # or
+                mysqld_safe --user=mysql --skip-grant-tables --skip-networking &
+            the configuration is saved in /etc/my.cnf.
+            
+            change password of root:
+                # mysqladmin -u root password 'xxx' 
+                # it didn't work since on my mac air,
+                
+                mysql -u root -p # (default password is empty, so click 'enter')
+                mysql> set password for 'root'@'localhost'=PASSWORD('xxx')
+                # or   create user 'XXX'@'localhost' identified by PASSWORD('xxx')
+                # it didn't work since on my mac air, mysql is starte with --skip-grant-tables.
+                
+                both got exception:
+                    ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option
+                    so it cannot execute this statement
+
+            how to change password of root when --skip-grant-tables?
+            Method1.    mysql> use mysql;
+                        mysql> flush privileges;
+                        mysql> create user ...;
+                        it works.
+                        
+                        # or
+                        mysql> update mysql.user set authentication_string=PASSWORD('xxx') where user='root' and host='localhost';
+                        mysql> flush privileges;
+                        
+                        # then restart mysql
+                        
+                        double check users are created in mysql.user:
+                        mysql> select * from mysql.user;
+                        # or better:
+                        mysql> select user, host, authentication_string from mysql.user;
+                        # can check mysql.user.schema first:
+                        mysql> desc mysql.user
+                        
+                        # 'password' field is obsolete in mysql5.7, use 'authentication_string' instead.
+                        
+            Method2.    stop mysql and restart it normally, check it starts without --skip-grant-tables.
+           
+           
+            could also use GUI tool ex. phpmyadmin to manage databases:
+                    install:
+                        brew install phpmyadmin
+                    configure:
+                        in /usr/local/etc/phpmyadmin.config.inc.php:
+                        # cp /usr/local/Cellar/phpmyadmin/4.7.4/share/phpmyadmin/config.sample.inc.php
+                        #       to phpmyadmin.config.inc.php,
+                        from:   $cfg['Servers'][$i]['host'] = 'localhost';
+                        to:     $cfg['Servers'][$i]['host'] = '127.0.0.1';
+                        
+                    validate:
+                        open 'http://127.0.0.1/phpmyadmin/index.php' in browser,
+                        login with user/password, can manage all databases.
+                        
+                        
+    1.4) Php: part of Mac OS already, 
+              but it's version 5.5, update it to 5.6.
+                  brew tap homebrew/dupes
+                  brew tap homebrew/versions
+                  brew tab homebrew/homebrew-php
+                  brew options php56
+                  brew install php56
+                  
+              switch to use php56 instead of php55:
+                  in /etc/profile:
+                    export $PATH='$(brew --prefix homebrew/php/php56)/bin:$PATH'
+                  or in ~/.bashrc:
+                    and in ~/.bash_profile:
+                        source ~/.bashrc
+            
+
+2) set up WordPress
+        download WordPress from https://cn.wordpress.org/releases/
+        decompress wordpress-4.8-zh_CN.tar.gz to Apache webserver folder, get /Library/WebServer/Documents/wordpress/.
+
+3) connect WordPress to MySql db
+    3.1) create a db for wordpress
+        mysql> create database wordpress_db;
+        # if meeting 'ERROR 1007 (HY000): Can't create database (dbName); database exists' exception, first
+        # mysql> drop database wordpress_db;
+        mysql> show databases;
+    3.2) configure wp-admin/wp-config.php under /Library/WebServer/Documents/wordpress/:
+        define('DB_NAME', 'wordpress_db');
+        define('DB_USER', 'root');
+        define('DB_PASSWORD', 'xxx');
+        define('DB_HOST', '127.0.0.1');
+        $table_prefix = 'wp_wordpress';
+        # if meeting exception 'DB connection refused':
+        #   check DB_USER and DB_PASSWORD is correct and also no --skip-grant-tables in mysql process,
+        #   check DB_HOST is set to '127.0.0.1' instead of 'localhost'.
+        
+4) register to WordPress and add blogs.
+        open 'http://127.0.0.1/wordpress/wp-admin/index.php' in browser,
+        wordpress homepage will be shown.
+        go on with registration and adding blogs.
+        
+=> Done.
+
+# ref:  mac的homebrew命令详解&全部选项翻译 http://blog.csdn.net/beyond__devil/article/details/52649362
+# ref:  http://blog.csdn.net/izayl/article/details/49248939
+# ref:  MacbookPro 安装完mysql后，登录出现错误error: 'Access denied for user 'root'@'localhost' (using password: NO)'
+#           http://blog.csdn.net/u010260891/article/details/54136877
+# ref:  http://www.linuxidc.com/Linux/2015-04/116347.htm
+# ref:  http://blog.csdn.net/lwei_998/article/details/8787696
+# ref:  http://fangwei009.blog.51cto.com/5234706/1680144
+# ref:  http://www.cnblogs.com/ycxyyzw/p/5216288.html
+# ref:  https://unix.stackexchange.com/questions/58655/turn-off-skip-grant-tables-in-mysql
+# ref:  https://alvinalexander.com/blog/post/mysql/show-users-i-ve-created-in-mysql-database
+# ref:  https://cn.wordpress.org/releases/
+# ref:  http://www.errorbase.net/36/error-1007-hy000-cant-create-database-dbname-database-exists
+# ref:  LAMP+WordPress的搭建  http://xiao106347.blog.163.com/blog/static/215992078201452922522733/
+# ref:  wordpress安装“数据库连接错误”的一解决方法  http://jingyan.baidu.com/article/fdbd4277f303c2b89e3f480e.html
+# ref:  建立数据库连接时出错-解决方案 http://www.codeweblog.com/wordpress-%E5%BB%BA%E7%AB%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%97%B6%E5%87%BA%E9%94%99-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/
+# ref:  解决phpmyadmin mysqli_real_connect(): (HY000/2002): No such file or directory错误   
+#           http://zixuephp.net/article-263.html
+
+
+
+
