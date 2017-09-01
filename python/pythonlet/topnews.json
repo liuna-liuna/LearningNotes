@@ -1,0 +1,56 @@
+{
+
+    "status": "ok",
+    "source": "techcrunch",
+    "sortBy": "top",
+    -
+    "articles": [
+        -
+        {
+            "author": "Khaled \"Tito\" Hamze",
+            "title": "Crunch Report",
+            "description": "Your daily roundup of the biggest TechCrunch stories and startup news.",
+            "url": "https://techcrunch.com/video/crunchreport/",
+            "urlToImage": "https://tctechcrunch2011.files.wordpress.com/2015/03/tccrshowogo.jpg?w=500&h=200&crop=1",
+            "publishedAt": "2017-08-29T16:13:36Z"
+        },
+        -
+        {
+            "author": "Megan Rose Dickey",
+            "title": "Here’s what happened at Uber today",
+            "description": "It's a brand new day for Uber, the transportation startup that has been caught up in a whirlwind of drama. At an all-hands meeting today, Uber employees met..",
+            "url": "https://techcrunch.com/2017/08/30/heres-what-happened-at-uber-today/",
+            "urlToImage": "https://tctechcrunch2011.files.wordpress.com/2017/08/gettyimages-612529392.jpg",
+            "publishedAt": "2017-08-30T20:27:33Z"
+        },
+        -
+        {
+            "author": "Brian Heater, Khaled \"Tito\" Hamze",
+            "title": "LeEco’s Silicon Valley offices are a virtual ghost town",
+            "description": "Last April, LeEco heralded the opening of a new Silicon Valley office in San Jose. The new building would be the home of the company’s US operations, with..",
+            "url": "https://techcrunch.com/2017/08/30/leecos-silicon-valley-offices-are-a-virtual-ghost-town/",
+            "urlToImage": "https://tctechcrunch2011.files.wordpress.com/2017/08/image_uploaded_from_ios_1024-2.jpg",
+            "publishedAt": "2017-08-30T19:53:50Z"
+        },
+        -
+        {
+            "author": "Ingrid Lunden",
+            "title": "Tech industry and comp-sci majors are highest earners, says LinkedIn job survey",
+            "description": "The vast quantities of money raised by startups and the stratospheric share prices of publicly-traded tech giants perhaps speak for themselves, but a survey..",
+            "url": "https://techcrunch.com/2017/08/30/tech-industry-and-comp-sci-majors-are-highest-earners-says-linkedin-job-survey/",
+            "urlToImage": "https://tctechcrunch2011.files.wordpress.com/2015/03/helpwanted-e1426002567534.jpg",
+            "publishedAt": "2017-08-30T13:16:44Z"
+        },
+        -
+        {
+            "author": "Matt Burns",
+            "title": "Apple to remove home button in upcoming high-end iPhone, report says",
+            "description": "The home button is headed to the trash bin, if a report by Bloomberg is to be believed. According to the report, Apple is ditching the button to make room..",
+            "url": "https://techcrunch.com/2017/08/30/apple-to-remove-home-button-in-upcoming-high-end-iphone-report-says/",
+            "urlToImage": "https://tctechcrunch2011.files.wordpress.com/2016/05/shutterstock_144159337.jpg",
+            "publishedAt": "2017-08-30T12:55:59Z"
+        }
+    ]
+
+}
+
