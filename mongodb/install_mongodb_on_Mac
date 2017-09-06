@@ -1,0 +1,22 @@
+#
+# install mongodb on Mac
+#
+1) brew update
+   brew install mongodb
+   
+   mongod --config /usr/local/etc/mongod.config
+   
+   >./mongo
+   >db.test.insert({'name': 'test'})
+   WriteResult({ "nInserted" : 1 })
+   > db.test.find()
+   { "_id" : ObjectId("59af5c164e0134f6ff726d89"), "name" : "test" }
+
+   exit
+   
+2) by default, dbpath is /data/db, 
+    configurations can be done in /usr/local/etc/mongod.config.
+   
+# ref:  Mac 上安装MongoDB  http://www.jianshu.com/p/dd0c39bf7be4
+# ref:  Install MongoDB Community Edition on OS X   https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/
+
