@@ -1,0 +1,92 @@
+#
+# install mysql on mac and use mysql in python
+#
+1) install
+    brew install mysql
+    mysql_install_db --verbose --user=`whoami` --basedir='$(brew --prefix mysql)' --datadir=/usr/local/mysql/data
+    chown -R /usr/local/var/mysql
+    
+    # ref:  https://github.com/liuna-liuna/LearningNotes/blob/master/mac_iPad_iPhone/how_to_set_up_MAMP_and_then_WordPress_on_Mac_Air
+    
+2) configure
+    /etc/my.cnf:
+        [mysql]
+        default-character-set=utf8
+        
+        [mysqld]
+        # Remove leading # and set to the amount of RAM for the most important data
+        # cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.
+        innodb_buffer_pool_size = 128M
+        
+        # These are commonly set, remove the # and set as required.
+        character-set-server=utf8
+        basedir = /usr/local/mysql
+        datadir = /usr/local/mysql/data
+        
+        sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES 
+    
+3) start
+    3.1) mysql.server start
+         # or
+         mysqld_safe --skip-grant-tables --no-networking &
+    3.2) mysql -uroot -p
+    ...
+    
+4) communicate with mysql in python
+    4.1) install mysql-connector-python
+            # or
+         MySQL-python
+         
+         > brew install mysql-connector-c
+            # o
+         > sudo pip install MySQL-python
+         # ref:     使用MySQL     https://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000
+                                    /001391435131816c6a377e100ec4d43b3fc9145f3bb8056000
+         # ref:     python使用mysql数据库   http://www.cnblogs.com/fnng/p/3565912.html
+          
+    4.2)    in .py:
+        import MySQLdb, time
+        
+        conn = MySQLdb.connect(host=..., port, user, passwd, db='testdb', charset='utf8')
+        cu = conn.cursor(MySQLdb.cursors.DictCursor)
+        sql = 'drop table if exists test'
+        cu.execute(sql)
+        
+        sql = 'create table if not exists test(name varchar(128), created int(10))'
+        cu.execute(sql)
+        
+        sql = 'insert table test(name, created) values(%s, %s)'
+        param = ('aaa', int(time.time()))
+        n = cu.execute(sql, param)
+        print('inserted {0} records'.format(n))
+        ...
+        
+        # ref:  python下的MySQLdb使用   http://blog.csdn.net/vincent_czz/article/details/7697039/
+        
+5) mysql vs. sqlite3:
+        same:   2 objects: connection, cursor
+        diff:   mysql: use '%s' as placeholder while sqlite3 '?'
+                MySQLdb: cu = conn.cursor(cursormode=MySQLdb.cursors.DictCursor)
+                    while
+                sqlite3: cu = conn.cursor(), cu.row_factory=Sqlite3.Row
+                
+                # ref:  sqlite3 - DB                http://www.360doc.com/content/11/1102/10/4910_161017252.shtml
+                # ref:  Python sqlite3.Row Examples https://www.programcreek.com/python/example/3926/sqlite3.Row
+ 
+    mysql.connector vs. MySQLdb:
+        mysql.connector: conn = mysql.connector.connect(user='...', password='...', database='...', useunicode=True)
+        MySQLdb:         conn = MySQLdb.connect(host='...', port='...', user='...', passwd='...', codeset='utf8')
+        
+6) mysql sql_mode:
+    in /etc/my.conf: 
+        sql_mode = NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+    
+    # ref:  mysql sql_mode 之 NO_ENGINE_SUBSTITUTION http://www.cnblogs.com/JiangLe/p/5621856.html
+    # ref:  MySQL sql_mode说明    https://segmentfault.com/a/1190000005936172
+
+7) detailed mysql exception error message      
+    # ref:  B.3 Server Error Codes and Messages https://dev.mysql.com/doc/refman/5.5/en/error-messages-server.html
+    # ref:  B.4 Client Error Codes and Messages https://dev.mysql.com/doc/refman/5.5/en/error-messages-client.html
+
+          
+    
