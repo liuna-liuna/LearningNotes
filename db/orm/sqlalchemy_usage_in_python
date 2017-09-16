@@ -1,0 +1,33 @@
+#
+# sqlalchemy usage in python
+#
+orm framework maps a table in db to a class in orm,
+              maps a record to an instance.
+
+3 ways to use sqlalchemy:
+    1) raw sql
+    2) sql expression
+    3) orm
+
+
+2 main components:
+   1) SQLAlchemy ORM
+   2) SQLAlchemy Core
+       Schema/Types, SQL Expression Language, Engine
+                                            Connection Pooling, Dialect
+   3) DBAPI
+
+2 ways to connect to db in sqlalchemy:
+    1) Mapper
+    2) declarative_base
+
+# ref:  SQLAlchemy技术文档（中文版）    http://www.cnblogs.com/iwangzc/p/4112078.html
+# ref:  ORM框架SQLAlchemy使用学习   http://blog.csdn.net/fgf00/article/details/52949973
+# ref:  Python SQLAlchemy基本操作和常用技巧（包含大量实例,非常好）  http://www.jb51.net/article/49789.htm
+# ref:  SqlAlchemy个人学习笔记完整汇总  http://blog.csdn.net/mmx/article/details/48064109
+# ref:  SQLAlchemy学习教程 - mapper用法      http://blog.sina.com.cn/s/blog_12b66a6db0102wa7v.html
+# ref:  SQLAlchemy最新权威详细教程  https://wenku.baidu.com/view/a67065264a35eefdc8d376eeaeaad1f3469311f4.html
+# ref:  SQLAlchemy 学习笔记     http://blog.csdn.net/u011521019/article/details/50793996
+# ref:  [Pylons] SQLAlchemy起步 - IV. Object Relational Mapper   http://www.blogjava.net/sean/archive/2009/01/27/252609.html
+# ref:  使用SQLAlchemy  https://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/0014021031294178f993c85204e4d1b81ab032070641ce5000
+ 
