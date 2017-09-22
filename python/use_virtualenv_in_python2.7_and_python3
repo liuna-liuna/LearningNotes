@@ -63,3 +63,128 @@ py2venv1
 
 (py2venv1) L**:virtenv l**$ rmvirtualenv
 
+4) output of brew install python3
+    Updating Homebrew...
+    ==> Auto-updated Homebrew!
+    Updated 2 taps (homebrew/core, homebrew/php).
+    ==> New Formulae
+    azure-cli@1            bettercap              configen               json-table             liquid-dsp             pdfsandwich            pony-stable
+    ==> Updated Formulae
+    abcm2ps                          elasticsearch                    ibex                             mercurial                        ruby
+    abcmidi                          elvish                           imagemagick                      meson                            ruby-build
+    activemq-cpp                     emacs                            imagemagick@6                    metricbeat                       ruby@2.2
+    aespipe                          emp                              ios-sim                          micro                            ruby@2.3
+    akamai                           entr                             iozone                           mikutter                         saldl
+    angular-cli                      erlang                           ipython                          mongo-c-driver                   saltstack
+    apache-opennlp                   evince                           ipython@5                        mongodb ✔                        sbt
+    app-engine-go-64                 exim                             ired                             mongoose                         scons
+    app-engine-java                  faas-cli                         iso-codes                        mpv                              sdb
+    app-engine-python                fd                               jasper                           mycli                            sfcgal
+    asdf                             ffmpeg                           jenkins                          ncmpc                            shadowsocks-libev
+    at-spi2-atk                      fibjs                            jenkins-lts                      nghttp2                          shairport-sync
+    at-spi2-core                     file-roller                      jetty                            ngspice                          shared-mime-info
+    atk                              filebeat                         jetty-runner                     no-more-secrets                  skinny
+    awscli                           firebase-cli                     jhipster                         node                             ssdeep
+    axel                             flow                             jpeg-turbo                       node-build                       streamlink
+    azure-cli                        fluent-bit                       jruby                            nomad                            syncthing
+    bandcamp-dl                      folly                            jsdoc3                           notmuch                          szip
+    baresip                          fontconfig                       jsonschema2pojo                  nspr                             taylor
+    basex                            freetds                          juju                             openrtsp                         tbb
+    bento4                           freetype ✔                       jvgrep                           openvdb                          teleport
+    bitrise                          gandi.cli                        kafka                            packer                           termius
+    bltool                           gdk-pixbuf                       khal                             packetbeat                       terraform
+    brotli                           geckodriver                      kibana                           paket                            terragrunt
+    buku                             git-lfs                          kobalt                           pam_yubico                       testssl
+    caddy                            gjs                              kompose                          pandoc-citeproc                  texinfo
+    cake                             glade                            kubernetes-cli                   pc6001vx                         texmath
+    certbot                          glib                             launchdns                        percona-server-mongodb           tgui
+    cgal                             glib-networking                  lbdb                             pgcli                            tmuxinator-completion
+    cgrep                            glibmm                           lean-cli                         pgloader                         todoman
+    chakra                           gmic                             lftp                             pgrouting                        tomcat
+    cheat                            gnupg                            libcouchbase                     pick                             tomcat-native
+    chronograf                       gobject-introspection            libfaketime                      plantuml                         tor
+    cimg                             gofabric8                        libgweather                      poco                             treefrog
+    citus                            gradle                           libhdhomerun                     ponyc                            unbound
+    clhep                            grafana                          libinfinity                      povray                           urh
+    cli53                            grpc                             liblockfile                      pre-commit                       vala
+    clojure                          gsoap                            libmowgli                        protobuf                         valabind
+    closure-compiler                 gtk+3                            libngspice                       pulseaudio                       vault
+    cmake                            gtk-gnutella                     libquicktime                     pwntools                         vim
+    cmark-gfm                        gtkmm3                           libraw                           py2cairo                         vim@7.4
+    cockroach                        gucharmap                        libre                            py3cairo                         webpack
+    conan                            haxe                             libsoup                          pybind11                         wireguard-tools
+    conjure-up                       heroku                           libstfl                          pyenv                            wpscan
+    consul-template                  hexedit                          libuvc                           pygobject3                       xorriso
+    convox                           homebank                         lightning                        pyinvoke                         xtensor
+    cppad                            homebrew/php/composer            llnode                           qpdf                             yarn
+    cputhrottle                      homebrew/php/php-cs-fixer        logstash                         qrencode                         you-get
+    dep                              homebrew/php/php56-opcache       lxc                              rabbitmq                         youtube-dl
+    dhall-json                       homebrew/php/php70-opcache       macvim                           rebar@3                          zsh
+    dlib                             homebrew/php/php71-opcache       magic-wormhole                   redis
+    docfx                            homebrew/php/php72-opcache       media-info                       restund
+    docker-cloud                     hugo                             mediaconch                       rgbds
+    docker-machine-parallels         hyper                            mednafen                         roswell
+    ==> Renamed Formulae
+    fbida -> exiftran                                                                  gnome-icon-theme -> adwaita-icon-theme
+    ==> Deleted Formulae
+    kes
+    
+    ==> Installing dependencies for python3: sqlite, gdbm, xz
+    ==> Installing python3 dependency: sqlite
+    ==> Downloading https://homebrew.bintray.com/bottles/sqlite-3.20.1.yosemite.bottle.tar.gz
+    ######################################################################## 100.0%
+    ==> Pouring sqlite-3.20.1.yosemite.bottle.tar.gz
+    ==> Caveats
+    Homebrew has detected an existing SQLite history file that was created
+    with the editline library. The current version of this formula is
+    built with Readline. To back up and convert your history file so that
+    it can be used with Readline, run:
+    
+      sed -i~ 's/\\040/ /g' ~/.sqlite_history
+    
+      before using the `sqlite` command-line tool again. Otherwise, your
+      history will be lost.
+    
+      This formula is keg-only, which means it was not symlinked into /usr/local,
+      because macOS provides an older sqlite3.
+    
+      If you need to have this software first in your PATH run:
+        echo 'export PATH="/usr/local/opt/sqlite/bin:$PATH"' >> ~/.bash_profile
+    
+        For compilers to find this software you may need to set:
+            LDFLAGS:  -L/usr/local/opt/sqlite/lib
+                CPPFLAGS: -I/usr/local/opt/sqlite/include
+    
+                ==> Summary
+                🍺  /usr/local/Cellar/sqlite/3.20.1: 11 files, 3MB
+                ==> Installing python3 dependency: gdbm
+                ==> Downloading https://homebrew.bintray.com/bottles/gdbm-1.13.yosemite.bottle.tar.gz
+    ######################################################################## 100.0%
+                ==> Pouring gdbm-1.13.yosemite.bottle.tar.gz
+                🍺  /usr/local/Cellar/gdbm/1.13: 19 files, 554.5KB
+                ==> Installing python3 dependency: xz
+                ==> Downloading https://homebrew.bintray.com/bottles/xz-5.2.3.yosemite.bottle.tar.gz
+    ######################################################################## 100.0%
+                ==> Pouring xz-5.2.3.yosemite.bottle.tar.gz
+                🍺  /usr/local/Cellar/xz/5.2.3: 92 files, 1.4MB
+                ==> Installing python3
+                ==> Downloading https://homebrew.bintray.com/bottles/python3-3.6.2.yosemite.bottle.tar.gz
+    ######################################################################## 100.0%
+                ==> Pouring python3-3.6.2.yosemite.bottle.tar.gz
+                ==> /usr/local/Cellar/python3/3.6.2/bin/python3 -s setup.py --no-user-cfg install --force --verbose --install-scripts=/usr/local/Cellar/python3/3.6.2/bin --install-l
+                ==> /usr/local/Cellar/python3/3.6.2/bin/python3 -s setup.py --no-user-cfg install --force --verbose --install-scripts=/usr/local/Cellar/python3/3.6.2/bin --install-l
+                ==> /usr/local/Cellar/python3/3.6.2/bin/python3 -s setup.py --no-user-cfg install --force --verbose --install-scripts=/usr/local/Cellar/python3/3.6.2/bin --install-l
+                ==> Caveats
+                Pip, setuptools, and wheel have been installed. To update them
+                  pip3 install --upgrade pip setuptools wheel
+    
+                  You can install Python packages with
+                    pip3 install <package>
+    
+                    They will install into the site-package directory
+                      /usr/local/lib/python3.6/site-packages
+    
+                      See: https://docs.brew.sh/Homebrew-and-Python.html
+                      ==> Summary
+                      🍺  /usr/local/Cellar/python3/3.6.2: 3,598 files, 56.0MB
+    
