@@ -1,0 +1,65 @@
+#
+# use virtualenv in python2.7 and python3
+#
+1) for python 2.7
+sudo pip install virtualenv
+    
+mkdir /.../virtenv
+    
+virtualenv -p /usr/bin/python2.7 --no-site-packages py2venv
+    Running virtualenv with interpreter /usr/bin/python2.7
+    New python executable in /Volumes/Data/Learning/Python/virtenv/py2venv/bin/python
+    Installing setuptools, pip, wheel...done.
+# default is --system-site-packages
+
+source py2venv/bin/activate
+    (py3venv) L**:virtenv l**$ 
+pip list --format=columns
+    Package    Version
+    ---------- -------
+    pip        9.0.1  
+    setuptools 36.5.0 
+    wheel      0.30.0 
+
+pip install ...
+pip freeze -l > /tmp/requirements.txt
+deactivate
+
+
+2) for python3
+brew install python3
+sudo pip3 install virtualenv virtualenvwrapper
+virtualenv -p /usr/local/bin/python3 --no-site-packages py3venv
+    Running virtualenv with interpreter /usr/local/bin/python3
+    Using base prefix '/usr/local/.../3.6.2/Frameworks/Python.framework/Versions/3.6'
+    New python executable in /.../Python/virtenv/py3venv/bin/python3.6
+    Also creating executable in /.../Python/virtenv/py3venv/bin/python
+    Installing setuptools, pip, wheel...done.
+pip3 list --format=columns
+    Package    Version
+    ---------- -------
+    pip        9.0.1  
+    setuptools 36.5.0 
+    wheel      0.30.0 
+
+
+3) use virtualenvwrapper
+mkvirtualenv -p python2.7 py2venv1
+    Running virtualenv with interpreter /usr/bin/python2.7
+    New python executable in /Users/.../python
+    Installing setuptools, pip, wheel...done.
+    virtualenvwrapper.user_scripts creating /Users/l**/.virtualenvs/py2venv1/bin/predeactivate
+    virtualenvwrapper.user_scripts creating /Users/.../postdeactivate
+    virtualenvwrapper.user_scripts creating /Users/.../preactivate
+    virtualenvwrapper.user_scripts creating /Users/.../postactivate
+    virtualenvwrapper.user_scripts creating /Users/.../get_env_details
+(py2venv1) L**:virtenv l**$ lsvirtualenv
+py2venv1
+========
+
+
+(py2venv1) L**:virtenv l**$ workon
+py2venv1
+
+(py2venv1) L**:virtenv l**$ rmvirtualenv
+
