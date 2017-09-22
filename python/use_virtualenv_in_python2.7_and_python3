@@ -188,3 +188,8 @@ py2venv1
                       ==> Summary
                       🍺  /usr/local/Cellar/python3/3.6.2: 3,598 files, 56.0MB
     
+
+# ref:  用virtualenv管理python3运行环境 http://www.cnblogs.com/hiddenfox/p/virtualenv-python3.html
+# ref:  同时安装Python2和Python3，使之共存  http://www.cnblogs.com/tk2049jq/p/7043480.html
+# ref:  virtualenv  https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432712108300322c61f256c74803b43bfd65c6f8d0d0000#0
+
