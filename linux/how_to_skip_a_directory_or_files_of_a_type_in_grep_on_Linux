@@ -1,0 +1,6 @@
+#
+# how to skip a directory or files of a type in grep on Linux
+#
+1) grep -irw Lock /.../Python --exclude-dir=/.../virtenv --exclude=*.csv
+
+# ref:  http://blog.csdn.net/qiuchangyong/article/details/50907818
