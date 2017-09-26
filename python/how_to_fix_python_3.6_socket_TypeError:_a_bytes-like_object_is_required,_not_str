@@ -1,0 +1,47 @@
+#
+# how to fix python 3.6 socket TypeError: a bytes-like object is required, not 'str'
+#
+1) Phenomenon:
+   $ ./gevent_socket_client.py 
+      data sent to server: This is a gevent socket client test
+      Traceback (most recent call last):
+        File "./gevent_socket_client.py", line 38, in <module>
+          client()
+        File "./gevent_socket_client.py", line 28, in client
+          conn.send(cmd)
+      TypeError: a bytes-like object is required, not 'str'
+
+    source:
+      while True:
+          cmd = input('data sent to server: ').strip()
+          if cmd == '': continue
+          conn.send(cmd)
+
+
+2) in Python3, str and byte string i.e. unicode are two types.
+    In python 3, bytes strings and unicodestrings are now two different types. 
+    Since sockets are not aware of string encodings, they are using raw bytes strings, 
+    that have a slightly differentinterface from unicode strings.
+
+    So, now, whenever you have a unicode stringthat you need to use as a byte string, you need toencode() it. 
+    And whenyou have a byte string, you need to decode it to use it as a regular(python 2.x) string.
+
+    Unicode strings are quotes enclosedstrings. Bytes strings are b”” enclosed strings
+    When you use client_socket.send(data),replace it by client_socket.send(data.encode()). 
+    When you get datausing data = client_socket.recv(512), replace it by data =client_socket.recv(512).decode()
+
+3) fix:   socket.send(data.encode()), socket.recv(1024).decode()
+    while True:
+        cmd = input('data sent to server: ').strip()
+        if cmd == '': 
+            continue
+        elif cmd == 'exit': 
+            break
+        conn.send(cmd.encode())
+        tdata = conn.recv(1024).decode()
+        if tdata == b'':
+            break
+        data.append(tdata)
+    conn.close()
+
+# ref:  http://blog.csdn.net/yexiaohhjk/article/details/68066843
