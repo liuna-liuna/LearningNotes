@@ -115,6 +115,114 @@
 4) coroutine: yield -> @asyncio.coroutine + yield from -> asyncio + await
               -> greenlet -> eventlet, gevent -> gevent.Pool
    4.1) asyncio module
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(coroutine/task/tasks)
+        # or
+        task.add_done_callback(coroutine) (optional) + loop.run_forever()
+        
+        A) asyncio.wait
+          async def run_some_tasks():
+            tasks = [asyncio.ensure_future(coroutine1(N1)),
+                     asyncio.ensure_future(coroutine1(N2)),
+                     ...
+                     ]
+            dones, pendings = await asyncio.wait(tasks)
+            for task in dones:
+              print('[INFO] task result: {0}'.format(task.result()))
+                    
+        B) asyncio.gather
+          async def run_some_tasks():
+            tasks = ...
+            
+            return await asyncio.gather(*tasks)
+            
+          # in def main():
+            results = loop.run_until_complete(run_some_tasks)
+            for res in results:
+              print('[INFO] task result: {0}'.format(res))
+              
+        C) asyncio.Task.all_tasks .cancel
+          # in def main:
+          def main():
+            loop = asyncio.get_event_loop()
+            try:
+              loop.run_until_complete(run_some_tasks)
+            except KeyboardInterrupt as e:
+              asyncio.gather(*asyncio.Task.all_tasks()).cancel()
+              loop.stop()
+              loop.run_for_ever()
+            finally:
+              loop.close()
+   
+        D) as async spider:
+          D.1) asyncio.open_connection
+            async def _curl(url):
+              conn = asyncio.open_connection(url, 80)
+              reader, writer = await conn
+              cmd = 'GET / HTTP/1.1\r\nHost: {0}\r\n\r\n'.format(url)
+              writer.write(cmd.encode('utf-8'))
+              await writer.drain()
+              header = data = []
+              body = []
+              while True:
+                line = await reader.realine()
+                if line = b'':
+                  break
+                try:
+                  line = line.decode('utf-8')
+                  if line == b'\r\n':
+                    data = body
+                  data.append(line.rstrip())
+                except UnicodeDecodeError as e:
+                  print('[ERROR] {0}'.format(e))
+                header_str, body_str = '\n'.join(header), '\n'.join(body)
+                print('[INFO] url {0} gets {1} bytes head, {2} bytes body'.format(url, len(header_str), len(body_str)))
+                return header_str, body_str
+                
+          
+          D.2) asyncio.run_in_executor
+            async def _spider(loop, urls=URLs):
+              futures = [loop.run_in_executor(None, requests.get, url) for url in urls]
+              results, _ = await asyncio.wait(futures)
+              for url, res in zip(urls, results):
+                print('[INFO] url {0} gets {1} bytes data'.format(url, len(res.result().text))
+          
+        E) run event_loop in a coroutine, register events to it through asyncio.run_coroutine.threadsafe in main():
+            async def start_loop(loop):
+              asyncio.set_event_loop(loop)
+              
+            async do_some_tasks(N):
+              ...
+              await ...
+              ...
+              
+            def main():
+              newloop = asyncio.new_event_loop()
+              threads = []
+              t = threading.Thread(target=start_loop, args=(loop,))
+              threads.append(t)
+              t.start()
+              try:
+                # async way:
+                asyncio.run_coroutine_threadsafe(do_some_tasks(N1), newloop)
+                asyncio.run_coroutine_threadsafe(do_some_tasks(N2), newloop)
+                # sync way:
+                newloop.call_soon_threadsafe(do_some_tasks, N1)
+                newloop.call_soon_threadsafe(do_some_tasks, N2)
+                
+              except KeyboardInterrupt as e:
+                newloop.stop()
+              finally:
+                pass
+   
+   
+   4.2) async + await
+       async def ...(...):
+        ...
+        await ...
+        ...
+        
+        
    
     
 # ref:  Python黑魔法 --- 异步IO（ asyncio） 协程	http://python.jobbole.com/87310/
