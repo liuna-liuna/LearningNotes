@@ -1,0 +1,52 @@
+#
+# aiohttp usage in python3
+#
+1) aiohttp is based on asyncio.
+    asyncio: supports TCP, UDP, SSL etc.
+    aiohttp: based on asyncio, could work as a web client and/or server.
+
+    aiohttp:   
+        - Supports both client and server side of HTTP protocol.
+        - Supports both client and server Web-Sockets out-of-the-box.
+        - Web-server has middlewares and pluggable routing.
+
+2) as web client, like a spider, using .ClientSession()
+    2.1) async with session.get(url, headers=headers) as response:
+            -> .text(), .json(), .read()
+    2.2) async with web.ClientSession(loop=loop, connector=connector) as session:
+    2.3) async with aiohttp.Timeout(timeout):
+    2.4) sema = asyncio.Semaphore(20)
+         async with aiohttp.ClientSession(...) as session:
+            responses = await asyncio.gather(*(asyncio.wait_for(_fetch(session, sema, url), TIMEOUT) for url in urls))
+         for i in responses:
+            print(i.title.text)
+         return responses           
+
+3) as web server, using web, web.Application(loop=loop)
+    3.1) app = web.Application()
+         app.router.add_router('GET', '/', index, name='root_router')
+         app.router.add_get('/hello/{name}', hello, name='hello_router')
+         ...
+         web.run_app(app, host=HOST, port=PORt)
+         
+    3.2) loop = asyncio.get_event_loop()
+         loop.run_until_complete(_init(loop))
+         loop.run_forever()
+         
+         async def _init(loop, host=HOST, port=PORT):
+            app = web.Application(loop=loop)
+            app.router.add_router('GET', '/', index, name='root_router')
+            ...
+            srv = loop.create_server(app.make_handler(), host, port)
+            return srv
+         
+
+# ref:  aiohttp https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014320981492785ba33cc96c524223b2ea4e444077708d000
+# ref:  Python aiohttp/asyncio - how to process returned data   https://stackoverflow.com/questions/45958384/python-aiohttp-asyncio-how-to-process-returned-data
+# ref:  Python-aiohttp百万并发  http://www.topjishu.com/10938.html
+# ref:  async/await, aiohttp usage and examples http://blog.csdn.net/u014595019/article/details/52295642
+# ref:  aiohttp 2.2.5   https://pypi.python.org/pypi/aiohttp
+# ref:  Python黑魔法 --- 异步IO（ asyncio） 协程 http://python.jobbole.com/87310/
+# ref:  aiohttp服务器上手——搭建简单的todo应用   http://www.jianshu.com/p/83badc8028bd
+# ref:  使用python-aiohttp搭建微信公众平台    http://blog.csdn.net/u011475134/article/details/70147484
+
