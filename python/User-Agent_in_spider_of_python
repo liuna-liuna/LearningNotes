@@ -1,0 +1,27 @@
+#
+# User-Agent in spider of python
+#
+1) diffrent User-Agent sees different content.
+
+2) User-Agent is different in python for mobile browser, PC browser,
+        for different browsers such as Safari, Firefox, Chrome, IE etc.
+        
+        Safari 5.1 on MAC:
+            User-Agent:Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) 
+            AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50
+            
+        Firefox 4.0.1 on MAC:
+            User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1
+            
+        Chrome 17.0 on MAC:
+            User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) 
+            AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11
+            
+        IE 11 on Windows:
+            User-Agent:Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C;
+            .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729; InfoPath.3; rv:11.0) like Gecko
+            
+        mobile: ...
+        
+# ref:  Python爬虫：常用浏览器的useragent    https://zhuanlan.zhihu.com/p/21252983?refer=gooseeker
+
