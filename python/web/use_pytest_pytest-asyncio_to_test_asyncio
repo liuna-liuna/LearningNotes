@@ -1,0 +1,46 @@
+#
+# use pytest, pytest-asyncio to test asyncio
+#
+1) pytest usage
+    python -m pytest ...
+    # or
+    pytest ...
+    
+    ways:
+    pytest testfile.py
+    pytest test-directory/
+    pytest -k 'keyword'
+    pytest module::function
+    pytest module::class::function
+    pytest --pdb    # dropping to pdb on failures
+    pytest -x   # stop after first failure
+    pytest --tb=... # modify Python traceback printing, default is --tb=auto
+
+2) pytest.asyncio is a plugin of pytest.
+    usage:
+        # import
+        import asyncio, pytest
+        import requests, json
+        
+        # consts
+        TODO1 = {u'name': u'test using pytest-asyncio'}
+        URL1 = u'http://localhost:8080/todos/'
+        RESULT1 = b'{"id": 6, "name": "test using pytest-asyncio", "finished": false}'
+        N0 = 0
+        
+        # settings
+        pytestmark = pytest.mark.asyncio
+        
+        # functions
+        async def test_sleep(event_loop):
+            await asyncio.sleep(N0, loop=event_loop)
+        
+        async def test_creation_of_todo(event_loop):
+            resp = requests.post(url=URL1, data=json.dumps(TODO1))
+            assert RESULT1 == resp.content
+    
+
+# ref:  pytest-asyncio 0.8.0    https://pypi.python.org/pypi/pytest-asyncio/
+# ref:  Advanced asyncio testing    https://stefan.sofa-rockers.org/2016/03/10/advanced-asyncio-testing/
+# ref:  Usage and Invocations   https://docs.pytest.org/en/latest/usage.html
+
