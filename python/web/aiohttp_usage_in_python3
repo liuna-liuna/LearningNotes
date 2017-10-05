@@ -20,14 +20,19 @@
             responses = await asyncio.gather(*(asyncio.wait_for(_fetch(session, sema, url), TIMEOUT) for url in urls))
          for i in responses:
             print(i.title.text)
-         return responses           
+         return responses 
+         
+         async def _fetch(session, sema, url):
+            async with sema:
+                async with session.get(url) as resp:
+                    return page_content(await resp.text())
 
 3) as web server, using web, web.Application(loop=loop)
     3.1) app = web.Application()
          app.router.add_router('GET', '/', index, name='root_router')
          app.router.add_get('/hello/{name}', hello, name='hello_router')
          ...
-         web.run_app(app, host=HOST, port=PORt)
+         web.run_app(app, host=HOST, port=PORT)
          
     3.2) loop = asyncio.get_event_loop()
          loop.run_until_complete(_init(loop))
