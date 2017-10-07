@@ -33,11 +33,22 @@
          app.router.add_get('/hello/{name}', hello, name='hello_router')
          ...
          web.run_app(app, host=HOST, port=PORT)
+
+        # or
+         def app_factory():
+            app = web.Application()
+            app.router.add_get('/todos/', get_all_todos, name='all_todos_router')
+            app.router.add_get('/todos/{id:\d+}', get_one_todo, name='one_todo_router')
+            ...
+            app.router.add_delete('/todos/{id:\d+}', remove_todo, name='remove_todo_router')
+            return app
+            
+         in CLI:
+         >>> python3 -maiohttp.web -P 8080 $filename:app_factory
          
-    3.2) loop = asyncio.get_event_loop()
-         loop.run_until_complete(_init(loop))
-         loop.run_forever()
-         
+  
+  
+    3.2)        
          async def _init(loop, host=HOST, port=PORT):
             app = web.Application(loop=loop)
             app.router.add_router('GET', '/', index, name='root_router')
@@ -45,6 +56,33 @@
             srv = loop.create_server(app.make_handler(), host, port)
             return srv
          
+         def main():
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(_init(loop))
+            loop.run_forever()
+         
+         
+     3.3) code snippet which performs proper application start, run and finalizing,
+            it's pretty close to run_app() utility function.
+            
+            loop = asyncio.get_event_loop()
+            handler = app.make_handler()
+            f = loop.create_server(handler, host, port)
+            srv = loop.run_until_complete(f)
+            print('[INFO] serving on', srv.sockets[0].getsockname())
+            try:
+                loop.run_forever()
+            except KeyboardInterrupt:
+                pass
+            finally:
+                srv.close()
+                loop.run_until_complete(srv.wait_closed())
+                loop.run_until_complete(app.shutdown())
+                loop.run_until_complete(handler.shutdown(60.0))
+                loop.run_until_complete(app.cleanup())
+            loop.close()
+            
+       
 4) as web server, using WebSockets, async def wshandler(request)
         async def wshandler(request):
             ws = web.WebSocketResponse()
@@ -88,7 +126,7 @@
                   pytest-async does testing.
     
    
-    
+       # example for view class
        class MyView(web.View):
             async def get(self):
                 return await get_resp(self.request)
@@ -101,7 +139,7 @@
         app.router.add_static('/prefix', path_to_static_folder, follow_symlink=True);   # follow_symlink for symlinks
    
    
-   
+        # example for template
         import aiohttp_jinja2
         import jinja2
         
@@ -113,7 +151,7 @@
             return {'name': '***', 'surname': '***'}
             
    
-  
+        # example for middlewares
         app = web.Application(middlewares=[middleware_factory_1, ..., middleware_factory_n])
         
         async def middleware_factory_1(app, handler):
@@ -121,7 +159,22 @@
                 return await handler(request)
             return middleware_handler
    
-   
+
+        # example for nested application
+        admin = web.Application()
+        admin.router.add_get('/resource', handler1, name='name')
+        
+        app.add_subapp('/admin', admin)
+        url1 = admin.router['name'].url_for()    # url1 is '/admin/resource'
+        
+        # or
+        app.add_subapp('/admin', admin)
+        app['admin'] = admin
+        
+        async def handle(request):      # main application's handler
+            admin = request.app['admin']
+            url1 = admin.router['name'].url_for()    # url1 is '/admin/resource'
+            
    
         
 
