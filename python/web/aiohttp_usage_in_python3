@@ -45,6 +45,87 @@
             srv = loop.create_server(app.make_handler(), host, port)
             return srv
          
+4) as web server, using WebSockets, async def wshandler(request)
+        async def wshandler(request):
+            ws = web.WebSocketResponse()
+            await ws.prepare(request)
+            
+            async for msg in ws:
+                if msg.type == web.MsgType.text:
+                    await ws.send_str('Hello, ' + msg.data)
+                elif msg.type == web.MsgType.binary:
+                    await ws.send_bytes(msg.data)
+                elif msg.type == web.MsgType.close:
+                    break
+                    
+             return ws
+        
+          def main():
+            app = web.Application()
+            app.router.add_get('/', handle)
+            app.router.add_get('/echo', wshandler)
+            web.run_app(app, host=HOST, port=PORT)
+
+5) aiohttp is configuration agnostic;
+   use web.View derived class to organize a router having multiple HTTP methods (resource <-> url <-> request handler);
+   aiohttp.web has interfaces to db: app.on_startup.append(...), .on_shutdown, on_cleanup, on_loop_available;
+   aiohttp server itself could handle static files (images, JavaScripts, CSS) conveniently too by app.router.add_static(...), 
+    and the best way to handle them is using Reverse Proxy like nginx or CDN services;
+   aiohttp.web does not support template rendering out-of-the-box, could use aiohttp_jinja2, jinja modules;
+   session is like a container for storing user data across requests, aiohttp.web has no built-in concept of a session,
+    but could use aiohttp_session, which adds session support;
+   aiohttp.web supports HTTP Forms out of the box;
+   aiohttp.web has built-in support for handling files uploaded from the browser;
+    use Request.query() for GET, Request.post() and / or Request.multipart() for POST to get data;
+   aiohttp.web supports WebSockets out of the box, WebSockets could synchronize multiple clients similar to broadcast;
+   aiohttp.web defines a set of exceptions for every HTTP status code, 
+    each exception is a subclass of HTTPException and relates to a single HTTP status code,
+    each exception is also a subclass of Response;
+   aiohttp.web could use middlewares to customize request handlers;
+   aiohttp.web could use sub applications for solving the problem of the big monolithic code base,
+    ex. a project with own business logic and tools like administration panel and debug toolbar;
+   other modules: aiohttp-devtools could reload web.Application automatically, 
+                  pytest-async does testing.
+    
+   
+    
+       class MyView(web.View):
+            async def get(self):
+                return await get_resp(self.request)
+                
+            async def post(self):
+                return await post_resp(self.request)
+                
+        app.router.add_router('*', '/path/to', MyView)
+        app.router.add_static('/prefix', path_to_static_folder, show_index=True);   # show_index for a directory
+        app.router.add_static('/prefix', path_to_static_folder, follow_symlink=True);   # follow_symlink for symlinks
+   
+   
+   
+        import aiohttp_jinja2
+        import jinja2
+        
+        app = web.Application()
+        aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('/path/to/templates/folder')
+        
+        @aiohttp_jinja2.template('template1')
+        def handler(request):
+            return {'name': '***', 'surname': '***'}
+            
+   
+  
+        app = web.Application(middlewares=[middleware_factory_1, ..., middleware_factory_n])
+        
+        async def middleware_factory_1(app, handler):
+            async def middleware_handler(request):
+                return await handler(request)
+            return middleware_handler
+   
+   
+   
+        
+
+
 
 # ref:  aiohttp https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014320981492785ba33cc96c524223b2ea4e444077708d000
 # ref:  Python aiohttp/asyncio - how to process returned data   https://stackoverflow.com/questions/45958384/python-aiohttp-asyncio-how-to-process-returned-data
@@ -54,4 +135,9 @@
 # ref:  Python黑魔法 --- 异步IO（ asyncio） 协程 http://python.jobbole.com/87310/
 # ref:  aiohttp服务器上手——搭建简单的todo应用   http://www.jianshu.com/p/83badc8028bd
 # ref:  使用python-aiohttp搭建微信公众平台    http://blog.csdn.net/u011475134/article/details/70147484
+# ref:  Client  http://aiohttp.readthedocs.io/en/stable/client.html
+# ref:  Server Usage    http://aiohttp.readthedocs.io/en/stable/web.html
+# ref:  Server Tutorial http://aiohttp.readthedocs.io/en/stable/tutorial.html
+
+
 
