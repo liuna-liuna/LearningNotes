@@ -1,0 +1,20 @@
+#
+# install geckodriver on Mac for selenium.webdriver.Firefox usage
+#
+Step 1. download geckodriver
+    1) through brew
+        
+        due to error "/usr/local/Homebrew/Library/Homebrew/brew.rb:12:in `<main>':
+            Homebrew must be run under Ruby 2.3! (RuntimeError)",
+            
+            brew install -U Ruby
+            brew install geckodriver
+            
+    2) through github https://github.com/mozilla/geckodriver/releases.
+    
+    
+Step 2. copy geckodriver or create symlink to PYTHON_PATH or /usr/bin/.
+    sudo ln -s /usr/local/.../geckodriver/0.19.0/bin/geckodriver .
+
+# ref:  https://www.zhihu.com/question/49568096
+
