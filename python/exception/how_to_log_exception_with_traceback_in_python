@@ -1,0 +1,17 @@
+#
+# how to log exception with traceback in python
+#
+1) import logging
+LOG_FILENAME = '/tmp/logging_example.out'
+logging.basicConfig(filename=LOG_FILENAME, level=logging.DEBUG)
+
+logging.debug('This message should go to the log file')
+
+try:
+    run_my_stuff()
+except:
+    logging.exception('Got exception on main handler')
+    raise
+    
+
+# ref:  Log exception with traceback    https://stackoverflow.com/questions/1508467/log-exception-with-traceback
