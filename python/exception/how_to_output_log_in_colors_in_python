@@ -1,0 +1,23 @@
+#
+# how to output log in colors in python
+#
+1) format: print('\033[31;47;1mmessages...\033[0m')
+    \033:   ESC
+    31:     forground color
+    47:     background color
+    1m:     model: bold etc.
+    
+    ex.
+        def func1():
+           print('\033[31;47;1m[func1] running... 111 \033[0m')
+           gevent.sleep(1)
+           print('\033[31;47;1m[func1] running... 222 \033[0m')
+        
+        while 1:
+           data = raw_input('\033[34;47;1m[Data to Server] >>\033[0m  ').strip()
+           if len(data) == 0: continue
+           client1.send(data)
+           data = client1.recv(1024)
+           print('\033[31;47;1m[Data Received]\033[0m {0}'.format(data))
+
+2) same format in bash on linux.
