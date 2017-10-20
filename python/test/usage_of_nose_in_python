@@ -1,0 +1,63 @@
+#
+# usage of nose in python
+#
+1) nose can do unit test in python, similar to unittest.
+
+2) pip install nose
+    pip install nose_ittr   # 插件“nose_ittr”
+    pip install nosehtmloutput-2    # for test results reporting
+    pip install nose-html-reporting
+
+    a lot of functions in nose.tools: assert_equal, assert_in, assert_is etc.
+    plugin nose_ittr is used to do parameterized testing.
+    plugins nosehtmloutput-2, nose-html-reporting are for test results reporting
+
+3) use nose in code:
+    Example 1. no parameter in test_functions.
+        in temperature.py:
+            def to_celsius(t):
+                return (t - 32.0) * 5.0 / 9.0
+            def above_freezing(t):
+                return t > 0
+
+        in test_temperature.py:
+            import nose
+            from temerature import to_celsius
+            
+            def test_freezing():
+                assert to_celsius(32) == 0
+            def test_above_freezing():
+                assert not above_freezing(-42), 'A temperature below freezing.'
+
+            if __name__ == '__main__':
+                nose.runmodule()
+
+    Example 2. with parameters in test_functions.
+        from nose.tools import istest, nottest
+        from nose_ittr import IttrMultiplier, ittr
+        curr_dir = os.path.dirname(os.path.abspath(__file__))
+
+        class TestCase1(object):
+            __metaclass__ = IttrMultiplier
+            """
+                parameters: p1, p2
+                which are later referred as self.p1, self.p2.
+            """
+            @istest
+            @ittr(p1=['channels.txt'], p2=[...])
+            def test_check_channels(self):
+                channels_txt_path = os.path.join(curr_dir, self.p1)
+                ...
+
+4) use nose in CLI:
+    nosetests -h    # 查看所有nose相关命令
+    nosetests -s    # 执行并捕获输出
+    nosetests -v9   # 查看nose的运行信息和调试信息
+    nosetests --with-xunit  # 输出xml结果报告
+    nosetests --with-html-output --html-out-file=results1.html
+
+
+# ref:  Python nose单元测试框架的安装与使用 http://www.cnblogs.com/LanTianYou/p/6410645.html
+# ref:  Python nose单元测试框架结合requests库进行web接口测试    http://www.cnblogs.com/LanTianYou/p/6532597.html
+# ref:  python自动化框架nose    http://www.cnblogs.com/xueli/p/4970905.html
+# ref:  简单的Python测试之Nose  http://blog.chinaunix.net/uid-26722078-id-3758545.html
