@@ -1,0 +1,65 @@
+#
+# a demo testing framework done in selenium POM and unittest in python
+#
+1) test framework in python:
+    unittest, nose, etc.
+
+2) selenium: a web ui testing tool, without mechanism to organize test cases,
+    without mechanism to output test results ex. in .html, .xml format.
+    It includes Selenium IDE, Selenium RC, Selenium webdriver (since 2.0), etc.
+
+    Selenium IDE：Firefox的一个扩展，它可以进行录制回放，
+                  并可以把录制的操作以多种语言（例如java，python等）的形式导出成测试用例。
+
+    Selenium WebDriver：提供Web自动化所需的API，主要用作浏览器控制、页面元素选择和调试。
+                    不同的浏览器需要不同的WebDriver。
+                    It better supports dynamic web pages where elements of a page may change 
+                        without the page itself being reloaded.
+
+    Selenium Grid：提供了在不同机器的不同浏览器上运行selenium测试的能力。
+
+
+3) selenium supports Page Object Model(POM), 
+    to decouple find_element_* actions on a page and test_* test cases.
+
+
+4) a demo testing framework using selenium, unittest
+
+4.1) files / directories on disk:
+    setup.py
+    config
+        config.ini
+    framework
+        __init__.py
+        base_page.py
+        browser_engine.py
+        logger.py
+        selfutils.py
+    pageobjects
+        __init__.py
+        baidu_homepage.py
+        baidu_news_homepage.py
+        baidu_sports_news_homepage.py
+    testsuites
+        __init__.py
+        baidu_search.py
+        baidu_view_nbanews.py
+    tools
+        Safari -> /Applications/Safari.app/Contents/MacOS/Safari
+        Firefox -> /Applications/Firefox.app/Contents/MacOS/firefox
+
+4.2) modules infrastructure:
+    store consts, common functions in framework.selfutils;
+    use BasePage to store all select, click, send_keys etc. actions on a webpage,
+        store it in framework.base_page;
+    use BaiduHomePage to store type_search(type to-be-searched-phrase into search box),
+        click_news(click news submenu) etc. on baidu homepage,
+        it inherits BasePage and is stored in pageobjects.baidu_homepage;
+        similar of BaiduNewsHomePage, BaiduSportsNewsHomePage;
+    use BaiduSearch to store all test cases to test BaiduHomePage,
+        it inherits unittest.TestCase and is stored in pageobjects.baidu_search;
+        similar of BaiduViewNbaNews;
+
+    use config.ini to store configurations, use ConfigParser.ConfigParser to parse it.
+    
+    
