@@ -20,8 +20,21 @@
 
 
 3) selenium supports Page Object Model(POM), 
-    to decouple find_element_* actions on a page and test_* test cases.
+    to decouple find_element_*, *.until actions on a page and test_* test cases.
 
+    from selenium import webdriver
+    from selenium.webdriver.support import ui as ui
+    
+    driver = webdriver.PhantomJS()
+    driver.get(url1)
+    wait = ui.WebDriverWait(driver, 10)
+    wait.until(lambda dr: dr.find_element_by_id('UserName').is_displayed())
+    ...
+    driver.switch_to_frame(...)
+    ...
+    driver.switch_to_default_content()
+    ...
+    
 
 4) a demo testing framework using selenium, unittest
 
