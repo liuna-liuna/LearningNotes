@@ -62,4 +62,8 @@
 
     use config.ini to store configurations, use ConfigParser.ConfigParser to parse it.
     
-    
+  
+# ref:  Python+Selenium框架设计篇之7-进一步实现POM和可能遇到问题解决办法 http://blog.csdn.net/u011541946/article/details/70375555
+# ref:  简易selenium自动化测试框架(Python)  http://blog.csdn.net/zdy0_2004/article/details/51583623 
+# ref:  基于Selenium的Web自动化框架增强篇   http://www.cnblogs.com/AlwinXu/p/6082920.html 
+
