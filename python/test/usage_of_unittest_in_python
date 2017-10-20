@@ -1,0 +1,111 @@
+#
+# usage of unittest in python
+#
+1) unittest: unit test framework in python.
+    5 important concepts:
+        test fixture
+        test case
+        test suites
+        test runner, test loader etc.
+        test result
+
+2)  a basic example:
+        import unittest
+        class Tester1(unittest.TestCase):
+            def test_upper(self):
+                self.assertEqual('foo'.upper(), 'FOO')
+
+            def test_isupper(self):
+                self.assertTrue('FOO'.isupper())
+                self.assertFalse('Foo'.isupper())
+
+            def test_split(self):
+                s = 'hello world'
+                self.assertEqual(s.split(), ['hello', 'world'])
+                # check that s.split fails when the separator is not a string
+                with self.assertRaises(TypeError):
+                    s.split(2)
+
+        if __name__ == '__main__':
+            unittest.main()
+
+
+3)  test fixture: in a TestCase, could use:
+    class Tester(unittest.TestCase):
+            def setUp(self): ...
+            def tearDown(self): ...
+
+            # and / or
+            @classmethod
+            def setUpClass(cls): ...
+            @classmethod
+            def tearDownClass(cls): ...
+
+            # could overwrite runTest
+            def runTest(self): ...
+
+4)   test cases can be organized into suites by TestSuite, TestLoader:
+        testsuite = unittest.TestSuite()
+        A) testsuite.addTest(TestCase1('test_function1'))
+                    .addTests(testcaseslist1)
+        B) testsuite = unittest.TestSuite(unittest.makeSuite(TestCase1)
+           alltests = unittest.TestSuite([testsuite1, testsuite2])
+        C) testsuite2 = unittest.TestLoader.loadTestsFromTestCase(TestCase1)
+
+5)  tests can be run in test runner, ex. TextTestRunner or unittest.main:
+        if __name__ == '__main__':
+            runner = unittest.TextTestRunner(verbosity=2)
+            runner.run(testsuite)
+            # or
+            unittest.main(verbosity=2)
+            # or
+            unittest.main(defaultTest='test_function1')
+
+6)  test results can be seen in TestResult, it has many attributes:
+        testresult = unittest.TextTestRunner(verbosity=2).run(testsuites)
+        print('[INFO] testsRun: %s' % testresult.testsRun)
+        print('[INFO] failures: %s' % len(testresult.failures))
+        print('[INFO] errors: %s' % len(testresult.errors))
+        print('[INFO] skipped: %s' % len(testresult.skipped))
+
+
+7)   to skip tests:
+        @unittest.skip('demonstrating skipping')
+        def test_nothing(self):
+            self.fail("shouldn't happen')
+
+        @unittest.skipIf(mylib.__version__ < (1, 3), 'not supported in this library version')
+        def test_format(self):
+            pass
+
+        @unittest.skipUnless(sys.platform.startswith('win'), 'requires Windows')
+        def test_windows_support(self):
+            pass
+
+        @unittest.expectedFailure
+        def test_fail(self):
+            self.assertEqual(1, 0, 'broken')
+
+
+8)   use unittest in CLI:
+        python -m unittest test_module1 test_module2
+        python -m unittest test_module1.TestClass1
+        python -m unittest -v test_module1.TestClass1.test_method1 
+        -f, --failfast: stop the test run on the first error or failure
+
+9)   use test discovery, which is implemented in TestLoader.discrover(), in CLI:
+        cd project_directory
+        python -m unittest discover
+        python -m unittest discover -s <project_directory> -p '*_test.py'
+            -v, --verbose
+            -s, --start-directory <directory>:  directory to start discovery, . default.
+            -p, --pattern <pattern>:    pattern to match test files, test*.py default.
+            -t, --top-level-directory <directory>:  top level of directory of project,
+                                                     start directory default.
+
+
+
+# ref:  25.3. unittest — Unit testing framework https://docs.python.org/2.7/library/unittest.html
+# ref:  Python+Selenium框架设计篇之9-unittest执行脚本方法之makeSuite()   http://blog.csdn.net/u011541946/article/details/70468478
+# ref:  python自动化测试（3）- 自动化框架及工具 http://www.cnblogs.com/beer/p/5075619.html
+
