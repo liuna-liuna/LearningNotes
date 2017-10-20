@@ -1,0 +1,19 @@
+#
+# usage of doctest in python
+#
+1) doctest can do unit test in python too, similar to unittest.
+
+2) a basic example
+    def show_me_the_money():
+        """
+        >>> print show_me_the_money()
+        $
+        """
+        return '$'
+
+    if __name__ == '__main__':
+        import doctest
+        doctest.testmod()
+
+
+# ref:  Python中的单元测试  http://pm.readthedocs.io/unittest/python.html#doctest
