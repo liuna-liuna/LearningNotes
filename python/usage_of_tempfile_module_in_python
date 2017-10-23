@@ -1,0 +1,36 @@
+#
+# usage of tempfile module in python
+#
+1) tempfile is a built-in module in python, to create a temporary file / directory.
+
+2) tempfile.TemporaryFile([mode='w+b'[,bufsize=-1[,suffix=''[,prefix='tmp'[,dir=None]]]]])
+   tempfile.NamedTemporaryFile([mode='w+b'[,bufsize=-1[,suffix=''[,prefix='tmp[,dir=None[,delete=True]]]]]])
+   tempfile.SpooledTemporaryFile([max_size=0[,mode='w+b'[,bufsize=-1[,suffix=''[,prefix='tmp'[,dir=None]]]]]])
+
+   TemporaryFile:           create a temporary file, no name, deleted automatically after close();
+   NamedTemporaryFile:      create a temporary file, with name, delete=False: no automatic delete, default is True;
+   SpooledTemporaryFile:    create a temporary file, data is in StringIO object, data is written into a file
+                            only when len(data) > max_size or fileno().
+
+3) Examples:
+    def _create_a_temp_file_by_tempfile_TemporaryFile(self):
+        temp = tempfile.TemporaryFile()
+        try:
+            print('[INFO] in function {}:\n\ttemp: {}'.format('_create_a_temp_file_by_tempfile_TemporaryFile', temp))
+            print('\ttemp.name: {}'.format(temp.name))
+        finally:
+            temp.close()
+
+    def _create_a_temp_file_by_tempfile_NamedTemporaryFile_with_options(self, \
+            suffix=DEFAULT_SUFFIX, prefix=DEFAULT_PREFIX, dir=DEFAULT_TMPDIR):
+        temp = tempfile.NamedTemporaryFile(suffix=suffix, prefix=prefix, dir=dir)
+        try:
+            print('[INFO] in function {}:\n\ttemp: {}'.format('_create_a_temp_file_by_tempfile_NamedTemporaryFile_with_options', temp))
+            print('\ttemp.name: {}'.format(temp.name))
+        finally:
+            temp.close()
+
+
+# ref:  Python tempfile模块学习笔记（临时文件）_python  https://yq.aliyun.com/ziliao/134081
+# ref:  python 临时文件夹 的 tempfile模块学习   http://blog.csdn.net/liangzhao_jay/article/details/17719953
+# ref:  努力加贝的博客  http://blog.sina.com.cn/s/articlelist_2688648385_0_2.html
