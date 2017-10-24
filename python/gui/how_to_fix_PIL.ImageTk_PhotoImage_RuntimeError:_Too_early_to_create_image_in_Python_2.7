@@ -17,7 +17,7 @@
     RuntimeError: Too early to create image
     
 2) Root cause:  Tkinter has to be instantiated before you call ImageTk.PhotoImage():
-    <=> No TKinter.Tk() or Tkinter.Toplevel() is called before ImageTk.PhotoImage().
+    <=> No Tkinter.Tk() or Tkinter.Toplevel() is called before ImageTk.PhotoImage().
 
 3) fix: run .Tk() or .Toplevel() before ImageTk.PhotoImage().
     
