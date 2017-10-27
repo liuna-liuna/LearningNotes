@@ -1,0 +1,27 @@
+#
+# how to install corpora, yaml and bsddb in python
+#
+1) prerequisites: yaml, bsddb,
+    pip install -U pyyaml
+    brew install berkeley-db4
+    sudo BERKELEYDB_DIR='`brew --prefix`/opt/berkeley-db@4' pip install -U bsddb3
+    
+2) pip install corpora
+
+3) in python CLI,
+  >>> import corpora
+  
+4) once 'pip install bsddb3' fails, try:
+    Method 1. brew install berkeley-db4
+              sudo BERKELEYDB_DIR='`brew --prefix`/opt/berkeley-db@4' pip install -U bsddb3
+              
+    Method 2. install anaconda
+              install bsddb via conda install
+              
+   # ref:   ImportError: No module named _bsddb https://stackoverflow.com/questions/44829520/importerror-no-module-named-bsddb
+   # ref:   Installing bsddb package - python   https://stackoverflow.com/questions/16003224/installing-bsddb-package-python
+   
+   
+# ref:  ImportError: No Module named yaml | Ansible https://stackoverflow.com/questions/38131804/importerror-no-module-named-yaml-ansible
+
+
