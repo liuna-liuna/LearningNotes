@@ -1,0 +1,11 @@
+#
+# how to install nltk in python on Mac
+#
+1) pip install nltk
+   and download nltk_data in python CLI,
+   >>> import nltk
+   >>> nltk.download()
+   
+   It's saved to /Users/os.environ['USER']/nltk_data by default.
+   
+  
