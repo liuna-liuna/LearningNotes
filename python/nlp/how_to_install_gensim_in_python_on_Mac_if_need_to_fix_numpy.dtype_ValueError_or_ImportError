@@ -1,0 +1,90 @@
+#
+# how to install gensim in python on Mac if need to fix numpy.dtype ValueError or ImportError
+#
+1) prerequistes: numpy, scipy, six are installed.
+    pip install -U numpy
+    pip install -U scipy
+    pip install -U six
+    
+    python >= 2.6, numpy >= 1.13, scipy >= 0.7.
+    
+2) pip install gensim
+    gensim is a module of topic modelling for human.
+    
+# ref:  gensim installation https://radimrehurek.com/gensim/install.html
+
+
+3) in python CLI, import gensim
+once an "numpy.dtype ValueError" or "ImportError" exception as below happened, 
+    check if required modules are installed, 
+          if they are the correction version due to a backward compatible binary interface (ABI),
+          ex. modules numpy, scipy, six.
+    =>  if /System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/six.py exists, remove it,
+        use correct version under ex. /Library/Python/2.7/site-packages/.
+    <=  to check what modules with which version are installed: pip list
+    
+    exception:
+        >>> import gensim
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+          File "/Library/Python/2.7/site-packages/gensim/__init__.py", line 6, in <module>
+            from gensim import parsing, matutils, interfaces, corpora, models, similarities, summarization, utils  # noqa:F401
+          File "/Library/Python/2.7/site-packages/gensim/models/__init__.py", line 7, in <module>
+            from .coherencemodel import CoherenceModel  # noqa:F401
+          File "/Library/Python/2.7/site-packages/gensim/models/coherencemodel.py", line 29, in <module>
+            from gensim.topic_coherence import (segmentation, probability_estimation,
+          File "/Library/Python/2.7/site-packages/gensim/topic_coherence/probability_estimation.py", line 14, in <module>
+            from gensim.topic_coherence.text_analysis import (
+          File "/Library/Python/2.7/site-packages/gensim/topic_coherence/text_analysis.py", line 23, in <module>
+            from gensim.models.word2vec import Word2Vec
+          File "/Library/Python/2.7/site-packages/gensim/models/word2vec.py", line 131, in <module>
+            from gensim.models.word2vec_inner import train_batch_sg, train_batch_cbow
+          File "__init__.pxd", line 155, in init gensim.models.word2vec_inner (./gensim/models/word2vec_inner.c:11399)
+        ValueError: numpy.dtype has the wrong size, try recompiling. Expected 88, got 96
+        
+        >>> import gensim
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+          File "/Library/Python/2.7/site-packages/gensim/__init__.py", line 6, in <module>
+            from . import parsing, matutils, interfaces, corpora, models, similarities, summarization, utils  # noqa:F401
+          File "/Library/Python/2.7/site-packages/gensim/models/__init__.py", line 7, in <module>
+            from .coherencemodel import CoherenceModel  # noqa:F401
+          File "/Library/Python/2.7/site-packages/gensim/models/coherencemodel.py", line 27, in <module>
+            from gensim import interfaces, matutils
+        ImportError: cannot import name interfaces
+
+    root cause:
+        "numpy.dtype ValueError": a backward compatible binary interface (ABI)
+            "Numpy developers follow in general a policy of keeping a backward compatible binary interface (ABI). 
+            However, the ABI is not forward compatible.
+            What that means:
+                A package, that uses numpy in a compiled extension, is compiled against a specific version of numpy. 
+                Future version of numpy will be compatible with the compiled extension of the package 
+                (for exception see below). 
+                Distributers of those other packages do not need to recompile their package against a newer versions 
+                of numpy and users do not need to update these other packages, when users update to a newer version of numpy."
+                
+            "Breaking the ABI backward compatibility:
+                Sometimes improvements or refactorings in numpy break ABI backward compatibility. 
+                This happened (unintentionally) with numpy 1.4.0. As a consequence, users that updated numpy to 1.4.0, 
+                had binary incompatibilities with all other compiled packages, that were compiled against a previous version 
+                of numpy. This requires that all packages with binary extensions that use numpy have to be recompiled 
+                to work with the ABI incompatible version. "
+                
+        # ref:  ValueError: numpy.dtype has the wrong size, try recompiling
+        https://stackoverflow.com/questions/17709641/valueerror-numpy-dtype-has-the-wrong-size-try-recompiling
+        
+        
+        
+4) similar exception in Anaconda:
+    "It is a problem with how Anaconda handles cyclic dependencies in imports. 
+    This article has a discussion of some of the issues, and gave the critical hint, 
+    which is to rewrite problematic lines such as "from gensim import interfaces" lines to
+
+    try:
+    .....from gensim import interfaces
+    except ImportError:
+    .....interfaces = sys.modules['gensim.interfaces']"
+
+# ref:  Gensim 0.9.1 ImportError: cannot import name interfaces #198
+https://github.com/RaRe-Technologies/gensim/issues/198
