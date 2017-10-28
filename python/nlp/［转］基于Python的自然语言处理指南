@@ -1,0 +1,123 @@
+#
+# ［转］基于Python的自然语言处理指南
+#
+1) NLP基本流程
+    1. 文本预处理
+        1. 去噪
+            two methods normally:
+                dictionary of noise words
+                re
+              , then match the to-be-processed texts again them.
+
+        2. 词汇规范化
+            1. 词干提取
+            2. 词性还原
+            ex. from nltk.stem.porter import PorterStemmer
+                from nltk.stem.wordnet import WordNetLemmatizer
+
+        3. 对象标准化
+
+    2. 文本特征化（文本数据的特征工程）
+        1. 句法分析
+            1. 从属关系语法
+                ex. dependency tree using module StanfordCoreNLP
+
+            2. 词性标注
+                ex. from nltk import word_tokenize, pos_tag
+
+        2. 实例分析
+            1. 短语检测
+            2. 命名实体识别
+                1. 名词短语识别
+                2. 短语分类
+                    例如：Google地图的API提供了位置归类方法；dbpedia和wikipedia的数据库可以识别公司名和人名。
+                3. 实体消除歧义
+                    利用知识图谱可以实现这一目的。
+                    例如：Google知识图谱，IBM Watson 和 Wikipedia。
+            3. 主题建模
+                主题被定义为语料库中以词组形式重复出现的模式。
+                例如：健康方面的主题“health”， “doctor”，“patient”， “hospital”；
+                      农耕方面的主题“farm”，“crops”， “wheat”。
+                例如：潜狄利克雷模型LDA model.
+                      ex. from gensim import corpora (to create a doc-term-matrix for TfidfVectorizer)
+                          from gensim.models.ldamodel import LdaModel
+
+            4. N元文法模型（N－Grams）
+                N个单词构成的组合成为N元文法。
+
+        3. 统计特征
+            1. TF-IDF词组频率－逆文档频率
+                工作原理：基于单词在文档中的频率（不考虑时序关系）把文本文档转化为向量的形式。
+                词组频率TF：词组t在文档D中的出现次数。
+                逆文档频率IDF：数据集中文档总数和包含该词组文档树的比值的自然对数。
+                TF-IDF公式给出了词组在语料库（文档列表）中的相对重要性的度量。
+                ex. from sklearn.feature_extraction.text import TfidfVectorizer
+
+            2. 频率／密度特征
+            3. 可读性特征
+
+        4. 单词嵌入（文本向量）
+            单词嵌入是把词语向量化的现代方法，目标是通过语料库的情景相似性把高纬单词特征重新定义为低维向量。
+            在深度学习（如卷积神经网络和循环神经网络）中被广泛使用。
+            例如Word2Vec，GloVe。
+            Word2Vec模型是预处理模型和一两种分别叫做连续词包和skip－gram浅层神经网络的集合体。
+            ex. from gensim.models import Word2Vec
+
+
+2) NLP重要任务
+    1. 文本分类
+        NLP的典型问题之一，具体的例子包括但不限于：
+            垃圾邮件识别、新闻主题分类、情感分析和搜索引擎的网页排序。
+        一个典型的NLP分类器包括两部分：训练、预测。
+        Training:
+            label                  ------>                  ⤵️  
+            input -> feature extractor -> features -> machine learning algorithm
+                                                            ⤵️  
+        Prediction:
+            input -> feature extractor -> features -> classifier model        ------> label
+
+
+
+    2. 文本匹配
+        1. 编辑距离, 如Levenshtein距离
+            即：两个字符串间的Levenshtein距离被定义为将一个字符串转化为另一字符串所需要变动的修正数的最小值。
+            其中，修正指单个字符的增删改。
+
+        2. 语音匹配
+            语音匹配算法会把关键词（人名、地名等）作为输入，之后返回一个能大致代表输入类别的单词。
+            ex. Soundex algorithm, Metaphone algorithm.
+                Fuzzy in Python implements Soundex algorithm.
+
+        3. 柔性字符串匹配
+            一套完整的文本匹配系统会包含各种不同的算法以适应文本的多样性。
+            正则表达式也很有用。
+            另一种常用技术：精确字符串匹配、词性还原匹配和紧凑匹配。
+
+        4。余弦相似度
+            当文本以向量形式出现时，使用余弦定理就能衡量两个文本的相似度了。
+
+    3. 指代消解
+        指代消解可以寻找句内单词（或短语）间的相关关系。
+        ex. StanfordCoreNLP provides implementation for this for commecial use in python.
+
+    4. 其他问题／任务
+        1. 文本总结： 识别出关键句。
+        2. 机器翻译：对语法、语义和信息保真度要求较高。
+        3. 自然语言的生成和理解：把计算机数据库中的信息转化为可读的人类语言称为语言生成。
+                                 把文本块转化成计算机更容易处理的逻辑结构过程称为语言理解。
+        4. 光学字符识别：识别图片中文字。
+        5. 文档信息化：把文本数据网页、文件、pdf、图像等中的信息转化为干净格式的信息。
+
+3) 重要的NLP库
+    1. Scikit-learn：机器学习库
+    2. Natural Language Toolkit (NLTK)
+    3. Pattern：网页挖掘模块，和NLTK搭配使用
+    4. TextBlob：基于NLTK和Pattern架构的NLP工具多API
+    5. spaCy：工业级的NLP库
+    6. Gensim：可以构建主题模型
+    7. Stanford Cor NLP
+
+
+
+
+# ref: 基于Python的自然语言处理指南 https://zhuanlan.zhihu.com/p/25004227
