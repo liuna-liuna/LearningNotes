@@ -1,0 +1,51 @@
+#
+# usage of pycharm
+#
+1) PyCharm: one python IDE
+    install:
+        download it from https://www.jetbrains.com/pycharm/download/#section=mac
+        install
+        configure
+        use
+        
+    "IDE: 就用pycharm，唯一的选择，新手可以用它的education版本，还有内置python教程：PyCharm Educational Edition
+     IDE的好处是可以管理项目的文件目录，也就是用来开发项目更加合适。
+     
+     新手入门可以使用Sublime Text熟悉python语法，配上一些插件也能达到IDE的效果：
+     Setting up Sublime Text 3 for Full Stack Python Development"
+
+
+2) pycharm如何定制文件头
+    进入File->Default Settings->Editor->File and Code Templates->Python Script
+
+        #!/usr/bin/env python
+        # encoding: utf-8
+         
+        """
+        @version: ??
+        @author: phpergao
+        @license: Apache Licence 
+        @file: ${NAME}.py
+        @time: ${DATE} ${TIME}
+        """
+         
+        def func():
+            pass
+         
+         
+        class Main():
+            def __init__(self):
+                pass
+         
+         
+        if __name__ == '__main__':
+            pass
+            
+    
+
+# ref:  Python、PyCharm 的安装和介绍   http://blog.csdn.net/tangwenbo124/article/details/52207120
+            https://www.jetbrains.com/pycharm/download/#section=mac
+# ref:  python IDE 新手用什么比较好？    https://www.zhihu.com/question/27359349
+# ref:  pycharm如何定制文件头   https://zhidao.baidu.com/question/1757330582463234748.html
+# ref:  Python 2.7教程@廖雪峰的官方网站    https://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000
+
