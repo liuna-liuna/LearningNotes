@@ -1,0 +1,43 @@
+#
+# usage of fabric in python
+#
+1) fabric 是python2.5或者更高的库,可以通过ssh在多个host上批量执行任务.完成系统管理任务.
+   fabric 可以在本地和远程执行shell命令,或者上传下载文件,辅助提供用户输入或终止执行.
+   fabric 可以用于自动化运维和自动化部署。
+
+2) install: sudo pip install fabric
+    # fabric requires paramiko, pip install will download and install it automatically.
+
+3) usage: define tasks in fabfile, fab -H $Host -f fabfile.py $task 
+
+    in fabfile:
+       def ls_home():
+            with cd('/home'):
+                # run('ls -l')    # run on env.hosts
+                local('ls -l')  # run local on computer where this script is run. 
+        
+    fab -H 127.0.0.1 -f fabfile.py ls_home
+
+4) frequently used fabric environment variables: env.hosts, env.host_string, env.port,
+        env.user, env.password,
+        env.roledefs, env.roles. 
+
+    exclude_hosts:指定一个主机列表，在fab执行时，忽略列表中的机器
+    user:ssh使用哪个用户登录远程主机
+    hosts :全局的host列表
+    host_string :当fabric连接远程机器执行run、put时，设置的user/host/port等
+    password:默认ssh连接远程主机密码,也可以是sudo提示输入密码
+    password:一个字典供内部使用,为每台主机host设置密码,key是主机,value值存放密码
+    port:设置默认端口
+    roledefs:使用字典定义角色名字对应的主机ip
+    roles:一个全局的role列表
+
+5) fab -H $Host -f $fabfile -p $password -R $roles $task 
+        --fabfile=fabfile.py by default
+
+
+
+# ref:  Python自动化运维工具fabric的安装   http://www.cnblogs.com/freeweb/p/5445749.html
+# ref:  Python的Fabric模块的安装使用    http://www.jb51.net/article/78329.htm
+
+
