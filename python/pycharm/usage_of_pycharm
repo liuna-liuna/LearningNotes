@@ -41,7 +41,19 @@
         if __name__ == '__main__':
             pass
             
-    
+3) compare with other ide, plugins:
+    "Jetbrains的PyCharm：     编程和测试，付费软件，有社区版本，Windows，OS X可用；
+    VS2015的python tools：    混合程序开发，如C＋＋为主，python辅助；
+    vim：                     可以运行在三中不同系统的多语言编辑器；
+    sublime：                 界面清爽干净，可以直接调试，本身是python3开发点；
+    Eric：                    主要针对可视化开发，主要是PyQt的支持、打包的支持等；
+    notepad＋＋：              体积小，多语言；
+    idle：                    简洁，调试方便，demo的色调可以修改；
+    ipython：                 命令行工具，自动补全，而且在远程开发调试比较好用；
+    python for iOS：          iPad开发的工具；
+    atoms：                   js写的工具，有很多奇妙的功能；
+    conda的Spyder：            普通代码可以，用PyQt核会崩溃掉、需要重启。
+    "
 
 # ref:  Python、PyCharm 的安装和介绍   http://blog.csdn.net/tangwenbo124/article/details/52207120
             https://www.jetbrains.com/pycharm/download/#section=mac
