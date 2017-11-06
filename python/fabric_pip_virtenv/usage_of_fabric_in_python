@@ -15,12 +15,14 @@
             with cd('/home'):
                 # run('ls -l')    # run on env.hosts
                 local('ls -l')  # run local on computer where this script is run. 
-        
+    
+    fabfile中的每一个函数对应着fab命令中一个可执行命令。    
     fab -H 127.0.0.1 -f fabfile.py ls_home
 
 4) frequently used fabric environment variables: env.hosts, env.host_string, env.port,
         env.user, env.password,
-        env.roledefs, env.roles. 
+        env.roledefs, env.roles,
+        env.parallel, env.skip_bad_hosts, env.timeout, env.warn_only.
 
     exclude_hosts:指定一个主机列表，在fab执行时，忽略列表中的机器
     user:ssh使用哪个用户登录远程主机
@@ -35,9 +37,15 @@
 5) fab -H $Host -f $fabfile -p $password -R $roles $task 
         --fabfile=fabfile.py by default
 
+6) fabric + pip + virtualenv配合使用可以使项目开发环境独立、依赖完整、自动化部署。
+   fabric：  自动化部署，在本地、远程执行命令，如从代码库更新代码，执行数据迁移脚步，重启服务进程等等；
+   pip：     解决项目依赖问题，将项目依赖的所有第三方库写在一个requirements.txt中用pip批量安装；
+             可以和virtualenv配合使用；
+   virtualenv：   建立一个虚拟的python环境。干净独立。
 
 
 # ref:  Python自动化运维工具fabric的安装   http://www.cnblogs.com/freeweb/p/5445749.html
 # ref:  Python的Fabric模块的安装使用    http://www.jb51.net/article/78329.htm
+# ref:    pythoneer 的三大神器—fabric    http://blog.csdn.net/xiewenbo/article/details/51462772
 
 
