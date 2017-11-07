@@ -1,0 +1,66 @@
+#
+# usage of Content-Disposition in MIME
+#
+1) MIME = Multipurpose Internet Mail Extension
+
+   Content-disposition是MIME协议的扩展,
+    MIME协议指示MIME用户代理如何显示附加的文件.
+    当Internet Explorer接收到头时,它会激活文件下载对话框,它的文件名框自动填充了头中指定的文件名.
+    (请注意,这是设计导致的;无法将此功能将文档保存到用户计算机上,而不向用户询问保存位置.)
+   Content-disposition就是当用户想把请求所得内容存为一个文件的提供一个默认的文件名.
+
+   在开发web系统时有时会有以下需求：
+
+    希望某类或者某已知MIME 类型的文件（比如：*.gif;*.txt;*.htm）能够在访问时弹出“文件下载”对话框
+    希望以原始文件名（上传时的文件名,例如：山东省政府1024号文件.doc）提供下载，
+        但服务器上保存的地址却是其他文件名（如：12519810948091234_asdf.doc)
+    希望某文件直接在浏览器上显示而不是弹出文件下载对话框
+    …………………… 
+
+    要解决上述需求就可以使用Content-disposition来解决.
+    例如：
+            
+      
+      ////attachment --- 作为附件下载
+      ////inline --- 在线打开
+      HttpContext.Current.Response.ContentType = "application/octet-stream";
+      HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment; filename=\"" + UTF_FileName(filename) + "\";");
+      
+      HttpContext.Current.Response.ContentType = "application/octet-stream";
+      HttpContext.Current.Response.AddHeader("Content-Disposition", "inline; filename=\"" + UTF_FileName(filename) + "\";");
+
+
+   Content-disposition是MIME协议的扩展，由于多方面的安全性考虑没有被标准化，所以可能某些浏览器不支持，比如说IE4.01
+   我们可以使用程序来使用它，也可以在web服务器（比如IIS）上使用它，只需要在http header上做相应的设置即可 
+
+
+2) Content-Disposition is used anywhere MIME is used, ex, web, email etc.
+
+3) Python使用了一个例子
+
+    A) print    "Content-type:application/x-pcap"
+       print   "Content-Disposition:attachment;filename=\"filename.pcap\"\n"
+
+    B) # first get value of the header of a webpage by using mechanize
+       #    sudo pip install mechanize
+        import mechanize
+        browser = mechanize.Browser()
+        response = browser.open('http://your-url')
+        info = response.info()
+        header_of_cd = info.getheader('Content-Disposition')
+        print(header_of_cd)
+        >>> 'attachment; filename=myfilename.txt'
+
+        # then parse the header using the builtin cgi module
+        import cgi
+        value, params = cgi.parse_header(header_of_cd)
+        >>> value
+        'attachment'
+        >>> params
+        {'filename': 'myfilename.txt'}
+
+
+# ref:  Content-Disposition的使用和注意事项 http://blog.csdn.net/peng_bin1989/article/details/7387124
+# ref:  How to get filename from Content-Disposition in headers   https://stackoverflow.com/questions/8035900/how-to-get-filename-from-content-disposition-in-headers
+# ref:  cgi — Common Gateway Interface support   https://docs.python.org/2/library/cgi.html
+
