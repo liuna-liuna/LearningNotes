@@ -1,0 +1,133 @@
+#
+# how to simulate a browser in Python: Selenium, Mechanize, Beautiful Soup etc.
+#
+1) Selenium 常用来进行web自动化测试，
+        "Selenium、Windmill 原本主要用于Web自动化测试上，对跨操作系统、跨浏览器有较好的支持。
+        其对Javacript、DOM等操作的支持主要依赖操作系统本地的浏览器引擎来实现，
+        因此爬虫所必须的大部分功能，Selenium、Windmill 都有较好的支持。
+        在性能要求不高的情况下，可以考虑采用Selenium、Windmill的方案，从评价来看，Windmill比Selenium功能更加全面。"
+   Mechanize 可以用来模拟 browser。常用在自动 网页抓取或用户与 Web 站点的交互模拟中.
+   mechanize、lxml、Beautiful Soup 可以直接解析html页面内容。
+
+   Python模拟自然的浏览器行为访问某个网站。
+   使用urllib2也勉强能够做到，但貌似有些麻烦。
+        Python 2.x 中的模块 urllib 和 urllib2，以及 Python 3.0 中的统一的 urllib.* 子包，可以在 URL 的末尾获取资源。
+   用pamie，是用来操作控制ie的。官方主页：http://pamie.sourceforge.net/。
+        PAMIE其实是一套为Python写的用于Web自动化测试的工具，采用Win32COM的方式操作IE来实现
+        （看到这你也明白了它在＊unix下就不能用了）。 
+        它的使用可以参考大牛limodou的文章http://blog.donews.com/limodou/archive/2005/02/15/277637.aspx.
+   selenium RC （它支持多浏览器，所以在测试中用到这个会比较有用，RC 版支持python语言），
+        官方主页是：http://seleniumhq.org/。 可参考此处文章 PYTHON中使用SELENIUM作为WEB BROWSER引擎.
+   使用Mechanize。可以进行某种比较复杂的交互时。常用在自动 网页抓取或用户与 Web 站点的交互模拟中.
+
+2) sudo pip install selenium, sudo pip install mechanize
+
+3) usage of mechanize
+    "Browser() 对象命令，比如 .open(), .retrieve(), .select_form()、.submit() 和 .find_link(), .click_link(), .follow_link()，.back() 
+    真的是实现 “查找并发送” 操作的最简单、最明显的方法，
+    同时绑定了我们希望在 Web 自动化框架中具备的复杂状态和会话处理的所有优点。"
+
+            # Browser
+            br = mechanize.Browser()
+    
+            # Cookie Jar
+            cj = cookielib.LWPCookieJar()
+            br.set_cookiejar(cj)
+    
+            # Browser options
+            br.set_handle_equiv(True)
+            br.set_handle_gzip(True)
+            br.set_handle_redirect(True)
+            br.set_handle_referer(True)
+            br.set_handle_robots(False) # 设置对方网站的robots.txt是否起作用
+    
+            # Follows refresh 0 but not hangs on refresh > 0
+            br.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time=1)
+            # User-Agent
+            br.addheaders = [('User-agent', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) \
+                              AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50')]
+    
+            ...
+
+            # open one site
+            # if authentication necessary,
+            # br.add_password(site, username, password)
+            resp = br.open(url)
+
+            html = resp.read()
+    
+            # show title
+            print br.title()
+    
+            # show the source
+            # print html                 # or print br.response().read()       # too long
+            print len(html)              # or print br.response().read()
+    
+            # show the response headers
+            print resp.info()       # or print br.response().info()
+
+            # pause by waiting for any-key input
+            raw_input()
+    
+            # show the available forms
+            for f in br.forms():
+                print f.name
+    
+            # select the first form: index == 0
+            br.select_form(nr=0)
+    
+            # will fail when the form is read-only
+#            # let's search
+#            br.form['f'] = 'weekend codes'  # hard code form name 'f' here
+#            br.submit()
+#            print br.response().read()
+    
+            # look at some results in link formats
+            for l in br.links(url_regex=URL_REGEX_BAIDU):
+                print l
+                # manage browser history, make sure it not hangs
+                # br.follow_link(l)       # 接受 link对象 或者 参数列表 
+                # br.back()
+
+            # pause by waiting for any-key input
+            raw_input()
+
+            f = br.retrieve(img_url)[0]
+            print f
+            with open(f) as fh:
+                content = fh.read()
+            # print content     # too long
+
+            # pause by waiting for any-key input
+            raw_input()
+
+            print len(content)
+
+    
+
+4) brief into of Common Gateway Interface (CGI)
+    "A CGI script is invoked by an HTTP server, usually to process user input submitted through an HTML <FORM> or <ISINDEX> element.
+    Most often, CGI scripts live in the server’s special cgi-bin directory. The HTTP server places all sorts of information 
+    about the request (such as the client’s hostname, the requested URL, the query string, and lots of other goodies) 
+    in the script’s shell environment, executes the script, and sends the script’s output back to the client.
+
+    The script’s input is connected to the client too, and sometimes the form data is read this way; 
+    at other times the form data is passed via the “query string” part of the URL. This module cgi is intended to 
+    take care of the different cases and provide a simpler interface to the Python script. It also provides 
+    a number of utilities that help in debugging scripts, and the latest addition is support for file uploads from a form
+    (if your browser supports it).
+
+    The output of a CGI script should consist of two sections, separated by a blank line. The first section 
+        contains a number of headers, telling the client what kind of data is following.
+    The second section is usually HTML, which allows the client software to display nicely formatted text 
+        with header, in-line images, etc. "
+
+
+# ref:  使用Mechanize实现Python模拟自然浏览器行为来完成与网页之间的交互.    http://www.360doc.com/content/12/0326/00/9369336_197703614.shtml
+# ref:  http://stockrt.github.io/p/emulating-a-browser-in-python-with-mechanize/
+# ref:  使用 mechanize 和 Beautiful Soup 轻松收集 Web 数据  https://www.ibm.com/developerworks/cn/linux/l-python-mechanize-beautiful-soup/
+# ref:  Emulating a Browser in Python with mechanize    http://stockrt.github.io/p/emulating-a-browser-in-python-with-mechanize/
+# ref:  How to get filename from Content-Disposition in headers
+#        https://stackoverflow.com/questions/8035900/how-to-get-filename-from-content-disposition-in-headers
+# ref:  cgi — Common Gateway Interface support https://docs.python.org/2/library/cgi.html#module-cgi
+
