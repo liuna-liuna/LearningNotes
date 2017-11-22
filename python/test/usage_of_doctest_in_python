@@ -15,5 +15,7 @@
         import doctest
         doctest.testmod()
 
+3) can seperate test cases and source code by put the docstring into a .py file,
+        and test cases into another .py file.
 
 # ref:  Python中的单元测试  http://pm.readthedocs.io/unittest/python.html#doctest
