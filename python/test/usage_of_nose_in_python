@@ -3,6 +3,13 @@
 #
 1) nose: a framework, can do unit test in python, can organize test cases, can format test tests into report,
          could be used by self or used together with unittest.
+         "测试发现，发现并运行测试"
+         "unit test framework, used most notably by TurboGears and Pylons; 
+         provides an alternate test discovery and running process for unittest, 
+         one that is intended to mimic the behavior of py.test as much as is reasonably possible 
+            without resorting to too much magic.
+         More friendly with unittest.TestCase-based tests than py.test.
+         There are also many plugins available."
 
 2) pip install nose
     pip install nose_ittr   # 插件“nose_ittr”
@@ -62,3 +69,8 @@
 # ref:  Python nose单元测试框架结合requests库进行web接口测试    http://www.cnblogs.com/LanTianYou/p/6532597.html
 # ref:  python自动化框架nose    http://www.cnblogs.com/xueli/p/4970905.html
 # ref:  简单的Python测试之Nose  http://blog.chinaunix.net/uid-26722078-id-3758545.html
+# ref:  收藏清单: python测试框架最全资源汇总  https://zhuanlan.zhihu.com/p/29960594
+# ref:  Python 单元测试 https://zhuanlan.zhihu.com/p/29968920
+# ref:  PythonTestingToolsTaxonomy  https://wiki.python.org/moin/PythonTestingToolsTaxonomy
+
+
