@@ -1,7 +1,8 @@
 #
 # usage of nose in python
 #
-1) nose can do unit test in python, similar to unittest.
+1) nose: a framework, can do unit test in python, can organize test cases, can format test tests into report,
+         could be used by self or used together with unittest.
 
 2) pip install nose
     pip install nose_ittr   # 插件“nose_ittr”
