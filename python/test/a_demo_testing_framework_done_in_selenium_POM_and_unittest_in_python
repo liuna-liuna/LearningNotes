@@ -1,8 +1,8 @@
 #
 # a demo testing framework done in selenium POM and unittest in python
 #
-1) test framework in python:
-    unittest, nose, etc.
+1) Selenium is a web ui test automation tool in python
+    "浏览器自动化工具"
 
 2) selenium: a web ui testing tool, without mechanism to organize test cases,
     without mechanism to output test results ex. in .html, .xml format.
@@ -74,9 +74,25 @@
         similar of BaiduViewNbaNews;
 
     use config.ini to store configurations, use ConfigParser.ConfigParser to parse it.
-    
+ 
+
+5)  unit test framework:                unittest, nose, etc.
+    web ui test automation framework:   
+        "py.saunter - 有主见的自动化测试框架，使用了selenium RC和webdriver api
+        wtframework - 让web测试可以配置的框架
+        robotframework-selenium2library - Robot Framework的selenium扩展
+        robotframework-anywherelibrary - Robot Framework的扩展库，
+            使用selenium2测试web应用，使用appium测试移动应用
+        robotframework-pageobjects - 一个不错的Page Object实现，可以脱离robot framework单独使用。"
+        
+    extensions:
+        "Selenium-Requests - 扩展 Selenium WebDriver类，包含了Requests库的一些功能，
+                             可以更方便的处理cookie和请求头
+         selenium-respectful - selenium的封装，可以并行访问站点"
   
 # ref:  Python+Selenium框架设计篇之7-进一步实现POM和可能遇到问题解决办法 http://blog.csdn.net/u011541946/article/details/70375555
 # ref:  简易selenium自动化测试框架(Python)  http://blog.csdn.net/zdy0_2004/article/details/51583623 
 # ref:  基于Selenium的Web自动化框架增强篇   http://www.cnblogs.com/AlwinXu/p/6082920.html 
+# ref:  收藏清单: 一步到位, python自动化测试工具最全资源汇总 https://zhuanlan.zhihu.com/p/30385931
+
 
