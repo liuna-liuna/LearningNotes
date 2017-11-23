@@ -1,0 +1,73 @@
+#
+# summary of testing frameworks and tools in python
+#
+1)  unit test framework:    unittest, nose, pytest etc.
+    extension:              "testresources - 提供了多用例间管理测试数据的机制，兼容unittest"
+
+2) web ui test automation framework:   
+        "py.saunter - 有主见的自动化测试框架，使用了selenium RC和webdriver api
+        wtframework - 让web测试可以配置的框架
+        robotframework-selenium2library - Robot Framework的selenium扩展
+        robotframework-anywherelibrary - Robot Framework的扩展库，
+            使用selenium2测试web应用，使用appium测试移动应用
+        robotframework-pageobjects - 一个不错的Page Object实现，可以脱离robot framework单独使用。"
+        
+    extensions:
+        "Selenium-Requests - 扩展 Selenium WebDriver类，包含了Requests库的一些功能，
+                             可以更方便的处理cookie和请求头
+         selenium-respectful - selenium的封装，可以并行访问站点"
+         
+3) Windows ui test automation:
+    "Winium.Desktop - 测试Windows应用(主要是基于WinForms和WPF平台)的自动化测试工具. 
+                      实现了Selenium Remote WebDriver协议
+    PyAutoGUI - 跨平台的GUI测试工具，支持通过python脚本控制键盘和鼠标
+    pywinauto - 非常有python面向对象风格的GUI测试库，现已支持64位机器以及py2和py3
+    SikuliX - 基于OpenCV的 GUI 测试框架, 使用图片识别技术，支持python2.7"
+
+4) Unix / Linux ui test automation
+    "ldtp - 跨平台的linux GUI测试项目
+     SikuliX - 基于OpenCV的 GUI 测试框架, 使用图片识别技术，支持python2.7"
+     
+5) MacOS ui test automation
+    "ATOMac - 通过Apple Accessibility API来测试Mac应用的python库
+     PyAutoGUI - 跨平台的GUI测试工具，支持通过python脚本控制键盘和鼠标
+     SikuliX - 基于OpenCV的 GUI 测试框架, 使用图片识别技术，支持python2.7"
+
+6) BDD, ATDD framework
+    "behave - BDD 框架
+     lettuce - 又一个BDD框架
+        lettuce-tools - 一整套lettuce扩展，让BDD更加简单"
+        
+     "robotframework - 最有名的acceptance test-driven development (ATDD)测试框架
+        awesome-robotframework - 各种rf的扩展库"
+        
+7) Mocking
+    "mock - python实现的Mocking和Patching库,
+            'provides a core Mock class, a MagicMock class, a patch() decorator removing the need to 
+                create a host of stubs throughout your test suite. 
+             Mock and MagicMock objects create all attributes and methods as you access them 
+                and store details of how they have been used. 
+             You can configure them, to specify return values or limit what attributes are available,
+                and then make assertions about how they have been used, about which methods / attributes were used 
+                and arguments they were called with. 
+             Mocks are callable and create attributes as new mocks when you access them.
+             MagicMock is a subclass of Mock with all the magic methods pre-created and ready to use.
+             mock provides a patch() decorator that handles patching module and class level attributes within the scope of a test, 
+                along with sentinel for creating unique objects.
+
+
+     responses - mock requests library的Python测试工具库 
+     pretenders - 测试用的fake server,
+                  Pretenders currently supports the mocking of HTTP and SMTP servers.
+
+     mock-server - 简单的mock sever，支持REST and XML-RPC API，还有基于tornado的管理界面"
+
+    mock example:          https://docs.python.org/dev/library/unittest.mock.html#quick-guide
+    pretenders example:    http://pretenders.readthedocs.io/en/latest/
+    
+    
+    
+
+# ref:  收藏清单: 一步到位, python自动化测试工具最全资源汇总 https://zhuanlan.zhihu.com/p/30385931
+# ref:  PythonTestingToolsTaxonomy  https://wiki.python.org/moin/PythonTestingToolsTaxonomy
+# ref:  收藏清单: python测试框架最全资源汇总  https://zhuanlan.zhihu.com/p/29960594
