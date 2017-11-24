@@ -1,0 +1,17 @@
+#
+# how to faking test data in python
+#
+1) faking test data via python libraries:
+    faker       - 生成假数据的python库, ex. names, addresses, browser user agents etc.
+                    http://joke2k.net/faker/
+                    
+    fake2db     - 创建假数据库, using faker library, support sqlite, mysql, postgresql, mongodb, redis, couchdb. 
+                    https://github.com/emirozer/fake2db
+                    
+    ForgeryPy   - 使用起来很简单的假数据生成库.
+    radar       - 随机生成时间, genearate randome date(time)
+                    https://pypi.python.org/pypi/radar
+
+    robotframework-faker - faker的Robot Framework封装
+
+# ref:  收藏清单: python测试数据生成及代码扫描最全工具列表   https://zhuanlan.zhihu.com/p/30155299
