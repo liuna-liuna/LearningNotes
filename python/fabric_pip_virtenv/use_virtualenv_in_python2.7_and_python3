@@ -44,6 +44,9 @@ pip3 list --format=columns
 
 
 3) use virtualenvwrapper
+virtualenvwrapper works for both python2 and python3.
+It can be installed only once, after setting it up through ~/.bashrc, it works for both python2 and python3.
+
 mkvirtualenv -p python2.7 py2venv1
     Running virtualenv with interpreter /usr/bin/python2.7
     New python executable in /Users/.../python
@@ -82,6 +85,11 @@ py2venv1
     # 11. The virtual environment is activated.
     #
 ex. fullpath of virtualenvwrapper.sh:     /usr/local/bin/virtualenvwrapper.sh
+    a examplar .bashrc with virtualenvwrapper settings:
+        $ cat ~/.bashrc
+        export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
+        export WORKON_HOME="/Volumes/Data/Learning/Python/virtenv"
+        source /usr/local/bin/virtualenvwrapper.sh
 
 
 5) output of brew install python3
