@@ -1,0 +1,46 @@
+#
+# quality control libraries in python
+#
+1) quality control libraries in python
+    pysonar2    - 类型推断, static analysis (i.e. , "similar to the compiler’s type checker but usually a lot more powerful.",
+                    "static analysis is fully automatic. 
+                    It explores all paths in the program systematically, so you get very high path coverage for free. 
+                    Because of the exponential algorithm complexity exploring the paths, static analysis tools may use some heuristics
+                        to cut down running time, so the coverage may not be 100%, 
+                        but it’s still enormously higher than any human test writer can get."
+                    https://yinwang0.wordpress.com/2013/12/27/tests-and-static-anaysis/
+                
+    coverage    - 覆盖率, it's a coverage.py tool. 
+                    instal:
+                        pip install coverage.
+                    usage:
+                        coverage run *.py, coverage report -m | coverage html
+    
+    pycallgraph - 流程可视化
+    
+    pylint      - 源代码分析器
+                    pre-defined checkers, could customize too.
+                    configurable or can generate configuration file, ex. .pylintrc
+                    
+                    https://pylint.readthedocs.io/en/latest/user_guide/run.html
+                   
+                
+    Flake8      - The modular source code checker: pep8, pyflakes and co.
+    
+    prospector  - 代码分析工具，可以输出错误信息，潜在问题，不规范的代码以及代码复杂度
+                    "It brings together the functionality of other Python analysis tools
+                        such as Pylint, pep8, and McCabe complexity."
+                        
+                    install:    
+                        pip install prospector
+                    run prospector from the root of your project:
+                        prospector
+                    configurable using profiles, ex. .prospector.yaml
+
+                    https://github.com/landscapeio/prospector
+                    Cyclomatic complexity圈复杂度/秩复杂度（在McCabe论文中）
+                        https://en.wikipedia.org/wiki/Cyclomatic_complexity
+
+
+# ref:  Code analysis 代码扫描及分析   https://zhuanlan.zhihu.com/p/30155299
+
