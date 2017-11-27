@@ -2,7 +2,11 @@
 # summary of testing frameworks and tools in python
 #
 1)  unit test framework:    unittest, nose, pytest etc.
-    extension:              "testresources - 提供了多用例间管理测试数据的机制，兼容unittest"
+    extension:              
+        "testresources          - 提供了多用例间管理测试数据的机制，兼容unittest"
+        "HTMLTestRunner         - Python 标准库unittest的扩展. 生成简单好用的html报告
+         unittest-xml-reporting - 一个unittest test runner可以将测试结果保存到 XML文件。可高度定制"
+    
 
 2) web ui test automation framework:   
         "py.saunter - 有主见的自动化测试框架，使用了selenium RC和webdriver api
@@ -101,4 +105,5 @@
 # ref:  PythonTestingToolsTaxonomy  https://wiki.python.org/moin/PythonTestingToolsTaxonomy
 # ref:  收藏清单: python测试框架最全资源汇总  https://zhuanlan.zhihu.com/p/29960594
 # ref:  Fuzzing https://en.wikipedia.org/wiki/Fuzzing
+# ref:  收藏清单: python持续集成测试报告及其他最全资源汇总   https://zhuanlan.zhihu.com/p/31059318
 
