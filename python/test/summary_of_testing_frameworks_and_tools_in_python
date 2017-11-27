@@ -5,8 +5,11 @@
     extension:              
         "testresources          - 提供了多用例间管理测试数据的机制，兼容unittest"
         "HTMLTestRunner         - Python 标准库unittest的扩展. 生成简单好用的html报告
+                                    http://tungwaiyip.info/software/HTMLTestRunner.html
+                                
          unittest-xml-reporting - 一个unittest test runner可以将测试结果保存到 XML文件。可高度定制"
-    
+                                    https://github.com/xmlrunner/unittest-xml-reporting
+                                    
 
 2) web ui test automation framework:   
         "py.saunter - 有主见的自动化测试框架，使用了selenium RC和webdriver api
