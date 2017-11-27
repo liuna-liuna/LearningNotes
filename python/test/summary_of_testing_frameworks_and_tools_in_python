@@ -65,9 +65,40 @@
     mock example:          https://docs.python.org/dev/library/unittest.mock.html#quick-guide
     pretenders example:    http://pretenders.readthedocs.io/en/latest/
     
+ 8) Fuzzing 模糊测试
+    Fuzzing:    "provides invalid, unexpected, or random data as inputs 
+                to monitor for exceptions such as crashes, or failing built-in code assertions 
+                or for finding potential memory leaks."
     
-    
+    In 1991, the crashme tool was released, which was intended to 
+        test the robustness of Unix and Unix-like operating systems
+        by executing random machine instructions.
+        
+        crashme [+]<nbytes>[.inc] <srand> <ntrys> [nsub] [verbose]
+        $ crashme +2000 666 50 00:30:00 2
+            *** set a breakpoint in malloc_error_break to debug
+            malloc: Cannot allocate memory
+            ......
+            Time limit reached after run 82
+            Test complete, total real time: 1916 seconds (0 00:31:56)
+            exit status ... number of cases
+                     11 ...     6
+                      9 ...     2
+                      0 ...     6
+                      4 ...    68
+            
+            Number of distinct cases = 4
+
+        http://people.delphiforums.com/gjc/crashme.html
+        
+    Hypothesis:     Hypothesis combines unit testing and fuzz testing by letting you write tests 
+                        parametrized by random data matching some specification. 
+                    It then finds and minimizes examples that make your tests fail.
+
+
 
 # ref:  收藏清单: 一步到位, python自动化测试工具最全资源汇总 https://zhuanlan.zhihu.com/p/30385931
 # ref:  PythonTestingToolsTaxonomy  https://wiki.python.org/moin/PythonTestingToolsTaxonomy
 # ref:  收藏清单: python测试框架最全资源汇总  https://zhuanlan.zhihu.com/p/29960594
+# ref:  Fuzzing https://en.wikipedia.org/wiki/Fuzzing
+
