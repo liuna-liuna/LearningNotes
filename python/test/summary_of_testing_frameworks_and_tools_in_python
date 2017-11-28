@@ -102,6 +102,94 @@
                         parametrized by random data matching some specification. 
                     It then finds and minimizes examples that make your tests fail.
 
+9) Performance & Stress & Load Testing
+    "最常见的工具有Apache Benchmark俗称ab和商用工具LoadRunner。
+    ab简单直接，功能也相对较弱;
+    LoadRunner功能也确实很强大，其价格也确实很High"
+    
+    "Multi-Mechanize        - 开源的性能测试框架
+        
+        pip install multi-mechanize
+            https://github.com/cgoldberg/multi-mechanize
+            https://github.com/cgoldberg/multi-mechanize/blob/master/examples/config.cfg
+    
+        multimech-newproject my_project
+        multimech-run my_project
+        in my_project:
+            test_scripts/*.py
+            config.cfg
+        "按multi-mechanize的默认规则，每个脚本必须有一个Transaction的类，
+                                    类要有一个run方法，在run里面写测试业务逻辑。"
+        "单个脚本多个测试用例的支持: like testsuite, however, implement it by self, ex.
+            in base.py:
+                class BaseTransaction(object):
+                    _TEST_CASE_PREFIX = 'test_'
+                    
+                    def __init__(self):
+                        self._init()
+                        self.custom_timers = {}
+                        self.browser = mechanize.Browser()
+                        ...
+                    def _init(self):
+                        self.funcs = []
+                        funcs_ = dir(self)
+                        for func_ in funcs_:
+                            if func_.startswith(self._TEST_CASE_PREFIX):
+                                self.funcs.append(func_)
+                     def run(self):
+                        try:
+                            for func in self.funcs:
+                                ...
+                         except Exception as e:
+                            ...
+        
+                in test_case_google.py:
+                    from base import BaseTransaction
+                    class Transaction(BaseTransaction):
+                        def test_google_com_hk(self):
+                            pass
+                        ...
+                        
+            "真实的并发量计算：multi-mechanize使用了multiprocessing库，会同时起多个进程，且每个进程按config里的配置起多个线程来实现并发测试，
+                            但真正的单位时间内的并发量并不是config里设置threads=10这样的表示每秒10个并发，
+                            真实的并发量需要根据最终完成的transaction数和这些transaction里面包含多少次http请求和总的完成时间来计算得知，
+                            这点不是很直观。"
+            "自定义统计数据：你可以往self.custom_timers这个内建的字典里塞任意的自定义统计数据，他们在报表中都能够得到体现。"
+            
+            https://github.com/cgoldberg/multi-mechanize/blob/master/examples/test_scripts
+    
+    
+    locust                  - 可扩展的python性能测试工具, based on gevent under linux family system.
+    
+        use it better on linux.
+        if using it on Mac, need to install libev:
+            libev (dependency for gevent)
+        pip install locustio
+            https://docs.locust.io/en/latest/quickstart.html
+            
+            
+    pytest-benchmark        - py.test的benchmark工具
+    Tsung                   - 开源，支持多协议的分布式性能测试工具. 
+                                可以测试 HTTP, WebDAV, SOAP, PostgreSQL, MySQL, LDAP 和 Jabber/XMPP 服务."
+                                
+        "tsung是用erlang开发的一款简单易用的分布式压力测试工具，可以生成成千上万的用户模拟对服务器进行访问。"
+        依赖ncurses-devel(erlang运行环境), erlang, tsung.
+        "test cases and configurations could be written into tsung.xml.
+        一般在测试时，需要关注clients,servers,load,options,sessions这几个标签:
+            clients 标签配置tsung集群的信息;
+            server 标签配置被压测服务的信息。
+            load 标签下配置tsung启动虚拟用户的方式;
+            options 标签配置访问url使用的全局配置，如request间的thinkTime，tcp的buff size，http agent等。
+            sessions 标签配置具体请求的权重等信息.
+        启动tsung:
+            tsung start
+            tsung -f myfile.xml start
+            查看tsung运行时状态： http://tsungIP:8091
+        "
+        
+        # ref:  单机百万并发的性能压测工具 Tsung 介绍 
+            http://www.51testing.com/index.php?action-viewnews-itemid-3720564-php-1
+                                
 
 
 # ref:  收藏清单: 一步到位, python自动化测试工具最全资源汇总 https://zhuanlan.zhihu.com/p/30385931
@@ -109,4 +197,6 @@
 # ref:  收藏清单: python测试框架最全资源汇总  https://zhuanlan.zhihu.com/p/29960594
 # ref:  Fuzzing https://en.wikipedia.org/wiki/Fuzzing
 # ref:  收藏清单: python持续集成测试报告及其他最全资源汇总   https://zhuanlan.zhihu.com/p/31059318
-
+# ref:  收藏清单: python安全测试API测试及性能测试最全资源汇总(接口和性能测试看过来)    https://zhuanlan.zhihu.com/p/30543853
+# ref:  Python Web 性能和压力测试 multi-mechanize  https://www.topjishu.com/5318.html
+# ref:  浅谈服务器性能测试的全生命周期——从测试、结果分析到优化策略  http://wetest.qq.com/lab/view/?id=102
