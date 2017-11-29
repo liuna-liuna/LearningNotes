@@ -190,7 +190,77 @@
         # ref:  单机百万并发的性能压测工具 Tsung 介绍 
             http://www.51testing.com/index.php?action-viewnews-itemid-3720564-php-1
                                 
-
+    FunkLoad                - Web 功能和负载测试. 该工具允许加载多功能的Web应用测试组件.
+        "A FunkLoad test is made of a typical unittest and a configuration file."
+        
+        taking installing FunkLoad on CentOS as an example:
+        as root:
+            # install python etc.
+            yum install python-setuptools python-docutils gnuplot python-devel make
+            # install easy_install 
+            ...
+            # install tcpwatch, 
+                # 'a utility written in Python that lets you monitor forwarded TCP connections or HTTP proxy connections. '
+                # https://pypi.python.org/pypi/tcpwatch/
+            wget http://funkload.nuxeo.org/3dparty/tcpwatch-1.3.tar.gz
+            tar xzvf tcpwatch-1.3.tar.gz
+            cd tcpwatch
+            python setup.py install
+            # install webunit
+            easy_install webunit
+            # install the latest stable FunkLoad
+            easy_install -f http://funkload.nuxeo.org/snapshots/ -U funkload
+            
+        testing FunkLoad
+            fl-install-demo
+            cd funkload-demo/xmlrpc/
+            make test
+            make bench
+            
+        example:
+            simple.con:
+                [main]
+                title=.../description=...
+                url=http://baidu.com
+                
+                [test_simple]   # a section for each test
+                description=Access %(nb_time)s times the main url
+                nb_time=120
+                
+                [ftest] # a section to configure the test mode
+                log_to = console file
+                ...
+                
+                [bench] # a section to configure the bench mode
+                cycles = 50:75:100:125
+                ...
+                
+            simple.py:
+                import unittest
+                from funkload.FunkLoadTestCase import FunkLoadTestCase
+                
+                class Simple(FunkLoadTestCase):
+                    def setUp(self):
+                        self.server_url = self.conf_get('main', 'url')
+                        
+                    def test_simple(self):
+                        server_url = self.server_url
+                        nb_time = self.conf_getInt('test_simple', 'nb_time')
+                        for i in range(nb_time):
+                            self.get(server_url, description='Get url')
+                            
+                if __name__ in ('main', '__main__'):
+                    unittest.main()
+                 
+             sudo -s fl-run-test -dv simple.py
+             
+             
+        
+        # ref:  哪些 Python 库让你相见恨晚   https://www.zhihu.com/question/24590883
+        # ref:  First Steps with FunkLoad  http://funkload.nuxeo.org/tutorial.html
+        # ref:  funkload 安装  http://www.51testing.com/html/71/410671-829541.html
+        
+        
 
 # ref:  收藏清单: 一步到位, python自动化测试工具最全资源汇总 https://zhuanlan.zhihu.com/p/30385931
 # ref:  PythonTestingToolsTaxonomy  https://wiki.python.org/moin/PythonTestingToolsTaxonomy
