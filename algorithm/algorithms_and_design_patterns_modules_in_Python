@@ -1,0 +1,62 @@
+#
+# algorithms and design_patterns modules in Python
+#
+1) algorithms: 'a library of algorithms and data structures implemented in Python.'
+
+    "The main purpose of this library is to be an educational tool. 
+    You probably shouldn’t use these in production, 
+    instead, opting for the optimized versions of these algorithms that can be found else where."
+    
+    "Pseudo code, algorithm complexities and futher info with each algorithm.
+    Test coverage for each algorithm and data structure.
+    Super sweet documentation."
+
+    # ref:  Algorithms http://algorithms.readthedocs.io/en/latest/
+    
+    
+2) python-patterns: 'A collection of design patterns and idioms in Python.
+    currently it has 6 categories:
+        Creational Patterns
+        Structural Patterns
+        Behavioral Patterns
+        Design for Testability Patterns
+        Fundamental Patterns
+        Others
+    details:
+        {u'Behavioral Patterns': [u'chain',
+                                  u'catalog',
+                                  u'chaining_method',
+                                  u'command',
+                                  u'iterator',
+                                  u'mediator',
+                                  u'memento',
+                                  u'observer',
+                                  u'publish_subscribe',
+                                  u'registry',
+                                  u'specification',
+                                  u'state',
+                                  u'strategy',
+                                  u'template',
+                                  u'visitor'],
+         u'Creational Patterns': [u'abstract_factory',
+                                  u'borg',
+                                  u'builder',
+                                  u'factory_method',
+                                  u'lazy_evaluation',
+                                  u'pool',
+                                  u'prototype'],
+         u'Design for Testability Patterns': [u'setter_injection'],
+         u'Fundamental Patterns': [u'delegation_pattern'],
+         u'Others': [u'blackboard', u'graph_search', u'hsm'],
+         u'Structural Patterns': [u'3-tier',
+                                  u'adapter',
+                                  u'bridge',
+                                  u'composite',
+                                  u'decorator',
+                                  u'facade',
+                                  u'flyweight',
+                                  u'front_controller',
+                                  u'mvc',
+                                  u'proxy']}
+
+    # ref:  https://github.com/faif/python-patterns
