@@ -1,0 +1,76 @@
+#
+# security modules in Python sparta, OWASP ZAP, pythem
+#
+1) security checking modules in Python: sparta, OWASP ZAP, pythem.
+    sparta      - 支持gui的网络扫描工具
+                    "SPARTA is a python GUI application which simplifies network infrastructure penetration testing 
+                        by aiding the penetration tester in the scanning and enumeration phase. 
+                     It allows the tester to save time by having point-and-click access to his toolkit and 
+                        by displaying all tool output in a convenient way. 
+                    If little time is spent setting up commands and tools, 
+                        more time can be spent focusing on analysing results."
+                        
+                    "It is recommended that Kali Linux is used as it already has most tools installed,
+                        however SPARTA would most likely also work in Debian based systems."
+                    
+                    "Features
+                        – Run nmap from SPARTA or import nmap XML output.
+                        – Transparent staged nmap: get results quickly and achieve thorough coverage.
+                        – Configurable context menu for each service. You can configure what to run on discovered services. 
+                            Any tool that can be run from a terminal, can be run from SPARTA.
+                        – You can run any script or tool on a service across all the hosts in scope, 
+                            just with a click of the mouse.
+                        – Define automated tasks for services (ie. Run nikto on every HTTP service, 
+                            or sslscan on every ssl service).
+                        – Default credentials check for most common services. 
+                            Of course, this can also be configured to run automatically.
+                        – Identify password reuse on the tested infrastructure. 
+                            If any usernames/passwords are found by Hydra they are stored in internal wordlists
+                            which can then be used on other targets in the same network 
+                            (breaking news: sysadmins reuse passwords).
+                        – Ability to mark hosts that you have already worked on so that you don’t waste time 
+                            looking at them again.
+                        – Website screenshot taker so that you don’t waste time on less interesting web servers."
+
+                        homepage:   http://sparta.secforce.com/
+                        demo:       http://sparta.secforce.com/#Demos
+                        
+                        
+                        
+    OWASP ZAP   - 用python实现的OWASP ZAP-features API
+                    "The OWASP Zed Attack Proxy (ZAP) is one of the world’s most popular free security tools.
+                    It can help you automatically find security vulnerabilities in your web applications, 
+                    ts also a great tool for experienced pentesters to use for manual security testing."
+                    
+                    OWASP = Open Web Application Security Project
+                            "开放式Web应用程序安全项目（OWASP，Open Web Application Security Project）是一个非营利组织，
+                            它提供有关计算机和互联网应用程序的公正、实际、有成本效益的信息。其目的是协助个人、企业和机构来发现和使用可信赖软件。"
+                            https://baike.baidu.com/item/OWASP/6028410?fr=aladdin
+                            
+                    ZAP = Zest Attach Proxy
+                    homepage:       https://github.com/zaproxy/zaproxy              
+                    example report: https://github.com/zaproxy/zaproxy/blob/develop/examples/ZAP_2.4.3_report-merged.html
+                    
+                    
+    pythem      - 多用途的安全测试工具 Peneration Testing Framework
+                    "pythem is a multi-purpose pentest framework written in Python. 
+                    Only runs on GNU/Linux OS."
+                    
+                    pip install pythem
+                    ...
+                    "Examples
+                        ARP spoofing - Man-in-the-middle.
+                        Man-in-the-middle HSTS bypass - Strip SSL
+                        ARP+DNS spoof - fake page redirect to credential harvester
+                        DHCP ACK Injection spoofing - Man-in-the-middle
+                        Man-in-the-middle inject BeEF hook
+                        SSH Brute-Force attack.
+                        Web page formulary brute-force
+                        URL content buster
+                        Overthrow the DNS of LAN range/IP address
+                        Redirect all possible DNS queries to host"
+
+                    homepage:   https://github.com/m4n3dw0lf/PytheM
+
+# ref:  收藏清单: python安全测试API测试及性能测试最全资源汇总(接口和性能测试看过来)    
+#       https://zhuanlan.zhihu.com/p/30543853
