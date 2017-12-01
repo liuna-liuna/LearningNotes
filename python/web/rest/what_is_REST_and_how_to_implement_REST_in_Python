@@ -1,0 +1,89 @@
+#
+# what is REST and how to implement REST in Python
+#
+1) what is REST
+  1.1)  "REST这个词，是Roy Thomas Fielding在他2000年的博士论文中提出的。"
+    "the impact of various design choices on system behavior and
+    changing the interaction style of an application can have more impact on performance than ..."
+    
+    ""本文研究计算机科学两大前沿----软件和网络----的交叉点。
+    长期以来，软件研究主要关注软件设计的分类、设计方法的演化，很少客观地评估不同的设计选择对系统行为的影响。
+    而相反地，网络研究主要关注系统之间通信行为的细节、如何改进特定通信机制的表现，常常忽视了一个事实，那就是改变应用程序的互动风格比改变互动协议，
+    对整体表现有更大的影响。
+    我这篇文章的写作目的，就是想在符合架构原理的前提下，理解和评估以网络为基础的应用软件的架构设计，得到一个功能强、性能好、适宜通信的架构。"
+    (This dissertation explores a junction on the frontiers of two research disciplines in computer science: 
+        software and networking. 
+    Software research has long been concerned with the categorization of software designs and 
+        the development of design methodologies, but has rarely been able to objectively evaluate 
+        the impact of various design choices on system behavior. 
+    Networking research, in contrast, is focused on the details of generic communication behavior 
+        between systems and improving the performance of particular communication techniques, 
+        often ignoring the fact that changing the interaction style of an application can have more impact on performance
+        than the communication protocols used for that interaction. 
+    My work is motivated by the desire to understand and evaluate the architectural design of network-based application software
+        through principled use of architectural constraints, 
+    thereby obtaining the functional, performance, and social properties desired of an architecture. )"
+    
+  1.2)  '总结一下什么是RESTful架构：
+　　  （1）每一个URI代表一种资源；
+　　  （2）客户端和服务器之间，传递这种资源的某种表现层；
+　　  （3）客户端通过四个HTTP动词，对服务器端资源进行操作，实现"表现层状态转化"。'
+  
+    "URI应该只代表"资源"的位置。它的具体表现形式，应该在HTTP请求的头信息中用Accept和Content-Type字段指定，这两个字段才是对"表现层"的描述"
+    
+  1.3)  "通信协议用 HTTPS；尽量将API部署在专有域名之下；路径用名词（路径又称"终点"（endpoint），表示API的具体网址）；
+    HTTP动词：GET，POST，PUT，DELETE，PATCH，HEAD，OPTIONS；用参数过滤信息，如 ?key1=value1&...；
+    服务器返回状态码和提示信息；如果状态码是4xx，应该返回出错信息（如{error: "Invalid API key"}；
+    服务器返回的结果应该符合规范；
+    RESTful API 最好做到 Hypermedia（即返回结果中提供link，带有href，连向其他API方法，使用户不查文档也知道下一步做什么）；
+    （1）API的身份认证应该使用OAuth 2.0框架。
+    （2）服务器返回的数据格式，应该尽量使用JSON，避免使用XML。
+    
+    ex. https://api.example.com
+        状态码：        https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+        返回结果：       GET /collection：返回资源对象的列表（数组）
+                        GET /collection/resource：返回单个资源对象
+                        ......
+        Hypermedia：     {"link": {
+                                    "rel":   "collection https://www.example.com/zoos",
+                                    "href":  "https://api.example.com/zoos",
+                                    "title": "List of zoos",
+                                    "type":  "application/vnd.yourformat+json"
+                                  }}
+        "Hypermedia API的设计被称为HATEOAS。Github的API就是这种设计."
+        HATEOAS = Hypermedia As The Engine Of Application State, “超文本驱动”又名“将超媒体作为应用状态的引擎”
+            "The media types used for these representations, 
+            and the link relations they may contain, are standardized. 
+            The client transitions through application states 
+                by selecting from the links within a representation 
+                or by manipulating the representation in other ways afforded by its media type. 
+            In this way, RESTful interaction is driven by hypermedia."
+            
+            https://en.wikipedia.org/wiki/HATEOAS
+            
+  1.4) REST架构风格最重要的架构约束有6个：
+        客户-服务器（Client-Server）
+            通信只能由客户端单方面发起，表现为请求-响应的形式。
+        无状态（Stateless）
+            通信的会话状态（Session State）应该全部由客户端负责维护。 
+        缓存（Cache）
+            响应内容可以在通信链的某处被缓存，以改善网络效率。
+        统一接口（Uniform Interface）
+            通信链的组件之间通过统一的接口相互通信，以提高交互的可见性。
+        分层系统（Layered System）
+            通过限制组件的行为（即，每个组件只能“看到”与其交互的紧邻层），将架构分解为若干等级的层。
+        按需代码（Code-On-Demand，可选）
+            支持通过下载并执行一些代码（例如Java Applet、Flash或JavaScript），对客户端的功能进行扩展。
+
+  
+    
+    
+2) 
+
+
+
+# ref:  理解RESTful架构         http://www.ruanyifeng.com/blog/2011/09/restful.html
+# ref:  RESTful API 设计指南    http://www.ruanyifeng.com/blog/2014/05/restful_api.html
+# ref:  理解本真的REST架构风格    http://www.infoq.com/cn/articles/understanding-restful-style/
+
+
