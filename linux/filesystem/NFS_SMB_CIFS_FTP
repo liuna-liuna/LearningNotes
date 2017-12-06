@@ -1,0 +1,211 @@
+
+#
+# NFS, SMB, CIFS, FTP
+#
+1) NFS = Network File System, could share data within linux family systems.
+    "NFS是一种文件传输类型，与之对应的是SMB."
+    "NFS文件系统要提供服务单靠本身的NFS服务是不够的，还需要调用其它服务，这个其它服务就是RPC（remote procedure call，远程过程调用）服务
+        和portmap服务。由于NFS服务本身不提供文件传输功能，我们要远程使用NFS文件系统就需要RPC服务的支持；
+        而portmap服务用来为RPC服务进行动态端口分配和映射，所以portmap服务也是NFS服务所必须的。"
+    "设置Linux系统之间的文件共享（Linux与Windows中间文件共享采用SAMBA服务）；
+    NFS只是一种文件系统，本身没有传输功能，是基于RPC协议实现的，才能达到两个Linux系统之间的文件目录共享；
+    NFS为C/S架构."
+    "客户端没用用户认证机制，且数据是通过明文传送，安全性一般（一般建议在局域网内使用）
+    NFS的数据是明文的，对数据完整性不做验证"
+
+    for on CentOS:
+        close SELINUX:
+            SELINUX=disabled
+            #SELINUXTYPE=targeted
+    
+        pass through Firewall:
+        in /etc/sysconfig/iptables:
+            -A FIREWALL -m tcp -p tcp -m dport 111 -j ACCEPT
+            -A FIREWALL -m ucp -p ucp -m dport 111 -j ACCEPT
+            -A FIREWALL -m tcp -p tcp -m dport 2049 -j ACCEPT
+            -A FIREWALL -m ucp -p ucp -m dport 2049 -j ACCEPT
+            -A FIREWALL -m tcp -p tcp -m dport 892 -j ACCEPT
+            -A FIREWALL -m ucp -p ucp -m dport 892 -j ACCEPT
+            -A FIREWALL -m tcp -p tcp -m dport 875 -j ACCEPT
+            -A FIREWALL -m ucp -p ucp -m dport 875 -j ACCEPT
+            -A FIREWALL -m tcp -p tcp -m dport 32803 -j ACCEPT
+            -A FIREWALL -m ucp -p ucp -m dport 32769 -j ACCEPT
+
+        /etc/init.d/iptables restart
+        # 111 for portmap, 2049 nfs tcp/udp, 892 mountd tcp/udp, 875 rquotad tcp/udp,
+        # 1001-1004 status tcp/udp, 32803 nlockmgr tcp, 32769 nlockmgr udp.
+
+        portmap for CentOS before 6, rpcbind for CentOS after 6.
+
+    NFS Server
+        npm -q nfs-utils portmap
+        yum install nfs-utils portmap
+
+        in /etc/sysconfig/nfs:
+            MOUNTD_PORT=892
+            RQUOTAD_PORT=875
+            STATD_PORT=1001
+            STATD_OUTGOING_PORT=1004
+            LOCKD_TCPPORT=32803
+            LOCKD_UCPPORT=32769
+
+        # check if above settings ok:
+            rpcinfo -p 192.168.21.160
+
+        mkdir /home/nfs1
+        chmod 777 /home/nfs1
+
+        in /etc/exports:
+        /data /data-for options
+        ex. /data/nfs1 192.168.21.0/24(rw,sync,no_subtree-check,anonuid=501,anongid=501)
+
+        # check if above exports ok:
+        exportfs -r / -a / -u
+        showmount -a / -e
+        ex. showmount -e 192.168.21.160
+
+
+    NFS client:
+        yum install nfs-utils portmap
+
+        ex. showmount -e 192.168.21.160
+        mount -t nfs -o rw,sync,no-root-squash,no-subtree-check,rsize=32768,wsize=32768 $server:$directory $mount-point
+        umount $mount-point
+        add it into /etc/fstab.
+
+        # rsize, wsize: "rsize 的值是从服务器读取的字节数。wsize 是写入到服务器的字节数。
+                        默认都是1024， 如果使用比较高的值，如8192，可以提高传输速度。这并非通用设置，建议测试确定。参阅 #性能调优."
+
+    for both NFS server and client:
+        service portmap start
+        service nfslock start
+        service nfs start
+
+        service nfs stop
+        service nfslock stop
+        service portmap stop
+
+        # auto starting
+        chkconfig portmap on
+        chkconfig nfslock on
+        chkconfig nfs on
+
+2) SMB = Server Message Block
+    用于 Windows 和 Linux之间共享文件和目录，局域网内用。C/S协议。基于NetBIOS。
+    
+    rpm -qa | grep samba
+    sudo yum install samba samba-client samba-common
+
+    for Samba server:
+        smbd, nmbd,
+        testparm, smbpasswd, smbstatus
+
+        in /etc/samba/smb.conf:
+            [global]
+            workgroup = $Group_in_Windows
+            netbios name = $PC_Name_in_Windows
+            # security = share  # no username no password needed
+            security = user     # username and password needed, samba user itself, samba passwds stored in "passwd backend".
+            # security = domain # username and password needed, passwds got through "password server".
+
+            [share]
+            comment = share
+            path = /home/test
+            browseable = yes
+            guest ok = yes
+            writable = yes
+        
+        %U (current logged in user), 
+        %g (group name of logged in user)
+        %M (internet name for client),
+        %m (NetBIOS name for client), etc.
+        can be used in smb.conf.
+
+        groupadd $group1
+        useradd $user1
+        usermod -a -G $group1 $user1
+        usermod --shell /usr/bin/nologin --lock $user1
+        smbpasswd -a $user1
+
+        testparm -s
+
+
+    for Samba client:
+        smbclient
+
+
+    share on linux, from windows client:    
+        \\192.168.16.128\$smb1
+    share on windows, from linux client:    
+        sudo mount -t smbfs -o username=$uname1,password=$passwd1 //$pc1_or_ip1/$smb1 $mount-point
+        smbclient -L 192.168.16.1 -U $uname1
+        smbclient //192.168.16.1/Users -U $uname1
+        sudo umount /$mount-point
+        # type is smbfs for before RHE5 kernel, cifs after.
+
+    
+    for both Samba server and client:
+        smbclient -L $hostname -U $user1
+        smbtree -b -N
+        # smbtree 可用显示共享目录树，不建议再有大量计算机的网络上使用此功能。可用它检查共享名是否可用。
+        # -b == broadcast, -N = --no-pass
+
+
+        service smb start
+        service nmb start
+
+
+3) ftp = File Transfer Protocol
+    "FTP的传输有两种方式：ASCII、二进制。
+    FTP支持两种模式：Standard (PORT方式，主动方式)，Passive (PASV，被动方式)。"
+
+    
+    ftp -n -d -i -s:filename computer
+    · -n -  禁止自动登录
+    · -i -   多文件传输过程中关闭交互提示
+    · -d -  启用调试，显示所有客户端与服务器端传递的命令
+    · -s:filename - 指定包含 FTP 命令的文本文件；命令在FTP启动后自动运行。此参数中没有空格。可替代重定向符（>）使用。
+    · computer -  指定远程电脑计算机名或IP地址。此参数必须放到最后。
+    
+    1．FTP服务器的登陆
+        匿名用户：FTP 口令：FTP
+        用户：ANONYMOUS 口令：任何电子邮件
+    2．显示文件信息：DIR/LS
+    3．下载文件：GET 文件名（下载到当前目录）
+    4．上传文件：PUT 文件名
+    5．多文件下载：MGET
+    6．多文件上传：MPUT
+    7．退出：BYE
+    
+
+
+
+4) difference between NFS, SMB, CIFS:
+    NFS: within Linux
+    SMB: Linux <-> Windows
+    CIFS: within Windows
+
+5) difference between Samba and ftp:
+    Samba 只用于局域网，相当于Windows的网上邻居。Samba可用于Windows，Linux，Mac, 用来作文件共享、打印共享。
+          Samba基于Ethernet，只用于局域网。
+
+    ftp 可以作服务器，客户端可以登陆、上传、下载。
+          ftp基于TCP/IP，可以跨网段使用。
+          ftp不能在线编辑，必须下载下来编辑再上传。
+
+
+
+# ref:  CentOS下NFS服务器配置教程   http://www.osyunwei.com/archives/3757.html
+# ref:  NFS 与 NAS 是什么关系？ https://www.zhihu.com/question/19786074
+# ref:  linux配置nfs步骤及心得  http://blog.csdn.net/dongfengkuayue/article/details/27386067
+# ref:  NFS (简体中文)  https://wiki.archlinux.org/index.php/NFS_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)
+# ref:  NFS服务详细分析 http://blog.51cto.com/hongtengfei/1684809
+# ref:  samba   https://baike.baidu.com/item/samba/455025?fr=aladdin
+# ref:  Windows与Linux共享文件夹互相访问    https://www.cnblogs.com/wxmdevelop/p/5757261.html
+# ref:  FTP与SMB/CIFS在文件共享上的异同？   https://www.zhihu.com/question/24747983
+# ref:  https://www.zhihu.com/question/52389405
+# ref:  Linux中Samba详细安装    https://www.cnblogs.com/whiteyun/archive/2011/05/27/2059670.html
+# ref:  Samba (简体中文)    https://wiki.archlinux.org/index.php/Samba_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)
+# ref:  第十六章、檔案伺服器之二： SAMBA 伺服器 http://linux.vbird.org/linux_server/0370samba.php#server_pkg
+# ref:  mac 怎么登录到 linux 服务器并传输文件？ https://www.zhihu.com/question/22407930
+# ref:   FTP命令详解（含操作实例）  http://blog.csdn.net/indexman/article/details/46387561
