@@ -1,0 +1,54 @@
+#
+# 【转自阮一峰老师】理解inode
+#
+1) inode: 储存文件元信息的区域就叫做inode，中文译名为"索引节点"。
+    file is stored to disk by: sector (512M) -> block(ex. 4k)
+        and managed through a file system.
+2) inode包含文件的元信息，具体来说有以下内容：
+　　* 文件的字节数
+　　* 文件拥有者的User ID
+　　* 文件的Group ID
+　　* 文件的读、写、执行权限
+　　* 文件的时间戳，共有三个：ctime指inode上一次变动的时间，mtime指文件内容上一次变动的时间，atime指文件上一次打开的时间。
+　　* 链接数，即有多少文件名指向这个inode
+　　* 文件数据block的位置
+  
+  stat $file1   # 查看某个文件的inode信息
+  
+3) inode也会消耗硬盘空间，
+    所以硬盘格式化的时候，操作系统自动将硬盘分成两个区域。
+    一个是数据区，存放文件数据；
+    另一个是inode区（inode table），存放inode所包含的信息。
+    每个inode节点的大小，一般是128字节或256字节。
+    inode节点的总数，在格式化时就给定，一般是每1KB或每2KB就设置一个inode。
+    假定在一块1GB的硬盘中，每个inode节点的大小为128字节，每1KB就设置一个inode，那么inode table的大小就会达到128MB，占整块硬盘的12.8%。
+    
+    df -i   # 查看每个硬盘分区的inode总数和已经使用的数量
+    dumpe2fs /dev/hda | grep "Inode size"      # 查看每个inode节点的大小
+    
+4) 每个inode都有一个号码，操作系统用inode号码来识别不同的文件。
+    ls -i $file1    # 可以看到文件名对应的inode号码
+    ls -i $dir1     # 列出整个目录文件，即文件名和inode号码
+
+5) 一般情况下，文件名和inode号码是"一一对应"关系，每个inode号码对应一个文件名。
+    但是，Unix/Linux系统允许，多个文件名指向同一个inode号码。即"硬链接"（hard link）。
+    这意味着，可以用不同的文件名访问同样的内容；
+            对文件内容进行修改，会影响到所有文件名；
+            但是，删除一个文件名，不影响另一个文件名的访问。
+    当inode节点中的"链接数"减到0，表明没有文件名指向这个inode，系统就会回收这个inode号码，以及其所对应block区域。
+    ln src dst      # create a hard link
+    ln -s src dst   # create a soft link
+    
+    软链接与硬链接最大的不同：
+        ln -s B A
+        文件A指向文件B的文件名，而不是文件B的inode号码，文件B的inode"链接数"不会因此发生变化。
+    文件A和文件B的inode号码虽然不一样，但是文件A的内容是文件B的路径。
+    soft link could be created for a directory while hard link only for a file.
+
+6) 由于inode号码与文件名分离，这种机制导致了一些Unix/Linux系统特有的现象。
+　　1. 有时，文件名包含特殊字符，无法正常删除。这时，直接删除inode节点，就能起到删除文件的作用。
+　　2. 移动文件或重命名文件，只是改变文件名，不影响inode号码。
+　　3. 打开一个文件以后，系统就以inode号码来识别这个文件，不再考虑文件名。因此，通常来说，系统无法从inode号码得知文件名。   
+
+
+# ref:  http://www.ruanyifeng.com/blog/2011/12/inode.html
