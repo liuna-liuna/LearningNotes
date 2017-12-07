@@ -1,0 +1,77 @@
+#
+# tcpdump, wireshark
+#
+1) TcpDump可以将网络中传送的数据包的“头”完全截获下来提供分析。
+    它支持针对网络层、协议、主机、网络或端口的过滤，并提供and、or、not等逻辑语句来帮助你去掉无用的信息。
+    tcpdump就是一种免费的网络分析工具，尤其其提供了源代码，公开了接口，因此具备很强的可扩展性，
+    tcpdump存在于基本的FreeBSD系统中，由于它需要将网络界面设置为混杂模式，普通用户不能正常执行，需具备root权限.
+
+    tcpdump = dump the traffic on a network
+
+    in FreeBSD, 在内核中取消bpfilter支持，就能屏蔽tcpdump之类的网络分析工具。
+
+2) tcpdump -i *** -c *** -w ***
+    tcpdump [ -adeflnNOpqStvx ] [ -c 数量 ] [ -F 文件名 ]
+　　　　　　　　　　[ -i 网络接口 ] [ -r 文件名] [ -s snaplen ]
+　　　　　　　　　　[ -T 类型 ] [ -w 文件名 ] [表达式 ] 
+
+    -i参数指定tcpdump监听的网络界面，这在计算机具有多个网络界面时非常有用，
+    -c参数指定要监听的数据包数量，
+    -w参数指定将监听到的数据包写入文件中保存，等等。
+
+     -a 　　　将网络地址和广播地址转变成名字；
+　　　-d 　　　将匹配信息包的代码以人们能够理解的汇编格式给出；
+　　　-dd 　　 将匹配信息包的代码以c语言程序段的格式给出；
+　　　-ddd 　　将匹配信息包的代码以十进制的形式给出；
+　　　-e 　　　在输出行打印出数据链路层的头部信息；
+　　　-f 　　　将外部的Internet地址以数字的形式打印出来；
+　　　-l 　　　使标准输出变为缓冲行形式；
+　　　-n 　　　不把网络地址转换成名字；
+　　　-t 　　　在输出的每一行不打印时间戳；
+　　　-v 　　　输出一个稍微详细的信息，例如在ip包中可以包括ttl和服务类型的信息；
+　　　-vv 　　 输出详细的报文信息；
+　　　-c 　　　在收到指定的包的数目后，tcpdump就会停止；
+　　　-F 　　　从指定的文件中读取表达式,忽略其它的表达式；
+　　　-i 　　　指定监听的网络接口；
+　　　-r 　　　从指定的文件中读取包(这些包一般通过-w选项产生)；
+　　　-w 　　　直接将包写入文件中，并不分析和打印出来；
+　　　-T 　　　将监听到的包直接解释为指定的类型的报文，常见的类型有rpc （远程过程调用）和snmp（简单网络管理协议；）
+
+3) tcpdump的表达式
+    表达式是一个正则表达式，tcpdump利用它过滤报文.
+    第一种是关于类型的关键字，主要包括host，net，port主机、网络、端口；如果没有指定类型，缺省的类型是host.
+    第二种是确定传输方向的关键字，主要包括src , dst ,dst or src, dst and src,
+        如果没有指明方向关键字，则缺省是src or dst关键字。
+    第三种是协议的关键字，主要包括fddi,ip,arp,rarp,tcp,udp等类型。
+        如果没有指定任何协议，则tcpdump将会监听所有协议的信息包。
+    其他重要的关键字如下：gateway,broadcast,less,greater,
+    还有三种逻辑运算，取非运算是 'not ' '! ',与运算是'and','&&';或运算 是'or','││'.
+
+4) Examples
+    tcpdump host 210.27.48.1    # 截获所有210.27.48.1 的主机收到的和发出的所有的数据包
+    tcpdump host 210.27.48.1 and \(210.27.48.2 or 210.27.48.3 \)    # 截获主机210.27.48.1 和主机210.27.48.2 或210.27.48.3的通信
+    tcpdump host 210.27.48.1 and ! 210.27.48.2  # 获取主机210.27.48.1除了和主机210.27.48.2之外所有主机通信的ip包
+    tcpdump udp port 123                        # 对本机的udp 123 端口进行监视 123 为ntp的服务端口
+    tcpdump -i eth0 src host hostname           # 读取主机hostname发送的所有数据
+    tcpdump -i eth0 dst host hostname           # 所有送到主机hostname的数据包
+    tcpdump -i eth0 gateway Gatewayname         # 监视通过指定网关的数据包
+
+
+5) tcpdump 输出格式
+    TODO
+
+6) other helpful commands 
+    netstat -anp    # 查看TCP或者UDP端口使用情况
+    netstat -tln    # 查看linux的端口使用情况
+    lsof -i :631    # 看某个端口的信息
+
+    netstat -a      # 查看所有的服务端口（LISTEN，ESTABLISHED）, default is only ESTABLISHED
+    netstat -ap     # 查看所有 的服务端口并显示对应的服务程序名
+    netsat -n       # 以数字形式显示ip地址
+
+
+
+
+
+
+# ref:  Tcpdump的详细用法   https://www.cnblogs.com/yc_sunniwell/archive/2010/07/05/1771563.html
