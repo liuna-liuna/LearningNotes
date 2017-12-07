@@ -76,6 +76,7 @@
         install from https://pypi.python.org/pypi/python-hdfs/0.4
         # or
         from source code: http://libpyhdfs.googlecode.com/svn/trunk/
+                          cd libpyhdfs & cp $HADOOP_HOME/hadoop-1.2.1/c++/Linux-i386-32/lib/libhdfs.so lib/
                           update include_dirs, runtime_library_dirs in setup.py
                           change #include "jni_md.h" to #include "linux/jni_md.h" in $JAVA_HOME/include/jni.h.
                           python setup.py install
