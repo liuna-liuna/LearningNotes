@@ -5,7 +5,7 @@
     "管理网络中跨多台计算机存储的文件系统称为分布式文件系统(DFS)"
 
 2) HDFS = Hadoop Distributed File System
-2.1)  前提：硬件是跨越大量机架的集群。
+2.1)  前提：硬件是跨越大量机架的集群，都是Linux系统。
     Hadoop: 对大量数据做分布处理的软件框架,就是一个实现了Google云计算系统的开源系统。
     HDFS：  是对这种抽象式文件系统的一种实现。
             HDFS is similar to other file system, it assigns inode for each file and directory.
@@ -97,6 +97,7 @@
 
 2.7) install HDFS as part of installing hadoop
     # could use virtual environment, prepare it.
+    taking installation on ubantu as an example:
     Step1. create hadoop account
            useradd, passwd etc. 
 
@@ -154,7 +155,7 @@
                 <configuration>
                     <property>
                         <name>dfs.namenode.secondary.http-address</name>
-                        <value>$hadoop_secondary_namenode_hostname:50090</value>
+                        <value>$hadoop_master_hostname:50090</value>
                     </property>
         
                     <property>
@@ -177,6 +178,11 @@
                         <value>false</value>
                     </property>
                 </configuration>
+                
+            in slaves (or works in 3.0 version):
+                $hadoop_datanode_name1
+                $hadoop_datanode_name1
+                ...
 
     Step6. format NameNode
             cd /usr/local/hadoop
@@ -186,6 +192,8 @@
             /usr/local/hadoop/sbin/start-dfs.sh
             /usr/local/hadoop/sbin/stop-dfs.sh
             jps # check if processes started
+                # on NameNode, jps will return NameNode, SecondaryNameNode, ResourceManager, JobHistoryServer;
+                # on DataNode, NodeManager, DataNode, jps.
 
     Step8. access through web
             in browser, $hadoop_master_ip:50070     # 查看 NameNode 和 Datanode 信息，还可以在线查看 HDFS 中的文件。
@@ -216,7 +224,19 @@
                         </property>
                     </configuration>
 
-             same snippets in yarn-site.xml. 
+             in yarn-site.xml:
+                    <configuration>
+                        <property>
+                            <name>yarn.resourcemanager.name</name>
+                            <value>$hadoop_master_hostname</value>
+                        </property>
+
+                        <property>
+                            <name>yarn.nodemanager.aux-services</name>
+                            <value>mapreduce_shuffle</value>
+                        </property>
+                    </configuration>
+
 
              start-yarn.sh  # 启动YARN
              mr-jobhistory-daemon.sh start historyserver    # //开启历史服务器，才能在Web中查看任务运行情况
@@ -258,3 +278,5 @@
 # ref:  HDFS    https://baike.baidu.com/item/hdfs/4836121?fr=aladdin
 # ref:  关于python使用hadoop（使用python操作hdfs）  http://blog.csdn.net/qq_32940231/article/details/50790483
 # ref:  HDFS NameNode内存全景   https://tech.meituan.com/namenode.html
+# ref:  Hadoop入门教程之HDFS架构   https://zhuanlan.zhihu.com/p/31631570
+
