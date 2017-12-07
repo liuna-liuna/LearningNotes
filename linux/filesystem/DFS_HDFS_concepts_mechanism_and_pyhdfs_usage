@@ -1,0 +1,260 @@
+#
+# DFS, HDFS concepts, mechanism and pyhdfs usage
+#
+1) DFS = Distributed File System
+    "管理网络中跨多台计算机存储的文件系统称为分布式文件系统(DFS)"
+
+2) HDFS = Hadoop Distributed File System
+2.1)  前提：硬件是跨越大量机架的集群。
+    Hadoop: 对大量数据做分布处理的软件框架,就是一个实现了Google云计算系统的开源系统。
+    HDFS：  是对这种抽象式文件系统的一种实现。
+            HDFS is similar to other file system, it assigns inode for each file and directory.
+            特点：
+                HDFS 处理巨大的文件，通过把文件分成数据块、数据块分布式处理。
+                "HDFS还没有实现用户的配额和访问控制。HDFS还不支持硬链接和软链接。
+                    然而，HDFS结构不排斥在将来实现这些功能."
+
+2.2) HDFS has two types of nodes: NameNode, DataNode.
+    NameNode: use FsImage and Editlog to provide all meta info and manage the file system.
+              提供名称查询服务，它是一个Jetty服务器；
+              保存meta信息，包括文件owership和permissions；文件包含哪些块；Block保存在哪个DataNode;
+              这些meta信息在启动后会自动加载到内存.
+
+             FsImage:  to keep all the info of a file system namespace.
+             EditLog: to track what operations are done. 
+
+    DataNode: store data.
+              "- 保存Block，每个块对应一个元数据信息文件。这个文件主要描述这个块属于哪个文件、第几个块等信息;
+               - 启动DataNode线程的时候会向NameNode汇报Block信息； 
+               - 通过向NameNode发送心跳保持与其联系(3秒一次)。
+                 如果NameNode10分钟没有收到DataNode的心跳，则认为其lost，并将其上的Block复制到其它DataNode。"
+
+                Each data block has 3 duplicates by default, 
+                    one in a local DataNode, the second in the same rack, the third in an other rack.
+
+    Block:    64MB by default.
+               "fsck" could show a file is made up of what blocks.
+                "HDFS 存储文件是以 block 为单位的，所以备份也是以 block 为单位的。"
+
+2.3) "HDFS的文件读取解析
+        可以分为三个大步骤:
+        1、获取文件系统
+        2、通过文件系统打开文件
+        3、将文件内容输出"
+        
+
+    write data process:
+        HDFS client applies for it from NameNode    -> NameNode returns info of Block ID, array of DataNodes
+        -> HDFS client write file into DataNodes    -> DataNodes duplicate async, the first DataNode transfer data to the second.
+        -> once the next DataNode finishes writting, signify its former DataNode
+        -> DataNode signifies HDFS client, data is done written.
+        -> HDFS client sends the final Block confirmation info to NameNode.
+
+    read data process:
+        HDFS client requests reading data from NameNode 
+        -> NameNode returns DataNode and its duplicates location
+        -> HDFS client reads data from DataNode directly.
+
+2.4) safemode:
+        "在启动的时候，名字节点进入一个叫做安全模式的特殊状态。安全模式中不允许发生文件块的复制。
+        名字节点接受来自数据节点的心跳和块报告。一个块报告包含数据节点所拥有的数据块的列表。
+        每一个块有一个特定的最小复制数。
+            当名字节点检查这个块已经大于最小的复制数就被认为是安全地复制了，
+            当达到配置的块安全复制比例时（加上额外的30秒），名字节点就退出安全模式。
+            它将检测数据块的列表，将小于特定复制数的块复制到其他的数据节点。"
+        bin/hadoop dfsadmin -safemode enter # 将集群设置成安全模式
+        bin/hadoop dfsadmin -safemode leave # 离开安全模式
+
+2.5) protocol:
+        "所有的通信协议都是在TCP/IP协议之上构建的。
+        一个客户端和指定TCP配置端口的名字节点建立连接之后，它和名字节点之间通信的协议是Client Protocal。
+            数据节点和名字节点之间通过Datanode Protocol通信。
+        RPC（Remote Procedure Call）抽象地封装了Client Protocol和DataNode Protocol协议。
+            按照设计，名字节点不会主动发起一个RPC，它只是被动地对数据节点和客户端发起的RPC作出反馈。"
+
+2.6) HDFS provides java api, could use pyhdfs module to work for it.
+        install from https://pypi.python.org/pypi/python-hdfs/0.4
+        # or
+        from source code: http://libpyhdfs.googlecode.com/svn/trunk/
+                          update include_dirs, runtime_library_dirs in setup.py
+                          change #include "jni_md.h" to #include "linux/jni_md.h" in $JAVA_HOME/include/jni.h.
+                          python setup.py install
+        # [check if following steps needed now after 2016.03]
+        1) add include $hadoop_lib ex. /usr/local/hadoop/hadoop-1.2.1/c++/Linux-i386-32/lib into /etc/ld.so.conf
+            /sbin/ldconfig -v
+        2) vim /etc/profile or ~/.bashrc:
+            export CLASSPATH=$CLASSPATH:i${HADOOP_HOME}/hadoop-client-1.2.1.jar
+            export CLASSPATH=$CLASSPATH:i${HADOOP_HOME}/hadoop-core-1.2.1.jar
+            ...
+            export CLASSPATH=$CLASSPATH:i${HADOOP_HOME}/lib/commons-logging-1.1.1.jar
+            ...
+
+        # use pyhdfs
+        import pyhdfs
+        fs = pyhdfs.connect($hadoop_name, 9000)
+        pyhdfs.listdir(fs, '/')
+        ...
+
+2.7) install HDFS as part of installing hadoop
+    # could use virtual environment, prepare it.
+    Step1. create hadoop account
+           useradd, passwd etc. 
+
+    Step2. set up ssh connection 
+           # switch to hadoop user
+           sudo apt-get install openssh-server
+           ssh-keygen -t rsa
+           cat ./id_rsa.pub >> ./authorized_keys
+
+    Step3. install jdk
+            sudo apt-get install openjdk-8-jre openjdk-8-jdk
+            in ~/.bashrc:
+                export JAVA_HOME=...
+                export PATH=$JAVA_HOME/bin:%PATH
+                export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+            source ~/.bashrc
+            java -version
+
+    Step4. install hadoop
+            sudo tar -xvzf hadoop-2.6.0.tar.gz -C /usr/local/
+            cd /usr/local
+            sudo mv hadoop-2.6.0 ./hadoop
+            sudo chown -R hadoop ./hadoop
+            hadoop version
+
+    Step5. do configuration
+            in ~/.bashrc:
+                export HADOOP_HOME=/usr/local/hadoop
+                export HADOOP_INSTALL=$HADOOP_HOME
+                export HADOOP_MAPPED_HOME=$HADOOP_HOME
+                export HADOOP_COMMON_HOME=$HADOOP_HOME
+                export HADOOP_HDFS_HOME=$HADOOP_HOME
+                export YARN_HOME=$HADOOP_HOME
+                export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+                export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
+
+            in $HADOOP_HOME/etc/hadoop/hadoop-env.sh:
+                export JAVA_HOME=...
+
+            in core-site.xml:
+                <configuration>
+                    <property>
+                        <name>fs.defaultFS</name>
+                        <value>hdfs://$hadoop_master_hostname:9000</value>
+                    </property>
+        
+                    <property>
+                        <name>hadoop.tmp.dir</name>
+                        <value>/usr/local/hadoop/tmp</value>
+                        <description>a base for other temporary directories.</description>
+                    </property>
+                </configuration>
+
+            in hdfs-site.xml:
+                <configuration>
+                    <property>
+                        <name>dfs.namenode.secondary.http-address</name>
+                        <value>$hadoop_secondary_namenode_hostname:50090</value>
+                    </property>
+        
+                    <property>
+                        <name>dfs.replication</name>
+                        <value>3</value>
+                    </property>
+        
+                    <property>
+                        <name>dfs.namenode.name.dir</name>
+                        <value>/usr/local/hadoop/tmp/dfs/name</value>
+                    </property>
+                    
+                    <property>
+                        <name>dfs.datanode.data.dir</name>
+                        <value>/usr/local/hadoop/tmp/dfs/data</value>
+                    </property>
+                    
+                    <property>
+                        <name>dfs.permissions</name>
+                        <value>false</value>
+                    </property>
+                </configuration>
+
+    Step6. format NameNode
+            cd /usr/local/hadoop
+            ./bin/hdfs namenode -format
+
+    Step7. start service
+            /usr/local/hadoop/sbin/start-dfs.sh
+            /usr/local/hadoop/sbin/stop-dfs.sh
+            jps # check if processes started
+
+    Step8. access through web
+            in browser, $hadoop_master_ip:50070     # 查看 NameNode 和 Datanode 信息，还可以在线查看 HDFS 中的文件。
+
+    Step9. start yarn 
+            "YARN 是从 MapReduce 中分离出来的，负责资源管理与任务调度。
+             YARN 运行于 MapReduce 之上，提供了高可用性、高扩展性"
+             "./sbin/start-dfs.sh 启动 Hadoop，仅仅是启动了 MapReduce 环境.
+              start-yarn.sh 启动 YARN负责资源管理与任务调度"
+
+            in mapred-site.xml:
+                mv ./etc/hadoop/mapred-site.xml.template ./etc/hadoop/mapred-site.xml
+                vim /usr/local/hadoop/etc/hadoop/mapred-site.xml:
+                    <configuration>
+                        <property>
+                            <name>mapreduce.framework.name</name>
+                            <value>yarn</value>
+                        </property>
+
+                        <property>
+                            <name>mapreduce.jobhistory.address</name>
+                            <value>$hadoop_master_hostname:10020</value>
+                        </property>
+
+                        <property>
+                            <name>mapreduce.jobhistory.webapp.address</name>
+                            <value>$hadoop_master_hostname:19888</value>
+                        </property>
+                    </configuration>
+
+             same snippets in yarn-site.xml. 
+
+             start-yarn.sh  # 启动YARN
+             mr-jobhistory-daemon.sh start historyserver    # //开启历史服务器，才能在Web中查看任务运行情况
+            # after YARN installed, could 查看任务的运行情况 through web
+            http://$hadoop_master_ip:8088/cluster
+             
+
+2.8) HDFS commands:
+        hadoop fs (hdfs dfs in later version)
+            1、-help[cmd] 显示命令的帮助信息
+            2、-ls(r) 显示当前目录下的所有文件 -R层层循出文件夹
+            3、-du(s) 显示目录中所有文件大小
+            4、-count[-q] 显示当前目录下的所有文件大小
+            5、-mv 移动多个文件目录到目标目录
+            6、-cp 复制多个文件到目标目录
+            7、-rm(r) 删除文件（夹）
+            8、-put 本地文件复制到hdfs
+            9、-copyFromLocal 本地文件复制到hdfs
+            10、-moveFromLocal 本地文件移动到hdfs
+            11、-get[-ignoreCrc] 复制文件到本地，可以忽略crc校验
+            12、-getmerge 将源目录中的所有文件排序合并到一个文件中
+            13、-cat 在终端显示文件内容
+            14、-text 在终端显示文件内容
+            15、-copyToLocal[-ignoreCrc] 复制文件到本地
+            16、-moveToLocal 移动文件到本地
+            17、-mkdir 创建文件夹 后跟-p 可以创建不存在的父路径
+            例：bin/hdfs dfs -mkdir -p /dir1/dir11/dir111
+            18、-touchz 创建一个空文件
+            
+    
+
+# ref:  hadoop搭建具体步骤——第一章（伪分布式）  https://zhuanlan.zhihu.com/p/25015815
+# ref:  hadoop搭建具体步骤——第二章（完全分布式）    https://zhuanlan.zhihu.com/p/25019470
+# ref:  聊聊Hadoop：图解HDFS是个啥    https://zhuanlan.zhihu.com/p/28614742
+# ref:  Hadoop 学习笔记四 分布式文件系统HDFS    http://blog.csdn.net/xundh/article/details/50905100
+# ref:  Hadoop之HDFS分布式文件系统读写流程详解  http://blog.csdn.net/mmd0308/article/details/75003494
+# ref:  Hadoop分布式文件系统——HDFS概念以及hdfs读写数据  http://blog.csdn.net/zhaojw_420/article/details/53169503
+# ref:  5分钟深入浅出 HDFS  https://zhuanlan.zhihu.com/p/20267586
+# ref:  HDFS    https://baike.baidu.com/item/hdfs/4836121?fr=aladdin
+# ref:  关于python使用hadoop（使用python操作hdfs）  http://blog.csdn.net/qq_32940231/article/details/50790483
+# ref:  HDFS NameNode内存全景   https://tech.meituan.com/namenode.html
