@@ -1,0 +1,99 @@
+#
+# FreeBSD, Linux similarity and difference
+#
+1) FreeBSD and Linux both come from Unix family. both could be open-source.
+
+2) difference: FreeBSD aims to keep stable while Linux could be at the technologe edge.
+               FreeBSD: "If it doen't break, don't change it."
+    
+    2.1) license:
+        Linux uses GPL, 
+            "GPL为用户提供阅读、发行和修改源代码的自由，GPL许可证帮助用户避免仅仅发行二进制。"
+        FreeBSD uses BSD, 
+            "FreeBSD以多种开源许可证进行发布，给予使用和重新发布FreeBSD的绝对自由。"
+
+    2.2) kernel and system management:
+        FreeBSD: whole system is managed / maintained by FreeBSD team
+        Linux kernel: Linus Torvalds 
+        Linux other packages: specific owner.
+        "FreeBSD是统一的管理方式，而Linux需要被分别维护。"
+        FreeBSD provides a lot of common tools, Linux uses many from GNU. Linux is named GNU/Linux offitially.
+        Both provides installation from binary and source code.
+            for FreeBSD, "ports 允许您构建所有支持FreeBSD的软件。
+                而且，它们的管理还是层次化的，您可以在/usr/ports下找到源文件的地址以及一些正确使用FreeBSD的文档。"
+
+    2.3) update:
+        FreeBSD updates basic system without all packages by default,
+            sudo freebsd-update -r 8.1-RELEASE upgrade
+            sudo freebsd-update install
+        Linux updates kernel with all packages.
+
+    2.4) hardware:
+        "硬件支持Linux比FreeBSD做的更好"
+
+    2.5) compatibility:
+        "FreeBSD能够运行大量的Linux应用。
+         它可以安装一个Linux的兼容层，这个兼容层可以在编译FreeBSD时加入AAC Compact Linux得到，
+         或通过下载已编译了Linux兼容层的FreeBSD系统，其中会包括兼容程序：aac_linux.ko。
+         不同于FreeBSD的是，Linux无法运行FreeBSD的软件。"
+
+    2.6) usability:
+        2.6.1) default shell:
+            FreeBSD: tcsh. Linux: sh.
+            bash shell comes from GNU, could have more functions than sh.
+            "bash和tcsh的区别仅仅在于tcsh的脚本功能。"
+            on Linux, use chsh, useradd to change default shell:
+                chsh
+                useradd -s /bin/bash
+
+        2.6.2) ex. network configuration:
+            for FreeBSD:
+                in /etc/rc.conf:
+                    hostname=$hostname
+                    ifcofig_le0="inet 192.168.1.108 netmask 255.255.255.0"
+                    defaultrouter="192.168.1.1"
+                in /etc/resolv.conf:
+                    nameserver 210.5.4.116
+                    nameserver ...
+            for CentOS:
+                in /etc/sysconfig/network-scripts/ifcfg-eth0:
+                    ...
+
+            further points:
+                ifconfig        # check ip
+                netstat -r      # check router
+                nslookup / dig  # check DNS
+                Name resolution order:
+                    /etc/hosts > DNS
+
+        2.6.3) root settings:
+            FreeBSD8.0默认root是不能在非本地登陆的，
+                需要改动下/etc/ssh/sshd_config文件:
+                    PermitRootLogin         yes # 允许root登录
+                    PermitEmptyPasswords    no  # 不允许空密码登录
+                    PasswordAuthentication  yes # 设置是否使用口令验证
+                    
+        2.6.4) create user:
+            both can use adduser.
+            in FreeBSD, could use pw too.
+                pw是来整删改显示用户和组的命令行工具。
+
+        2.6.5) install a package:
+            for Linux,   could use apt-get, rpm, yum etc. for different distributions,
+            for FreeBSD, could use ports and pkg_add, could use /usr/ports/ftp/axel to optimize ports speed.
+                "FreeBSD中的ports安装工具默认工具是用fetch，下载时经常出现龟速现象；
+                为了提高ports安装速度，我推荐axel工具，当然具体还得配置下/etc/make.conf文件..."
+
+        2.6.6) remote connection tools:
+            could use ssh, FreeBSD could use pietty too.
+
+        2.6.7) virtual machine tools:
+            可以用Vmware下的ESXi和Xen来作虚拟机，其实FreeBSD自身就带了jail虚拟机。
+
+        2.6.8) 存放可执行文件的目录
+            for FreeBSD: /usr/local/bin, /usr/local/sbin
+            for Linux:   /bin, /sbin, /usr/bin, /usr/sbin etc.
+
+# ref:  FreeBSD 系统管理员都应该知道的那点秘密  http://os.51cto.com/art/201012/236729.htm
+# ref:  FreeBSD 和 Linux 有什么不同？   http://www.linuxidc.com/Linux/2015-07/120834.htm
+# ref:  linux 修改用户默认shell（转）   http://blog.csdn.net/he520478/article/details/45219279
