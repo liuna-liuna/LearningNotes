@@ -1,6 +1,3 @@
-#
-# tcpdump, wireshark
-#
 1) TcpDump可以将网络中传送的数据包的“头”完全截获下来提供分析。
     它支持针对网络层、协议、主机、网络或端口的过滤，并提供and、or、not等逻辑语句来帮助你去掉无用的信息。
     tcpdump就是一种免费的网络分析工具，尤其其提供了源代码，公开了接口，因此具备很强的可扩展性，
@@ -10,6 +7,11 @@
 
     in FreeBSD, 在内核中取消bpfilter支持，就能屏蔽tcpdump之类的网络分析工具。
 
+    tcpdump 对截获的数据并没有进行彻底解码，数据包内的大部分内容是使用十六进制的形式直接打印输出的。
+    所以推荐用法：
+        先使用带-w参数的tcpdump 截获数据并保存到文件中，然后再使用其他程序(如Wireshark)进行解码分析。
+        当然也应该定义过滤规则，以避免捕获的数据包填满整个硬盘。
+
 2) tcpdump -i *** -c *** -w ***
     tcpdump [ -adeflnNOpqStvx ] [ -c 数量 ] [ -F 文件名 ]
 　　　　　　　　　　[ -i 网络接口 ] [ -r 文件名] [ -s snaplen ]
@@ -18,12 +20,22 @@
     -i参数指定tcpdump监听的网络界面，这在计算机具有多个网络界面时非常有用，
     -c参数指定要监听的数据包数量，
     -w参数指定将监听到的数据包写入文件中保存，等等。
+    -s 0: 抓取数据包时默认抓取长度为68字节。加上-s 0 后可以抓到完整的数据包
+    -s  snaplen
+        设置tcpdump的数据包抓取长度为snaplen, 如果不设置默认将会是68字节(而支持网络接口分接头的SunOS系列操作系统中默认的也是最小值是96).
+        68字节对于IP, ICMP(Internet Control Message Protocol,因特网控制报文协议), TCP 以及 UDP 协议的报文已足够, 
+        但对于名称服务(nt: 可理解为dns, nis等服务), NFS服务相关的数据包会产生包截短. 
+        如果产生包截短这种情况, tcpdump的相应打印输出行中会出现''[|proto]''的标志（proto 实际会显示为被截短的数据包的相关协议层次). 
+        需要注意的是, 采用长的抓取长度(nt: snaplen比较大), 会增加包的处理时间, 并且会减少tcpdump 可缓存的数据包的数量,
+            从而会导致数据包的丢失. 
+        所以, 在能抓取我们想要的包的前提下, 抓取长度越小越好.
+        把snaplen 设置为0 意味着让tcpdump自动选择合适的长度来抓取数据包.
+ 　　-e 　　　在输出行打印出数据链路层的头部信息；
 
      -a 　　　将网络地址和广播地址转变成名字；
 　　　-d 　　　将匹配信息包的代码以人们能够理解的汇编格式给出；
 　　　-dd 　　 将匹配信息包的代码以c语言程序段的格式给出；
 　　　-ddd 　　将匹配信息包的代码以十进制的形式给出；
-　　　-e 　　　在输出行打印出数据链路层的头部信息；
 　　　-f 　　　将外部的Internet地址以数字的形式打印出来；
 　　　-l 　　　使标准输出变为缓冲行形式；
 　　　-n 　　　不把网络地址转换成名字；
@@ -58,7 +70,70 @@
 
 
 5) tcpdump 输出格式
-    TODO
+    基本上tcpdump总的的输出格式为：
+        系统时间 来源主机。端口 > 目标主机。端口 数据包参数
+    tcpdump 的输出格式与协议有关.
+
+    5.1) 链路层头
+        ex. tcpdump -e host ice
+            21:50:12.847509 eth0 < 8:0:20:79:5b:46 0:90:27:58:af:1a ip 60: h219.33357 > ice.telnet 0:0(0) ack 22535 win 8760 (DF)
+            timestamp ID eth0 <表示从网络接口eth0 接受该数据包，eth0>表示从网络接口设备发送数据包, 
+            8:0:20:79:5b:46是主机H219的MAC地址,它表明是从源地址H219发来的数据包.
+            0:90:27:58:af:1a是主机ICE的MAC地址,表示该数据包的目的地址是ICE . 
+            ip 是表明该数据包是IP数据包,60是数据包的长度, 
+            h219.33357 > ice.telnet表明该数据包是从主机H219的33357端口发往主机ICE的TELNET(23)端口. 
+            ack 22535表明对序列号是222535的包进行响应. 
+            win 8760表明发送窗口的大小是8760.
+
+    5.2) ARP包
+        tcpdump 对 ARP/RARP包的输出信息包含请求类型及该请求对应的参数。
+        ex. tcpdump arp
+        以从主机rtsg到主机csam的'rlogin'(远程登录)过程开始阶段的数据包样例:
+            arp who-has csam tell rtsg
+            arp reply csam is-at CSAM
+        第一行表示:rtsg发送了一个arp数据包(nt:向全网段发送,arp数据包）以询问csam的以太网地址
+        Csam（nt:可从下文看出来, 是Csam）以她自己的以太网地址做了回应
+        (在这个例子中, 以太网地址以大写的名字标识, 而internet地址(即ip地址)以全部的小写名字标识).
+        
+        如果使用tcpdump -n, 可以清晰看到以太网以及ip地址而不是名字标识:
+            arp who-has 128.3.254.6 tell 128.3.254.68
+            arp reply 128.3.254.6 is-at 02:07:01:00:01:c4
+        
+
+    5.3) TCP包
+        src > dst: flags data-seqno ack window urgent options
+            src> dst:表明从源地址到目的地址, 
+            flags是TCP包中的标志信息,S 是SYN标志, F (FIN), P (PUSH) , R(RST) "." (没有标记); 
+            data-seqno是数据包中的数据的顺序号, 
+            ack是下次期望的顺序号,Ack 描述的是同一个连接,同一个方向,下一个本端应该接收的(对方应该发送的)数据片段的顺序号.
+            window是接收缓存的窗口大小, 
+            urgent表明数据包中是否有紧急指针. options是选项.
+
+    5.4) UDP包
+        route.port1 > ice.port2: udp lenth
+           ROUTE的port1端口发出的一个UDP数据包到主机ICE的port2端口，类型是UDP， 包的长度是lenth
+
+    5.5) SMB/CIFS包
+        tcpdump对Sun NFS(网络文件系统)请求和回应的UDP数据包有如下格式的打印输出:
+            src.xid > dst.nfs: len op args
+            src.nfs > dst.xid: reply stat len op results
+            
+            xid = transaction id
+
+    5.6) AFS = Andrew File System
+        src.sport > dst.dport: rx packet-type
+        src.sport > dst.dport: rx packet-type service call call-name args
+        src.sport > dst.dport: rx packet-type service reply call-name args
+        
+    5.7) KIP AppleTalk
+    5.8) IP 数据包破碎(nt: 指把一个IP数据包分成多个IP数据包)
+        碎片IP数据包(nt: 即一个大的IP数据包破碎后生成的小IP数据包)有如下两种显示格式.
+            (frag id:size@offset+)
+            (frag id:size@offset)
+        (第一种格式表示, 此碎片之后还有后续碎片. 第二种格式表示, 此碎片为最后一个碎片.)    
+
+    5.9) 时间戳信息
+        hh:mm:ss.frac
 
 6) other helpful commands 
     netstat -anp    # 查看TCP或者UDP端口使用情况
@@ -69,9 +144,25 @@
     netstat -ap     # 查看所有 的服务端口并显示对应的服务程序名
     netsat -n       # 以数字形式显示ip地址
 
+7) if not installed by default, install by yum install tcpdump.
 
+8) wireshark: 开源抓包软件，
+    Wireshark的核心功能是捕捉网络数据包，并尽可能地显示出数据包中的详细信息，底层需要Winpcap的支持。
+    基本工作原理:
+        当计算机上的网卡收到数据帧时，会查看数据帧的目的MAC和本网卡的MAC地址是否相同。
+        如果不同就丢弃帧，如果相同就接收帧并交给上一层处理。
+        对于广播帧或者组播帧，网卡也会接收下来，但在正常情况下，这些帧会被丢弃。
+        当计算机上启动Wireshark后，网卡会被置为混杂模式，这时只要数据帧能达到网卡，
+            不论帧的目的MAC和本网卡的MAC地址是否相同，网卡将全部接收并交给Wireshark处理。
 
-
+    使用：
+        安装 -> 启动 -> 选择本地连接的网卡 -> Start 
+        -> 设置过滤条件如ip.address==***, ip.src=***, http.request.method=Get, and... 
+        -> 分析数据包
 
 
 # ref:  Tcpdump的详细用法   https://www.cnblogs.com/yc_sunniwell/archive/2010/07/05/1771563.html
+# ref:  Linux tcpdump命令详解   https://www.cnblogs.com/ggjucheng/archive/2012/01/14/2322659.html
+# ref:  Tcpdump的用法及使用案例 http://blog.csdn.net/hijk139/article/details/16965315
+# ref:  Wireshark使用方法   https://jingyan.baidu.com/article/466506583ff35af549e5f83c.html
+# ref:  wireshark抓包用法以及数据包分析系列教程一   https://jingyan.baidu.com/article/0bc808fc5d3eb41bd485b9fe.html
