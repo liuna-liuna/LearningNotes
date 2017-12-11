@@ -1,17 +1,21 @@
+#
+# Chef introduction and mechanism
+#
+1) Chef 自动进行机器的部署、更新和管理。
 
-#
-# Chef introduction
-#
 官方的介绍是这样的：
-Automation for Web-Scale IT.
-Chef delivers fast, scalable, flexible IT automation.
-简单来说Chef就是IT自动化工具，它把服务器的环境（软件、依赖库、网络等）进行抽象，
-以特有的配置语法（Ruby语言）对其进行管理，可以自动的进行服务器环境的初始化工作。
-Chef也是实践DevOps和Continuous Integration的重要工具，同类的工具还有puppet。
+    Automation for Web-Scale IT.
+    Chef delivers fast, scalable, flexible IT automation.
+    简单来说Chef就是IT自动化工具，它把服务器的环境（软件、依赖库、网络等）进行抽象，
+    以特有的配置语法（Ruby语言）对其进行管理，可以自动的进行服务器环境的初始化工作。
+    Chef也是实践DevOps和Continuous Integration的重要工具，同类的工具还有puppet。
 
+    "Chef将脚本命令代码化，配置流程都体现在代码逻辑当中，定制时只需要修改代码，
+        安装的过程就是执行代码的过程。"
+    
 Chef基本上做两件事：
     环境管理
-    以自动化的方式进行服务器环境初始化或变更工作
+    以自动化的方式进机器部署和变更
 
 Chef环境由三个部分组成：Chef server，Workstation, Node（此Node非Node.js）。
     Chef server是Chef环境的中枢，其中存储了基础设施环境的信息。
@@ -20,14 +24,229 @@ Chef环境由三个部分组成：Chef server，Workstation, Node（此Node非No
     Workstation是你的工作台，一般情况下就是你的开发机器。
       你会在Workstation中创建cookbook，并且上传到Chef server，以及其他与Chef相关的工作。
 
-    一个Node就是你基础设施环境中的一台服务器，也就是你用Chef来管理的机器。
-      一个Node可以是一台物理机器，一个虚拟机，也可以是cloud环境中的一个instance，
-      甚至是你网络环境中的一个交换机或路由器。
-      如果你想要在Node上部署环境，那么Node会与Chef server进行交互获取信息，并在Node上执行环境初始化操作。
+    Chef client:
+        一个Node就是你基础设施环境中的一台服务器，也就是你用Chef来管理的机器。
+          一个Node可以是一台物理机器，一个虚拟机，也可以是cloud环境中的一个instance，
+          甚至是你网络环境中的一个交换机或路由器, 也可以是docker.
+          如果你想要在Node上部署环境，那么Node会与Chef server进行交互获取信息，并在Node上执行环境初始化操作。
+        可以直接连到client上本地部署，
+        也可以从 Workstation 上远程部署：
+            knife bootstrap的优点并不只是远程执行部署命令。
+            对于一台还未成为chef client的目标机器，knife bootstrap将会在第一次运行时强制安装chef client，并将他注册成为一个有效的chef client.
+                knife bootstrap传参，可以设置data_bag来传递数据。或者使用-j来携带json数据。
+            knife bootstrap并不是单单只是用来部署Chef cookbook和执行Recipe，同样可以对目标机器进行特定的配置操作。
+                knife bootstrap会预先指定一个脚本模版，当knife bootstrap命令通过ssh连接到目标机器时，会自动编译执行脚本模版内容。
+                knife bootstrap默认的脚本模版以erb为后缀，并根据不同操作系统设定不同脚本模版。
+                默认模版首先会检查目标机器上是否已安装Chef，如果没有安装就从Chef源将客户端安装包下载并安装到默认目录，
+                    然后设置脚本（successhandler和errorhandler）接收并处理chef客户端执行的结果，最后启动chef客户端并执行赋予的Recipe。
+                    也可以默认脚本模版为基础，添加额外的部署操作.
+                        knife bootstrap windows ssh 192.168.10.139 -x Administrator -P 'Ve22test' --distro windows-chef-client-msi.mine -r role[iem]
+                        即：以ssh方式将脚本模版windows-chef-client-msi.mime内容发送到操作系统为windows的目标机器192.168.10.139，
+                            同时将该脚本模版转化为windows识别的bat脚本并存在临时目录下，然后在目标机器中以dos命令行方式执行生成的bat脚本。
 
 
-# ref doc: 
-# Chef入门（一）      http://weizhifeng.net/learn-chef-01.html
-# 使用容器还是使用类似Chef、Puppet这类的配置管理工具？  http://dockone.io/article/717
-# 官方网站            https://www.chef.io/
 
+“Chef是这样工作的:
+    在Workstation上定义各个Client应该如何配置自己(即Recipe）,然后将这些信息上传到中心服务器
+    每个Client连到中心服务器查看如何配置自己,然后进行自我配置
+    Workstation与Server之间以及Client与Server之间通过pem作为认证，
+    当新加一个Client的时候,需要从中心服务器上拷贝validator.pem到新加的Client，
+    然后利用这个pem进行注册得到自己的client.pem进行以后的认证”
+
+"最佳实践:
+    1. 在实现recipe时尽量使用Resource，而不是直接在Recipe中使用Ruby代码.
+    2. 当部署需要一次性执行多个recipe时，可以依次添加recipe
+            knife node run_list add <client name> "recipe[recipe name]"，
+        也可以将所有待执行recipe定义在一个role对象中，再将该role对象添加到节点上。
+            knife node run_list add <client name> "role[role name]"
+       然后在client上执行chef-client，该chef客户端将自动与chef 服务器同步相关的cookbook, role etc.，并运行.
+    
+    "
+
+    
+2) 安装
+2.1） Chef Server
+        使用开源Chef server，也可以使用Chef官方提供的商业服务：Enterprise Chef。
+
+2.2） Workstation
+        可以用 omnibus installer 安装 Chef-client, Ruby, Knife 等一系列工具。
+            curl -L https://www.opscode.com/chef/install.sh | sudo bash
+
+        验证：
+            chef-client -v
+
+        connect to chef-server, 
+            taking using Enterprise Chef as an example:
+                need to download chef-repo by downloading Starter Kit, ex. to ~/chef-repo/
+                    and download 3 files:
+                        knife.rb
+                        ORGANIZATION-validator.pem  # ORGANIZATION为你自己组织的名字
+                        USER.pem                    # USER为你的用户名
+                        and copy them to ~/chef-repo/.chef/
+         add Ruby-path to $PATH:
+            echo 'export PATH="/opt/checf/embedded/bin:$PATH" ' >> ~/.bash_profile && source ~/.bash_profile
+        验证:
+            cd ~/chef-repo
+            knife client list
+
+2.3） Chef Client
+    need root permission, SSH user/password, SSH port.
+    prepare a node: physical, vm, cloud instance, docker etc.
+        也可以用Chef官方提供的 Vagrant 方案, through Vagrantfile in Starter Kit.
+            vagrant up
+    install chef-client:
+        knife bootstrap localhost --sudo -x vagrant -P vagrant --ssh-port 2222 -N node1
+        knife bootstrap $node_ip --sudo -x root -P $password -N $node_name
+    验证:
+        访问manage.opscode.com/organizations，在Nodes标签上你应该可以看到刚才bootstrap的node名称。
+
+4) usage
+    一般来说，如果同时使用Chef + Docker:
+        "配置管理将只用于安装Docker，业务流程系统，配置PAM/ SSH身份验证和调整OS的sysctl值。
+            基本上不涉及应用程序的部署。
+         Docker和你选择的业务流程系统用来运行应用程序和特定的软件包。"
+
+    本地执行的命令以 chef 打头，需要远程连接到 Chef 服务器或待配置服务器的命令以 knife 打头。
+    Commands examples:
+    运行“菜谱”:
+        chef-client --local-mode recipe1.rb
+    使用 Chef 生成“烹饪手册”:
+        chef generate cookbook cookbook1
+    使用 Chef 生成模板:
+        chef generate template cookbook1 templaate_name1
+    使用 Chef 运行“烹饪手册”:
+        chef-client --local-mode -runlist 'recipe[cookbook1]'
+    从 Chef 超市下载“烹饪手册”:
+        knife cookbook site download cookbook1
+    向 Chef 服务器上传“烹饪手册”:
+        knife cookbook upload cookbook1 -o parent_to_cookbook_directory
+    服务器自我部署或更新：
+        knife bootstrap {{address}} --ssh-user {{user}} --ssh-password {{password}} \
+            --sudo --use-sudo-password --node-name node1 \
+            --run-list 'recipe[cookbook1]'
+    获取当前组织下的服务器列表:
+        knife node list
+    显示服务器信息:
+        knife node show node1
+    使用 Chef 远程运行“烹饪手册”，配置服务器:
+        knife ssh {{address} 'sudo chef-client --manual-list \
+            --ssh-user {{user}} --ssh-password {{password}}'
+
+
+5) Cookbook: Cookbook 是 Chef 框架的重要基础功能之一。
+    on Chef Server: Runlist -> Cookbook:
+        recipe:    整个操作，比如，如何安装，安装哪些包，怎样做配置等。
+        file:      用来作部署的文件。一般会根据操作系统、平台等定义不同的文件配置。
+        template:  一些内嵌了 Ruby 标签的文件，通常用来定义配置文件。ex. template1.erb
+        librarie:   用来对 Cookbook 的功能做扩展。我们可以用 Ruby 语言编写自己的类来供 Recipe 调用。
+        metadata:   定义了 Cookbook 的属性值，比如，当前的 Cookbook 的版本，支持的平台，对其他 Cookbook 的依赖等信息。
+
+    knife cookbook create cookbook1
+    in cookbook1/
+        attributes
+        files
+            default
+                file1.html
+        libaries
+        metadata
+        provider
+        recipes
+            default.rb
+            recipe1.rb
+        resources
+        templates
+            default
+                file1.html.erb
+        ...
+
+    knife cookbook upload cookboo1
+    应用 Cookbook:
+        knife node run_list add $node_name recipe[cookbook1::recipe1]
+
+6) Resource: 定义一个状态规则，即机器的目标状态。其具体实现是相对应的 Provider 类。
+    常用:
+        execute:    执行一条命令. 
+        directory:  管理目录结构。  
+        cookbook_file
+        file:       create a file etc.
+        remote_file: 远程下载文件
+        package:    管理安装包
+        yum_package:        对 yum 源进行配置和管理。
+        windows_package:    windows 软件安装
+        user:       create a user etc.
+        group:      create a group, add memebers into it etc.
+        service:    start, stop, enable etc. a service
+
+    examples:
+        execute "test command" do
+            action :run
+            command "echo 'this is test command'>test.log"
+            cwd "/root"
+        end
+
+        directory "/tmp/mydir" do
+            owner "root"
+            group "root"
+            mode "0755"
+            action :create
+        end
+
+        cookbook_file '$full_path_target_file' do
+            source "helloword.html"
+            mode "0644"
+        end
+
+        package "screen" do
+            action :install
+        end
+
+        yum_package "ftp-repo" do
+            name "FTP your repository - Test"
+            baseurl "ftp://$user:password@ftpserver1/.../"
+        end
+
+        file $full_path_or_relative_filename do
+            content "Hello Chef"
+        end
+
+        service "iptables" do
+            action :stop
+        end
+
+7) Role: 可以用来描述一台服务器希望被配置成什么样子(配置成web服务器,mysql服务器,甚至是一个论坛)
+    它有一个run_list,里面包含了Recipe和Role(Role可以包含Role).
+
+    创建Role:
+        knife role create role1
+    应用到一个Node上:
+        knife node runlist add node1 'role[role1]'
+
+8) DataBag: 定义全局信息.
+    创建DataBag:
+        knife databag create databag1
+        mkdir $databag1_full_path
+        ex. vim $databag1_full_path/dbb1.json:
+            {
+                "id": "id1"
+                ...
+                "action": "create",
+            }
+    上传到服务端:
+        knife databag from file databag1 dbb1.json
+    现在就可以在Recipe里访问这些信息,可以有两个方法:
+        data_bag:       ex. data_bag('databag1') # ["dbb1"]
+        data_bag_item:  ex. data_bag_item('databag1', 'dbb1')    # {"id" => "id1", ...}
+
+
+
+9) 与其他工具的异同点
+    Chef 与 Puppet 功能类似，Puppet用基于XML的专用文法书写，Chef用Ruby书写.
+
+# ref:  Chef入门（一）      http://weizhifeng.net/learn-chef-01.html
+# ref:  使用容器还是使用类似Chef、Puppet这类的配置管理工具？  http://dockone.io/article/717
+# ref:  官方网站            https://www.chef.io/
+# ref:  Chef Doc    https://docs.chef.io/chef_overview.html
+# ref:  Chef 框架之 Cookbook 的介绍及应用   https://www.ibm.com/developerworks/cn/cloud/library/1504_wangqw_chefcookbook/index.html
+# ref:  使用Chef部署OpenStack (by quqi99)   http://blog.csdn.net/quqi99/article/details/21247111
+# ref:  Chef开发及高效部署实例分析  https://www.ibm.com/developerworks/cn/cloud/library/cl-cn-chef-bootstrap/index.html
+# ref:  runlist doc https://docs.chef.io/run_lists.html
