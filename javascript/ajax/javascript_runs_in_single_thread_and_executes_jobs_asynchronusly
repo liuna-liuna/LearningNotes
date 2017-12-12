@@ -13,8 +13,8 @@
       setInterval(...) : runs callback every ...
     
     
-2) javascript runs ajax mainly through XmlHttpRequest(), 
-    XmlHttpRequest by default it access urls with same origin.
+2) javascript runs ajax mainly through XMLHttpRequest(), 
+    XMLlHttpRequest by default accesses urls with same origin.
     
     javascripts runs ajax in 3 ways to access resources with other origins:
       A) flash
@@ -25,10 +25,11 @@
          # ref: http://www.cnblogs.com/dowinning/archive/2012/04/19/json-jsonp-jquery.html
     
     from html5, Cross-Origin-Resource-Sharing(CORS) strategy is supported to access resources with other origins.
-      CORS needs that remote that must support Access-Control-Allow-Origin(ACAO).
+      CORS needs that remote server must support Access-Control-Allow-Origin(ACAO).
       
 
 # ref:  https://www.zhihu.com/question/20866267
 # ref:  https://github.com/pramper/Blog/issues/4
 # ref:  http://www.ruanyifeng.com/blog/2014/10/event-loop.html
 # ref:  http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499861493e7c35be5e0864769a2c06afb4754acc6000
+# ref:  说说JSON和JSONP，也许你会豁然开朗   https://kb.cnblogs.com/page/139725/
