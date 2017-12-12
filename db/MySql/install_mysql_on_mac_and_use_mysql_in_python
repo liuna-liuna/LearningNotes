@@ -38,7 +38,7 @@
          MySQL-python
          
          > brew install mysql-connector-c
-            # o
+            # or
          > sudo pip install MySQL-python
          # ref:     使用MySQL     https://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000
                                     /001391435131816c6a377e100ec4d43b3fc9145f3bb8056000
@@ -75,7 +75,7 @@
  
     mysql.connector vs. MySQLdb:
         mysql.connector: conn = mysql.connector.connect(user='...', password='...', database='...', useunicode=True)
-        MySQLdb:         conn = MySQLdb.connect(host='...', port='...', user='...', passwd='...', codeset='utf8')
+        MySQLdb:         conn = MySQLdb.connect(host='...', port='...', user='...', passwd='...', db='...', codeset='utf8')
         
 6) mysql sql_mode:
     in /etc/my.conf: 
