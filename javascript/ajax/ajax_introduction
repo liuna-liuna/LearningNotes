@@ -11,14 +11,35 @@
     运用XMLHttpRequest或新的Fetch API与网页服务器进行异步资料交换；
     注意：AJAX与Flash、Silverlight和Java Applet等RIA技术是有区分的。
  
- 3) AJAX主要通过客户端以XMLHttpRequest（）open 一个 url， send到服务器, 
+ 3) 3.1) AJAX主要通过客户端以XMLHttpRequest（）open 一个 url， send到服务器, 
         服务器返回的数据 responseText or responseHTML 由回调函数如 XMLHttpRequest 对象的 onreadystatechange 处理呈现。
     XMLHttpRequest一般仅能访问同源，即域名、协议、端口一致的url。
-    要跨域资源共享CORS = Cross Orient Resource Sharing，可以有三种方式：
+
+    3.2) CORS = Cross Origin Resource Sharing跨域资源共享，是HTML5规范定义的如何跨域访问资源。
+        简单请求包括GET、HEAD和POST（POST的Content-Type类型仅限application/x-www-form-urlencoded、multipart/form-data和text/plain），
+            并且不能出现任何自定义头（例如，X-Custom: 12345），通常能满足90%的需求。
+            
+        复杂请求：对于PUT、DELETE以及其他类型如application/json的POST请求，在发送AJAX请求之前，
+            浏览器会先发送一个OPTIONS请求（称为preflighted请求）到这个URL上，询问目标服务器是否接受：
+            OPTIONS /path/to/resource HTTP/1.1
+            HOST: bar.com
+            Origin: http://my.com
+            Access-Control-Request-Method: POST
+        服务器必须响应并明确指出允许的Method：
+            HTTP/1.1 200 OK
+            Access-Control-Allow-Origin: http://my.com
+            Access-Control-Allow-Methods: POST, GET, PUT, OPTIONS
+            Access-Control-Max-Age: 86400
+        
+        OPTIONS请求和响应含有字段 ACRM, ACAO, ACAM etc.
+        由于以POST、PUT方式传送JSON格式的数据在REST中很常见，所以要跨域正确处理POST和PUT请求，服务器端必须正确响应OPTIONS请求。
+        
+    3.3) 要跨域资源共享可以有三种方式：
         A) flash
         B) proxy, ex. /proxy?...
         C) jsonp. 
-   
+        
+   ------------------------------------------------
     function success(text) {
         var textarea = document.getElementById('test-ie-response-text');
         textarea.value = text;
@@ -81,7 +102,7 @@
             <table id="demo"></table>
         </body>
     </html>
-    
+    ------------------------------------------------
         
  4) JSONP: 动态生成 'script' element。jsonp supports only 'GET' and returns only javascript.
     1、Ajax直接请求普通文件存在跨域无权限访问的问题；
@@ -95,6 +116,21 @@
         该协议的一个要点就是允许用户传递一个callback参数给服务端，
         然后服务端返回数据时会将这个callback参数作为函数名来包裹住JSON数据，这样客户端就可以随意定制自己的函数来自动处理返回数据了。
  
+    ------------------------------------------------
+    var callbackFuncName = function(data) {
+    ...
+    }
+    
+    var test = document.createElement('script');
+    test.src = url;
+    // url为要请求的地址，这里要注意！！！url最后一般带有callback字段，不一定是这个名字，这个是由服务器端代码决定的。
+    // 总之这个字段的值为页面中定义的回调函数的函数名。
+    // 之前所说的一般会返回函数调用，就是服务器端获取到callback字段后经过处理最后发送回来callback调用。
+    
+    document.getElementsByTagName('head')[0].appendChild(test);
+    ------------------------------------------------
+    
+    
     例子见 # ref:  说说JSON和JSONP，也许你会豁然开朗   https://kb.cnblogs.com/page/139725/
     
     
