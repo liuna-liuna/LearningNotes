@@ -11,11 +11,19 @@
     运用XMLHttpRequest或新的Fetch API与网页服务器进行异步资料交换；
     注意：AJAX与Flash、Silverlight和Java Applet等RIA技术是有区分的。
  
- 3) 3.1) AJAX主要通过客户端以XMLHttpRequest（）open 一个 url， send到服务器, 
-        服务器返回的数据 responseText or responseHTML 由回调函数如 XMLHttpRequest 对象的 onreadystatechange 处理呈现。
-    XMLHttpRequest一般仅能访问同源，即域名、协议、端口一致的url。
+ 3) 3.1) AJAX主要通过
+        1. 用javascript 原生的xmlhttprequest实现跨域的请求
+                客户端以XMLHttpRequest（）open 一个 url， send到服务器, 
+                服务器返回的数据 responseText or responseHTML 由回调函数如 XMLHttpRequest 对象的 onreadystatechange 处理呈现。
+           XMLHttpRequest一般仅能访问同源，即域名、协议、端口一致的url。
+        2. AJAX直接通过jsonp实现跨域请求
 
     3.2) CORS = Cross Origin Resource Sharing跨域资源共享，是HTML5规范定义的如何跨域访问资源。
+    
+        CORS 的工作方式是通过添加 HTTP 头的方法来判断哪些资源允许 Web 浏览器访问该域名下的信息。
+        该规范要求浏览器对请求进行“预先验”，通过发送 HTTP 的 OPTIONS 请求头询问服务器有哪些支持的方法，
+        在征得服务器的同意后，再使用实际的 HTTP 请求方法发送实际的请求.
+        
         简单请求包括GET、HEAD和POST（POST的Content-Type类型仅限application/x-www-form-urlencoded、multipart/form-data和text/plain），
             并且不能出现任何自定义头（例如，X-Custom: 12345），通常能满足90%的需求。
             
@@ -31,7 +39,10 @@
             Access-Control-Allow-Methods: POST, GET, PUT, OPTIONS
             Access-Control-Max-Age: 86400
         
-        OPTIONS请求和响应含有字段 ACRM, ACAO, ACAM etc.
+        OPTIONS请求和响应含有字段 ACRM, ACAO, ACAM, ACAH etc.
+            如： Response.AddHeader("Access-Control-Allow-Headers", "POWERED-BY-MENGXIANHUI");  
+                // "POWERED-BY-MENGXIANHUI"是自定义的文件头
+                
         由于以POST、PUT方式传送JSON格式的数据在REST中很常见，所以要跨域正确处理POST和PUT请求，服务器端必须正确响应OPTIONS请求。
         
     3.3) 要跨域资源共享可以有三种方式：
@@ -39,6 +50,23 @@
         B) proxy, ex. /proxy?...
         C) jsonp. 
         
+     jsonp两种实现方式：
+     2. AJAX直接通过jsonp实现跨域请求
+        $.ajax({
+            type: "GET",
+            async: true,
+            contentType: "application/x-javascript;charset=utf-8",
+            url: 'url1'
+            data: {key1:value1, ...},
+            dataType: "jsonp",
+            jsonp: "callback",
+            jsonpCallback: "jsonpCallback",
+            success: function(data){
+                alert(data.response_key1);
+            }, error: function(){}
+        });
+     
+     1. 用javascript 原生的xmlhttprequest实现跨域的请求
    ------------------------------------------------
     function success(text) {
         var textarea = document.getElementById('test-ie-response-text');
@@ -147,4 +175,7 @@
 # ref:  廖雪峰老师AJAX    https://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499861493e7c35be5e0864769a2c06afb4754acc6000
 # ref:  廖雪峰老师JS教程读书笔记（二）：原生AJAX与跨域总结    http://blog.csdn.net/u013836242/article/details/77838304
 # ref:  AJAX（XMLHttpRequest）进行跨域请求方法详解（一）   http://blog.csdn.net/net_lover/article/details/5172509
+# ref:  AJAX（XMLHttpRequest）进行跨域请求方法详解（二）   http://blog.csdn.net/net_lover/article/details/5172522
 # ref:  XMLHttpRequest 例子   http://www.runoob.com/try/try.php?filename=tryajax_xml2
+# ref:  js原生态跨域请求与ajax中jsonp跨域请求    http://blog.csdn.net/jiandan217/article/details/51279320
+# ref:  Ajax异步请求RESTFUL API之跨域问题解决方案    http://blog.csdn.net/yubin1991/article/details/52176239
