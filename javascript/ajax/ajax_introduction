@@ -1,0 +1,114 @@
+#
+# ajax introduction
+#
+1) AJAX 是一种在无需重新加载整个网页的情况下，能够更新部分网页的技术。
+    AJAX = 异步 JavaScript 和 XML
+
+2) AJAX 应用
+    运用XHTML+CSS来表达资讯；
+    运用JavaScript操作DOM（Document Object Model）来执行动态效果；
+    运用XML和XSLT操作资料;
+    运用XMLHttpRequest或新的Fetch API与网页服务器进行异步资料交换；
+    注意：AJAX与Flash、Silverlight和Java Applet等RIA技术是有区分的。
+ 
+ 3) AJAX主要通过客户端以XMLHttpRequest（）open 一个 url， send到服务器, 
+        服务器返回的数据 responseText or responseHTML 由回调函数如 XMLHttpRequest 对象的 onreadystatechange 处理呈现。
+    XMLHttpRequest一般仅能访问同源，即域名、协议、端口一致的url。
+    要跨域资源共享CORS = Cross Orient Resource Sharing，可以有三种方式：
+        A) flash
+        B) proxy, ex. /proxy?...
+        C) jsonp. 
+   
+    function success(text) {
+        var textarea = document.getElementById('test-ie-response-text');
+        textarea.value = text;
+    }
+    
+    function fail(code) {
+        var textarea = document.getElementById('test-ie-response-text');
+        textarea.value = "Error code: " + code;
+    }
+    
+    var xhr;
+    if (window.XMLHTTPRequest) {
+        xhr = new XMLHttpRequest();
+    }
+    else {
+        xhr = new ActiveXObject('Microsoft.XMLHTTP');
+    }
+    
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                return success(xhr.responseText);
+                }
+            else {
+                return fail(xhr.status);
+            }
+        }
+    }
+    
+    xhr.open('GET', '/api/categories', true);
+    xhr.send();
+    alert('请求已发送，请等待响应...');
+    
+    ------------------------------------------------
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="utf-8"/>
+            <style>
+                table, th, td {
+                    border: 1px solid black;
+                    border-collapse: collapse;
+                }
+                th, td {
+                    padding: 5px;
+                }
+            </style>
+            <script>
+                function loadDoc() {
+                    ...
+                    ... new XMLHttpRequest();
+                    ...
+                }
+            </script>
+        </head>
+        <body>
+            <h1>XMLHttpRequest 对象</h1>
+            <button type="button" onclick="loadDoc()">获取我收藏的 CD</button>
+            <br><br>
+            <table id="demo"></table>
+        </body>
+    </html>
+    
+        
+ 4) JSONP: 动态生成 'script' element。jsonp supports only 'GET' and returns only javascript.
+    1、Ajax直接请求普通文件存在跨域无权限访问的问题；
+　　 2、Web页面上调用js文件时则不受是否跨域的影响；
+        （不仅如此，我们还发现凡是拥有”src”这个属性的标签都拥有跨域的能力，比如<script>、<img>、<iframe>）；
+　　 3、可以通过在远程服务器上设法把数据装进js格式的文件里，供客户端调用和进一步处理，来实现跨域访问数据；
+　　 4、客户端很方便处理JSON数据：JSON的纯字符数据格式简洁、JSON还被js原生支持；
+　　 5、所以，web客户端通过与调用脚本一模一样的方式，来调用跨域服务器上动态生成的js格式文件（一般以JSON为后缀），
+        显而易见，服务器之所以要动态生成JSON文件，目的就在于把客户端需要的数据装入进去。
+　　 6、客户端可以通过JSONP处理和展现JSON数据：JSONP一种非正式传输协议。
+        该协议的一个要点就是允许用户传递一个callback参数给服务端，
+        然后服务端返回数据时会将这个callback参数作为函数名来包裹住JSON数据，这样客户端就可以随意定制自己的函数来自动处理返回数据了。
+ 
+    例子见 # ref:  说说JSON和JSONP，也许你会豁然开朗   https://kb.cnblogs.com/page/139725/
+    
+    
+ 5) JSON and JSONP
+    JSON  = JavaScript Object Notation, JavaScript原生支持JSON。
+    JSONP = JSON with Padding
+    JSON是一种数据交换格式，而JSONP是一种非官方跨域数据交互协议。   
+    JSON只有两种数据类型描述符，大括号{}和方括号[]，冒号映射，逗号分隔。
+    
+
+    
+    
+# ref:  AJAX 教程 http://www.runoob.com/ajax/ajax-tutorial.html
+# ref:  廖雪峰老师AJAX    https://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499861493e7c35be5e0864769a2c06afb4754acc6000
+# ref:  廖雪峰老师JS教程读书笔记（二）：原生AJAX与跨域总结    http://blog.csdn.net/u013836242/article/details/77838304
+# ref:  AJAX（XMLHttpRequest）进行跨域请求方法详解（一）   http://blog.csdn.net/net_lover/article/details/5172509
+# ref:  XMLHttpRequest 例子   http://www.runoob.com/try/try.php?filename=tryajax_xml2
