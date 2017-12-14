@@ -1,0 +1,329 @@
+#
+# T-SQL 语法小结
+#
+1) T-SQL 是SQL标准 + MS SQL Server的增强版。包括DDL， DML， DCL等语句。
+
+2）查询：
+    select * / top n / col1...
+    from A as a
+    * join B as b, ...
+    where ...
+    with cube / rollup
+    group by ...
+    having ... 
+    order by ... 
+
+    A) NOT IN， NOT EXIST 是不带 null 的 IN， EXIST取反。
+       WHERE 过滤记录，HAVING 过滤分组；
+       有分组时，SELECT 后面的字段必须是必须在聚合函数中 或者 GROUP BY中，因为要显示的是分组的信息;
+       SELECT @var1;    --只起显示的作用。
+
+    B) 常用查询例子：
+        select all sex from student;
+        select distinct sex from student;
+        select count(*) from student;
+        select count(sex) from student;
+        select count(distinct sex) from student;
+        select top 3 * from student;
+        select id as 编号, name '名称', sex 性别 from student;
+        select id, name, s.id, s.name from studnet s;
+        select (age + id) col from student;
+        select s.name + '-' + c.name from classes c, student s where s.cid = c.id;
+        select * from student where id = 2;
+        select * from student where id = 2 and sex = 1;
+        select * from student where id between 2 and 5;
+        select * from student where name like '%a%';
+        select * from student where id in (1, 2);
+        select * from student where age is null;
+        select * from student order by name desc;
+
+        --按照年龄进行分组统计
+        select couont(age), age from student group by age;
+
+        --按照年龄和性别组合分组统计，并排序
+        select count(*), sex from students group by age, sex order by sex;
+
+        --按照年龄分组，过滤年龄为空的数据，并且统计分组的条数和现实年龄信息
+        select count(*), age from student group by age having age is not null;
+
+        --按照年龄分组，过滤条件是分组后的记录条数大于等于2
+        select count(*), age from student group by age having count(age) >= 2;
+
+
+    C) 子查询
+        --将一个table的查询结果当做一个新表进行查询
+        select * from (
+            select id, name from student where sex = 1
+        ) t where t.id > 2;
+
+        --查询班级信息，统计班级学生人数
+        select *, (select count(*) from student where cid = classes.cid) as num
+            from classes order by num;
+
+        --查询班级5的学生年龄大于班级3的学生的年龄的信息
+        select * from student where cid = 5 and age > all (
+            select age from student where cid = 3
+        );
+        select * from student where cid = 5 and age > any (
+            select age from student where cid = 3
+        );
+        select * from student where cid = 5 and age > some (
+            select age from student where cid = 3
+        );
+
+    D) 利用聚合函数的查询
+        --var求方差
+        select max(age) max_age, min(age) min_age, ... var(age)
+        from student;
+
+        --加3天
+        select dataAdd(day, 3, getDate());
+
+        --相差秒数
+        select dataDiff(second, '2011-06-22 11:00:00', getDate());
+
+        --返回当前日期月份
+        select month(getDate());
+
+        --当前系统日期
+        select getDate();
+
+        --随机数
+        select rand(100), rand(50), rand();
+
+        --取左边字符串
+        select left('leftString', 4);
+
+        --去掉左边空格
+        select ltrim(' abc'), ltrim('# abc$'), rtrim(' abc ');
+
+        select host_id();
+        --影响行数
+        select @@rowcount;
+        --返回连接上打开的游标的当前限定行的数目
+        select @@cursor_rows;
+        --T-SQL的错误号
+        select @@error;
+
+
+    E) 利用排序函数的查询
+       排序在很多地方需要用到，需要对查询结果进行排序并且给出序号。比如： 
+        1、 对某张表进行排序，序号需要递增不重复的, 如用 row_number 函数
+        2、 对学生的成绩进行排序，得出名次，名次可以并列，但名次的序号是连续递增的, 如用 rank 函数 
+        3、 在某些排序的情况下，需要跳空序号，虽然是并列，如用 dense_rank 函数
+        
+        基本语法:
+            row_number / rank / dense_rank over([partition by col1, ...] order by col1, ... [desc] [asc])
+
+        --按照班级名称排序的顺序递增, 连续序号 
+        select s.id, s.name, cid, c.name, row_number() over(order by c.name) as number
+        from student s, classes c where cid = c.id;
+
+        --根据排序子句给出递增的序号，但是存在并列并且跳空
+        select s.id, s.name, cid, c.name, rank() over(order by c.name) as rank
+        from student s, classes c where cid = c.id;
+
+        --根据排序子句给出递增的序号，但是存在并列不跳空: 不跳过，直接递增
+        select s.id, s.name, cid, c.name, dense_rank() over(order by c.name) as dense
+        from student s, classes c where cid = c.id;
+
+        --可以完成对分组的数据进行增加排序，partition by可以与以上三个函数联合使用。 
+        --利用partition by按照班级名称分组，学生id排序
+        select s.id, s.name, cid, c.name, row_number() over(partition by c.name order by s.id) as rank
+        from student s, classes c where cid = c.id;
+        select s.id, s.name, cid, c.name, rank() over(partition by c.name order by s.id) as rank
+        from student s, classes c where cid = c.id;
+        ...
+
+
+    F) 利用汇总子句的查询
+        group by *
+        with cube / rollup
+
+        cube, rollup 要和 group by 一起用。
+
+        select sup_id, prod_id, sum(qty * unit_price), sum(qty) tot_amt
+        from sale_item
+        group by sup_id, prod_id with cube
+
+        将对应生成每个 sup_id 的汇总列， 每个 prod_id 的汇总列，和 null， null 全部的汇总列。
+        解决 cube 操作生成的空值 null 问题，即如何区分cube操作生成的null值和实际数据中返回的null值，
+            可以用 grouping 函数解决。如果列中的值来自事实数据，则grouping函数返回0，如果列中的值是cube操作所生成的null，则返回1。
+        在cube操作中，所生成的null代表全体值。
+            select productid, grouping(productid), orderid, grouping(orderid), sum(quantity)
+            from order
+            group by productid, orderid
+            with cube
+            order by productid, orderid
+
+
+    G) 利用集合运算的查询
+        union / union all / intersect / except
+
+        select * from student where name like 'ja%'
+        intersect
+        select * from student;
+
+
+
+    H) 利用公用表表达式(CTE)的查询
+        可以将公用表表达式（CTE）视为临时结果集，在增删改查或是create view语句的执行范围内进行定义。
+        T-SQL中的 WITH 子句可以用于不同的目的，为避免报错，建议在使用CTE时，要在 WITH 前加分别（;）
+
+        --例子1
+        ;with statNum(id, num) as
+        (
+            select cid, count(*)
+            from student
+            where id > 0
+            group by cid
+        )
+        select id, num from statNum order by id;
+
+        --例子2
+        ;with statNum(id, num) as
+        (
+            select cid, count(*)
+            from student
+            where id > 0
+            group by id
+        )
+        select max(id), avg(num) from statNum;
+
+
+
+    I) 利用连接子句的查询
+        (inner) join / left join / right join / cross join / 自连接（同一张表进行连接查询）
+
+        --自连接
+        select distinct s.* 
+        from student s, student s1
+        where s.id <> s1.id1 and s.sex = s1.sex;
+
+
+    J) 查询执行循序
+        from A a
+        * join B b, ...
+        where ...
+        group by ...
+        with cube / rollup
+        having ...
+        select * / top n * / col1, ...
+        order by ...
+
+
+3）操作数据库对象
+    TODO
+
+4）操作表对象
+    TODO
+
+5）操作视图对象
+    TODO
+
+6）操作存储过程对象
+系统存储过程以 sp_ 开头，扩展存储过程以 xp_ 开头。
+常用的有：
+    sp_databases, "sp_renamedb old_name, new_name", sp_tables, sp_columns, sp_stored_procedures, 
+    sp_password, xp_cmdshell 'Dos commands',
+    sp_helpdb, sp_help, sp_helpindex table_name, sp_helpconstraint table_name, sp_helptext.
+
+
+7）操作函数对象
+    TODO
+
+8）操作索引对象
+索引:
+    聚集索引：物理存储循序与索引用的列一致。
+    非聚集索引：相当于目录。
+        创建索引
+                  CREATE [UNIQUE][CLUSTERED|NONCLUSTERED] INDEX index_name
+                  ON 表名(column_name[,column_name]…)
+                  [WITH FILLFACTOR=X]
+           说明
+                  UNIQUE指定唯一索引(可选)
+                  CLUSTERED,NONCLUSTERED指定是聚集索引还是非聚集索引(可选)
+                  FILLFACTOR表示填充因子,指定一个0~100的值,该值指示索引页填满的空间所占的百分比
+     DROP INDEX table_name.index_name
+     sp_helpindex table_name
+     SELECT * FROM sys.indexes
+i    # 维护索引
+        用DBCC 数据库控制台命令:
+       方法一:
+                DBCC SHOWCONTIG ([表名/表ID/视图名/视图ID][,对碎片信息检索的索引])
+                  WITH ALL_INDEXES 或 ALL_INDEXES TABLERESULTS
+                  或 ALL_INDEXES 或 FAST|ALL_LEVELS
+       方法二:
+               DBCC INDEXDEFRAG (数据库名,表名/视图名,视图ID)
+               WITH NO_INFOMSGS --禁止显示所有信息性消息
+
+    Best Practices:
+        A. 查询时减少使用*返回全部列,不要返回不需要的列
+        B. 索引应该尽量小,在字节数小的列上建立索引
+        C. WHERE子句中有多个条件表达式时,包含索引列的表达式应置于其他条件表达式之前
+        D. 避免在ORDER BY子句中使用表达式
+        E. 根据业务数据发生频率,定期重新生成或重新组织索引,进行碎片整理
+        F. 索引列尽量不要进行计算、应用函数、转换等等
+        G. 不适用索引的时候，不定义索引。索引平均可以占到磁盘空间的5%
+    
+
+9）操作事务对象和并发处理
+事务：
+    ACID特性：Atomicity, Consistency, Isolation, Durability 原子性一致性隔离性持久性.
+    三种：
+        显式事务：BEGIN TRANSACTION
+        隐式事务：SET TRANSACTION OFF
+        自动提交事务：SQL Server的默认模式,它将每条单独的T-SQL语句视为一个事务。
+    事务使用原则：
+        1. 尽可能简短 2.访问的数据量尽量最少 3. 查询时尽量不要使用事务 4. 在事务处理过程中尽量不要出现等待用户输入的操作。
+    事务的隔离级别
+        A. 读未提交(READ UNCOMMITTED):产生脏读,不可重复读,幻像读.
+        B. 提交读(READ COMMITTED):系统默认隔离级别.执行完自动释放资源会产生不可重复读.
+        C. 可以重复读(REPEATABLE READ):在读数据的时候,实施在读操作中使用的数据上的共享锁一直存在.直到事务提交,但是不能避免幻像读.
+        D. 序列化(SERIALIZABLE):解决了幻像读的问题.但是并发性很低.隔离级别设置越高,并发性就会越低.
+
+    SET TRANSACTION ISOLATION LEVEL {隔离级别名}    # 设置事务隔离级别
+    SET DEADLOCK_PRIORITY {级别|@deadlock_var}      # 设置死锁优先级
+    SET LOCK_TIMEOUT 时间                           # 设置死锁超时时间
+    @@LOCK_TIMEOUT                                  # 返回当前的锁设置的时间.默认为-1.
+        
+
+10）操作触发器对象
+    TODO
+
+11）操作临时表对象
+    TODO
+
+12）操作游标对象
+    TODO
+
+13）常用函数
+    TODO
+
+
+14）IF, CASE, While语句
+    TODO
+
+
+
+15）使用局部变量、全局变量
+    TODO
+
+
+
+
+
+
+
+# ref:  T-SQL 高级编程（基本语法)   http://blog.csdn.net/taozi_5188/article/details/41209323
+# ref:  T-SQL高级篇(二) http://blog.csdn.net/heqingsong1/article/details/7673952
+# ref:  T-SQL高级篇(三) http://blog.csdn.net/heqingsong1/article/details/7674031
+# ref:  SQL数据库碎片检查DBCC SHOWCONTIG含义    https://www.cnblogs.com/petitprince/archive/2009/10/23/1588603.html
+# ref:  SQL Server 开发指南---T-SQL高级查询 http://blog.csdn.net/ohonyes/article/details/46293775
+# ref:  T-SQL 语句（九）—— 游标 http://blog.csdn.net/wuxinwudai/article/details/55058591
+# ref:  T-SQL常用数据库操作语句 http://blog.csdn.net/Illusion_1202/article/details/51985075
+# ref:  SQL Server 常用高级语法笔记 http://blog.csdn.net/baidu_35738377/article/details/53389268
+# ref:  SQL语言集锦     http://www.yidianzixun.com/n/0ELMyH3h
+# ref:  存储过程与函数的区别    https://www.cnblogs.com/qq75077027/archive/2012/12/20/2827198.html
+# ref:  T-SQL   https://baike.baidu.com/item/t-sql/10755653?fr=aladdin
+# ref:  T-SQL命令大全   https://wenku.baidu.com/view/c6adeada7f1922791688e8bf.html
