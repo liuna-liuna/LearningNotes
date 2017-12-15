@@ -12,7 +12,7 @@
     注意：AJAX与Flash、Silverlight和Java Applet等RIA技术是有区分的。
  
  3) 3.1) AJAX主要通过
-        1. 用javascript 原生的 XMLHttpRequest 实现跨域的请求
+        1. 用javascript 原生的 XMLHttpRequest 实现同源的请求
                 客户端以 XMLHttpRequest（）open 一个 url， send到服务器, 
                 服务器返回的数据 responseText or responseHTML 由回调函数如 XMLHttpRequest 对象的 onreadystatechange 处理呈现。
            XMLHttpRequest一般仅能访问同源，即域名、协议、端口一致的url。
@@ -51,8 +51,8 @@
         C) jsonp. 
         
      jsonp两种实现方式：
-     2. AJAX直接通过jsonp实现跨域请求
-        $.ajax({
+     2. AJAX直接通过jsonp实现跨域请求 $.ajax({...})
+        4.1) $.ajax({
             type: "GET",
             async: true,
             contentType: "application/x-javascript;charset=utf-8",
@@ -66,7 +66,7 @@
             }, error: function(){}
         });
      
-     1. 用javascript 原生的xmlhttprequest实现跨域的请求
+     1. 用javascript 原生的 XMLHttpRequest 实现同源的请求
    ------------------------------------------------
     function success(text) {
         var textarea = document.getElementById('test-ie-response-text');
@@ -144,7 +144,7 @@
         该协议的一个要点就是允许用户传递一个callback参数给服务端，
         然后服务端返回数据时会将这个callback参数作为函数名来包裹住JSON数据，这样客户端就可以随意定制自己的函数来自动处理返回数据了。
  
-    ------------------------------------------------
+   4.2) ------------------------------------------------
     var callbackFuncName = function(data) {
     ...
     }
