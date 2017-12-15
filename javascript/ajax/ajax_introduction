@@ -12,8 +12,8 @@
     注意：AJAX与Flash、Silverlight和Java Applet等RIA技术是有区分的。
  
  3) 3.1) AJAX主要通过
-        1. 用javascript 原生的xmlhttprequest实现跨域的请求
-                客户端以XMLHttpRequest（）open 一个 url， send到服务器, 
+        1. 用javascript 原生的 XMLHttpRequest 实现跨域的请求
+                客户端以 XMLHttpRequest（）open 一个 url， send到服务器, 
                 服务器返回的数据 responseText or responseHTML 由回调函数如 XMLHttpRequest 对象的 onreadystatechange 处理呈现。
            XMLHttpRequest一般仅能访问同源，即域名、协议、端口一致的url。
         2. AJAX直接通过jsonp实现跨域请求
@@ -79,7 +79,7 @@
     }
     
     var xhr;
-    if (window.XMLHTTPRequest) {
+    if (window.XMLHttpRequest) {
         xhr = new XMLHttpRequest();
     }
     else {
