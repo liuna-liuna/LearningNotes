@@ -1,9 +1,11 @@
 #
 # usage_of_coalesce_and_isnull_in_T-SQL
 #
-1) coalesce(expression1, expression2, [...expressionn])    # 返回其参数中第一个非空表达式 returns the first nonnull expression among its arguments,
+1) coalesce(expression1, expression2, [...expressionn])    
+    # 返回其参数中第一个非空表达式 returns the first nonnull expression among its arguments,
 
-2) isnull(expression1, expression2])    # replaces NULL with the specified replacement value.
+2) isnull(expression1, expression2])    
+    # 用设定的值替换空 replaces NULL with the specified replacement value.
 
 3) COALESCE('', 0)  # return 0
     COALESCE(' ', 0)  # return 0
@@ -25,7 +27,9 @@
     PRINT @sql -- EXEC(@sql)
     
   4.2)
-    USE NOCOUNT ON;   # don't show the numbers of lines affected by T-SQL => to improve performance
+    USE NOCOUNT ON;   
+    # don't show the numbers of lines affected by T-SQL => to improve performance
+    
     DECLARE 
       @x VARCHAR(3) = NULL,
       @y VARCHAR(10) = '12345678';
