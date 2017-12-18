@@ -38,7 +38,7 @@
         select * from student order by name desc;
 
         --按照年龄进行分组统计
-        select couont(age), age from student group by age;
+        select count(age), age from student group by age;
 
         --按照年龄和性别组合分组统计，并排序
         select count(*), sex from students group by age, sex order by sex;
@@ -60,7 +60,7 @@
         select *, (select count(*) from student where cid = classes.cid) as num
             from classes order by num;
 
-        --查询班级5的学生年龄大于班级3的学生的年龄的信息
+        --查询班级5的学生年龄大于班级3的学生的年龄的学生的信息
         select * from student where cid = 5 and age > all (
             select age from student where cid = 3
         );
@@ -71,16 +71,31 @@
             select age from student where cid = 3
         );
 
+        --横向输出
+        select (select MAX(english) from Score) as '最高成绩'
+               (select MIN(english) from Score) as '最低成绩'
+               (select SUM(english) from Score) as '总成绩'
+               (select AVG(english) from Score) as '平均成绩'
+
+        --纵向输出
+        select '最高成绩' as '', MAX(english) as '' from Score
+        union all
+            select '最低成绩', MIN(english) from Score
+        union all
+            select '总成绩', SUM(english) from Score
+        union all
+            select '平均成绩', AVG(english) from Score
+
     D) 利用聚合函数的查询
         --var求方差
         select max(age) max_age, min(age) min_age, ... var(age)
         from student;
 
         --加3天
-        select dataAdd(day, 3, getDate());
+        select dateAdd(day, 3, getDate());
 
         --相差秒数
-        select dataDiff(second, '2011-06-22 11:00:00', getDate());
+        select dateDiff(second, '2011-06-22 11:00:00', getDate());
 
         --返回当前日期月份
         select month(getDate());
@@ -109,8 +124,8 @@
     E) 利用排序函数的查询
        排序在很多地方需要用到，需要对查询结果进行排序并且给出序号。比如： 
         1、 对某张表进行排序，序号需要递增不重复的, 如用 row_number 函数
-        2、 对学生的成绩进行排序，得出名次，名次可以并列，但名次的序号是连续递增的, 如用 rank 函数 
-        3、 在某些排序的情况下，需要跳空序号，虽然是并列，如用 dense_rank 函数
+        2、 对学生的成绩进行排序，得出名次，名次可以并列，但名次的序号是连续递增的, 如用 dense_rank 函数 
+        3、 在某些排序的情况下，需要跳空序号，虽然是并列，如用 rank 函数
         
         基本语法:
             row_number / rank / dense_rank over([partition by col1, ...] order by col1, ... [desc] [asc])
@@ -146,6 +161,7 @@
         from sale_item
         group by sup_id, prod_id with cube
 
+        如果 with rollup 而不是 with cube，则只对离 group by 的字段汇总，here it's sup_id.
         将对应生成每个 sup_id 的汇总列， 每个 prod_id 的汇总列，和 null， null 全部的汇总列。
         解决 cube 操作生成的空值 null 问题，即如何区分cube操作生成的null值和实际数据中返回的null值，
             可以用 grouping 函数解决。如果列中的值来自事实数据，则grouping函数返回0，如果列中的值是cube操作所生成的null，则返回1。
@@ -211,15 +227,66 @@
         select * / top n * / col1, ...
         order by ...
 
+    K) 更新统计信息
+
+        在用户创建索引之后,sql server在查询的时候并不一定要使用它.
+        事实上sql server在执行查询之前会通过一个叫“查询优化器”的对像来估算按索引查询所需的成本和直接使用表扫描所需成本,
+        如果发现使用索引所需要的成本大于使用表扫描使用的成本,则不会使用索引而改用表扫描,
+        反之则使用索引.
+        实现上在创建索引时, sql server 会自动存储“每一个索引值在索引列中的分布情况的统计信息”.
+        sql server 中的查询优化器使用这些统计信息估算使用该索引进行查询的成本.
+
+        是否要让sql server自动更新还是手动更新:数据库->属性－>自动更新统计信息.
+
+        sql server在对“统计信息”进行更新时,它是不会分析表的所有数据的,而是会从表中随机抽样,
+            这样可以极大地减少这种统计信息的自动更新所带来的成本.
+
+        update statistics table1 index1 
+        with fullscan
+        -- or
+        with sample how_many percent
+        -- or
+        with sample how_many rows
 
 3）操作数据库对象
-    TODO
+    create database db1;
+    drop database db1;
+    use db1;
 
 4）操作表对象
-    TODO
+    create table table1 (
+        col1 INT PRIMARY KEY,
+        col2 SMALLINT NOT NULL,
+        col3 VARCHAR(20) NOT NULL,
+        ...);
+
+    --改表名
+    exec sp_rename 'person' 'Person'
+    alter table table1 add coln INT;
+    alter table table1 drop column coln;
+
+    alter table table1 add CONSTRAINT uniqueConstraint1 UNIQUE(coln);
+    alter table table1 add CONSTRAINT defConstraint1 default(10) for coln;
+    alter table table1 create PRIMARY KEY PK1 (col1, ...);
+    alter table table1 create FOREIGN KEY FK1 fk_col1 REFERENCES table2(fk_col1);
+
+    create table person
+    (_id int primary key,
+    name varchar(20),
+    birthday date,
+    salary decimal,
+    sex bit)
+
 
 5）操作视图对象
-    TODO
+    create view view1
+    as
+        select ...
+
+    drop view view1;
+    alter view view1
+    as
+        select ...;
 
 6）操作存储过程对象
 系统存储过程以 sp_ 开头，扩展存储过程以 xp_ 开头。
@@ -228,16 +295,102 @@
     sp_password, xp_cmdshell 'Dos commands',
     sp_helpdb, sp_help, sp_helpindex table_name, sp_helpconstraint table_name, sp_helptext.
 
+存储过程与函数的区别:
+    函数只能返回一个变量；而存储过程可以返回多个。
+    函数是可以嵌入在sql中使用的,可以在select中调用，而存储过程不行。
+    函数限制比较多，如不能用临时表，只能用表变量等，而存储过程的限制相对就比较少。
+    存储过程一般是作为一个独立的部分来执行，而函数可以作为查询语句的一个部分来调用，
+        由于函数可以返回一个表对象，因此它可以在查询语句中位于FROM关键字的后面。
+    存储过程只在创造时进行编译，以后每次执行存储过程都不需再重新编译，
+        而一般SQL语句每执行一次就编译一次,所以使用存储过程可提高数据库执行速度。
+
+
+-- 创建存储过程
+    if (exists(select * from sys.objects where name='proc_get_person')
+        drop proc proc_get_person
+    go;
+
+    create proec proc_get_person
+    as
+        select * from Person
+    go;
+
+    exec proc_get_person;
+
+    if (exists(select * from sys.objects where name='proc_find_person')
+        drop proc proc_find_person
+    go;
+
+    create proc proc_find_person
+    (
+        @startId int, @endId, int
+        --output1 int out;   输出参数, out关键字
+    )
+    as
+
+        select * from Person where _id between startId and @endId;
+    go;
+
+    exec proc_find_person 2,4;
 
 7）操作函数对象
-    TODO
+    --表值函数
+        create function [dbo].[function1]
+        (
+            @upr varchar(2);    --传入函数中的参数
+        )
+        returns @tab TABLE
+        (
+            UPR varchar(2)      --返回表的字段，这里只有一个字段
+        )
+        as
+            BEGIN
+                if (@upr='0')
+                    begin
+                        ...
+                    end
+                else
+                    ...
+            END
 
-8）操作索引对象
+    --标量值函数
+        --根据订单号获取销售员1的邮箱
+        create FUNCTION [dbo].[GetSaleManEmailByOrderNo]
+        (
+            @orderNo varchar(16)
+        )
+        RETURNS varchar(128)
+        AS
+        BEGIN
+            declare @saleManEmail varchar(128)
+            select @saleManEmail=EmailA from UserDB.dbo.EmployeeInfo
+                    where EmployeeID in
+                    (
+                        select EmployeeInfoID from SalesManInfo where SalesManCode in
+                        (
+                            select SalesManA from OrderInfo where SalesOrder=@orderNo;
+                        )
+                    )
+           RETURN (@saleManEmail)
+        END
+
+        select dbo.GetSaleManEmailByOrderNo('12345');   --dbo.前缀必须有，因为不是系统自定义函数
+                                                        --dbo是当前用户名
+
+    
+8）操作索引对象和限制
 索引:
     聚集索引：物理存储循序与索引用的列一致。
-    非聚集索引：相当于目录。
+    非聚集索引：相当于目录。每个记录有一个 row locator。
+
+    sql server会在删除或创建任何聚集索引的时候重新创建非聚集索引,
+        所以在创建任何非聚集索引之前创建聚集索引.
+    当你把一个聚集索引删除后, sql servr必须把以前的同一个表上的所有非聚集索引重新创建一次,
+        所以删除一个聚集索引比删除一个非聚集索引要花费更多的时间.
+    只有表的所有者或sa可以删除其索引.
+
         创建索引
-                  CREATE [UNIQUE][CLUSTERED|NONCLUSTERED] INDEX index_name
+                  CREATE [UNIQUE][CLUSTERED|NONCLUSTERED] INDEX index_name 
                   ON 表名(column_name[,column_name]…)
                   [WITH FILLFACTOR=X]
            说明
@@ -247,7 +400,7 @@
      DROP INDEX table_name.index_name
      sp_helpindex table_name
      SELECT * FROM sys.indexes
-i    # 维护索引
+    # 维护索引
         用DBCC 数据库控制台命令:
        方法一:
                 DBCC SHOWCONTIG ([表名/表ID/视图名/视图ID][,对碎片信息检索的索引])
@@ -264,7 +417,18 @@ i    # 维护索引
         D. 避免在ORDER BY子句中使用表达式
         E. 根据业务数据发生频率,定期重新生成或重新组织索引,进行碎片整理
         F. 索引列尽量不要进行计算、应用函数、转换等等
-        G. 不适用索引的时候，不定义索引。索引平均可以占到磁盘空间的5%
+        G. 不适用索引的时候，不定义索引。聚集索引平均可以占到表空间的5%
+        H. 不要在索引中使用%张% 以及 in or这类语句
+        I. 不能为bit,text,image等数据类型的字段创建索引
+
+限制：
+    6种：primary key, foreign key, unique, not null, check, default
+    ex.
+        alter table table1 add CONSTRAINT uniqueConstraint1 UNIQUE(coln);
+        alter table table1 add CONSTRAINT defConstraint1 DEFAULT(10) for coln;
+        alter table table1 add CONSTRAINT emp_name_pk PRIMARY KEY(emp_name);
+        alter table table1 add CONSTRAINT emp_id_fk FOREIGN KEY(emp_id) REFERENCES emp(emp_id);
+        alter table table1 add CONSTRAINT chk_emp_age CHECK(emp_age BETWEEN 15 and 40);
     
 
 9）操作事务对象和并发处理
@@ -272,7 +436,7 @@ i    # 维护索引
     ACID特性：Atomicity, Consistency, Isolation, Durability 原子性一致性隔离性持久性.
     三种：
         显式事务：BEGIN TRANSACTION
-        隐式事务：SET TRANSACTION OFF
+        隐式事务：SET IMPLICIT TRANSACTION ON
         自动提交事务：SQL Server的默认模式,它将每条单独的T-SQL语句视为一个事务。
     事务使用原则：
         1. 尽可能简短 2.访问的数据量尽量最少 3. 查询时尽量不要使用事务 4. 在事务处理过程中尽量不要出现等待用户输入的操作。
@@ -289,29 +453,174 @@ i    # 维护索引
         
 
 10）操作触发器对象
-    TODO
+    create trigger trigger1
+    on table1_name [| view1_name]
+    for [| after | instead of] insert [| update | delete]
+    as
+        ...
 
 11）操作临时表对象
-    TODO
+    Method1.
+        create table #temp_table1 
+            (field1 constrains1,
+            ...
+            )
+    
+        create table2 ##global_temp_table2
+            (field1 constrains1,
+            ...
+            )
 
+    Method2.
+        select * into #temp_table1 from table1;
+        select * into ##global_temp_table2 from table2;
+
+    ex.
+        drop table #Tmp;
+        create table #Tmp
+        (
+            ID int IDENTITY(1, 1) not null,
+            WorkNo varchar(50),
+            primary key(ID)
+        );
+        select * from #Tmp;
+        truncate table #Tmp;
+        -- ref: http://www.cnblogs.com/Hdsome/archive/2008/12/10/1351504.html
+
+    本地临时表只有创建它的用户可以访问它,其它用户将不能访问,
+        而且一旦这位用户断开与sql server的连接,本地临时表会自动删除.
+    当一个用户创建一个全局临时表时,其它连接到sql server服务器的用户都可以使用,
+        当创建者与服务器断开后,sql server并不会立即删除该用户所创建的全局临时表,
+        而是会去检查当前还没有别的用户的作业在访问该表,
+            如果有,则暂时不删除全局临时表,但是不允许用户再去访问它,直到在sql server服务器再没有关于该表的作业时,才删除.
+    
 12）操作游标对象
-    TODO
+    没有ORDER BY子句的查询语句返回的是一个集合（或多重集合），
+    而具有此子句返回的是标准SQL，称之为“游标”——行间具有确定顺序的非关系型结果。
+    一般地，应该默认使用基于集合的查询，只有迫不得已时，否则不应该考虑使用游标，
+    因为游标所做的按记录的逐个操作需要耗费一定的开销。所以，才能会差一些。
+
+    SET NOCOUNT ON;
+    declare @Result table
+    (
+        custid INT, ordermonth DATETIME, qty INT, runqty INT, PRIMARY KEY(custid, ordermonth0
+    );
+
+    DECLARE cursor1 CURSOR FAST_FORWARD
+    FOR select custid, ordermonth, qty
+        from Sales.CustOrders
+        order by custid, ordermonth;
+
+    OPEN cursor1;
+
+    FETCH NEXT FROM cursor1 INTO @custid, @ordermonth, @qty;
+    select @prevcustid = @custid, @runqty = 0;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        if @custid <> @prevcustid
+            BEGIN
+                select @prevcustid = @custid, @runqty = 0
+            END;
+        set @runqty = @runqty + @qty;
+        insert into @Result values(@custid, @ordermonth, @qty, @runqty);
+        FETCH NEXT FROM cursor1 INTO @custid, @ordermonth, @qty;
+    END
+
+    CLOSE cursor1;
+    DEALLOCATE cursor1;
+
+
+    select custid, CONVERT(VARCHAR(7), ordermonth, 121) as ordermonth, qty, runqty
+    from @Result
+    order by custid, ordermonth;
+
+
 
 13）常用函数
-    TODO
+    ISNULL(expression, value);
+    avg, sum, count, min, max, 
+    len, ltrim, rtrim, left, right, lower, upper, substring,
+    dateadd, datediff, year, month, day, getDtate,
+    etc.
 
 
 14）IF, CASE, While语句
-    TODO
+    if ...
+        begin
+        ...;
+        end
+    else
+        begin
+        ...;
+        end
+    end;
 
+    select name,
+        case level
+        when 1 then '骨灰'
+        when 2 then '大虾'
+        when 3 then '菜鸟'
+        end as '头衔'
+    from [user];
+
+    select studentId,
+        case
+            when english >= 80 then '优'
+            when english >= 60 then '良'
+            else '差'
+        end
+    from Score;
+
+    --计算平均分数并输出，如果平均分数超过60分输出成绩最高的三个学生的成绩，否则输出后三名的学生
+    declare @avg int;
+    select @avg = AVG(english) from Score;
+    select '平均成绩'+CONVERT(varchar, avg);     --打印变量的值
+    if @avg>60
+        begin
+            select '前三名';
+            select top 3 * from Score order by english desc;
+        end
+    else
+        begin
+            select '后三名';
+            select top 3 * from Score order by english asc;
+        end
+
+    --如果不及格的人超过半数(考试题出难了)，则给每个人增加分
+    declare @count int, @failcount int, @i int=0;
+    select @count = COUNT(*) from Score;
+    select @failcount = COUNT(*) from Score where english < 60;
+    while (@failcount > @count/2)
+        begin
+            update Score set english = english + 1;
+            select @failcount = COUNT(*) from Score where english < 60;
+            set @i = @i+1;
+        end
+    select @i;
+    update Score set english=100 where english > 100;
 
 
 15）使用局部变量、全局变量
-    TODO
+    --声明变量
+    declare @name nvarchar(30);
+    declare @sum int, @age int;
+
+    --变量赋值
+    set @age = 18;
+    select @age=19, name='name1';
+    select @sum = SUM(english) from Score;
+
+    select @@max_connections;
+    select @@error;
+    select @@identity;
 
 
-
-
+16）数据库设计范式
+    第一范式：原子性，字段内容不可再分（是否不可再分要看情况，地址可以是一个字段，如果总是访问“城市”部分，就要考虑把“城市”拆出来）
+    第二范式：所有字段与主键相关（而非与主键的一部分相关，当联合主键时）
+                （如主键为订单号与商品号时，商品信息字段不应该出现在表中，因为只依赖于商品号，与订单号无关。）
+    第三范式：每一列都和主键直接相关，不能间接相关。也可理解为非主键列互不依赖，即可消除传递依赖。
 
 
 
@@ -327,3 +636,4 @@ i    # 维护索引
 # ref:  存储过程与函数的区别    https://www.cnblogs.com/qq75077027/archive/2012/12/20/2827198.html
 # ref:  T-SQL   https://baike.baidu.com/item/t-sql/10755653?fr=aladdin
 # ref:  T-SQL命令大全   https://wenku.baidu.com/view/c6adeada7f1922791688e8bf.html
+# ref:  SQL Server2012 T-SQL基础教程--读书笔记（8 - 10章    http://www.cnblogs.com/leongfeng/p/5375355.html#10420e6b8b8e6a087efbc88cursorefbc89
