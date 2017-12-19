@@ -67,18 +67,92 @@
         无状态（Stateless）
             通信的会话状态（Session State）应该全部由客户端负责维护。 
         缓存（Cache）
-            响应内容可以在通信链的某处被缓存，以改善网络效率。
+            响应内容可以在通信链的某处被缓存，以改善网络效率。服务器必须明示客户端请求能否缓存。
         统一接口（Uniform Interface）
             通信链的组件之间通过统一的接口相互通信，以提高交互的可见性。
         分层系统（Layered System）
             通过限制组件的行为（即，每个组件只能“看到”与其交互的紧邻层），将架构分解为若干等级的层。
+            譬如用中间层代替服务器做出响应的时候，客户端不需要做任何变动。
         按需代码（Code-On-Demand，可选）
             支持通过下载并执行一些代码（例如Java Applet、Flash或JavaScript），对客户端的功能进行扩展。
+            这个约束是唯一一个是可选的。
 
-  
     
-    
-2) 
+2) implement REST in python
+    Example 1:
+        编写一个待办事项应用程序而且我们想要为它设计一个 web service。
+        根URL： http://[hostname]/todo/api/v1.0/
+        => 需要的任务资源要使用的 HTTP 方法如下:
+            ============ ==================================================== ========================
+            HTTP Method     URL                                                     Action
+            ============ ==================================================== ========================
+            GET             http://[hostname]/todo/api/v1.0/tasks                 检索任务列表
+            GET             http://[hostname]/todo/api/v1.0/tasks/[task_id]       检索任务列表
+            POST            http://[hostname]/todo/api/v1.0/tasks                 创建新任务
+            PUT             http://[hostname]/todo/api/v1.0/tasks/[task_id]       更新任务
+            DELETE          http://[hostname]/todo/api/v1.0/tasks/[task_id]       删除任务
+            ============ ==================================================== ========================
+
+            我们定义的任务有如下一些属性:
+            id: 任务的唯一标识符。数字类型。
+            title: 简短的任务描述。字符串类型。
+            description: 具体的任务描述。文本类型。
+            done: 任务完成的状态。布尔值。
+            
+
+    2.1) use Flask, Flask-HTTPAuth 
+        pip install flask, flask-httpauth
+
+        flask-httpauth 是Flask extension，可以进行RESTful web service的安全认证。有 BASIC 和 DIGEST 两种方式。
+        在一个常规的web应用中，应该有登录表单提交去认证，同时服务器会创建一个会话过程去进行通讯。
+            这个会话过程id会被存储在客户端的cookie里面。
+        不过 RESTful web service 中，这样就违返了我们REST中无状态的规则，因此，我们需求客户端每次都将他们的认证信息发送到服务器。
+
+        from flask import Flask, make_response, abort, url_for, request, jsonify
+        from flask_httpauth import HTTPBasicAuth
+
+        app = Flask(__name__)
+        auth = HTTPBasicAuth()
+
+        @auth.get_password
+        def get_password(username):
+            ...
+
+        @auth.error_handler
+        def unauthorized():
+            ...
+
+        @app.route('/todo/api/v1.0/tasks', methods=['GET'])
+        @auth.login_required
+        def get_tasks():
+            return jsonify({'tasks': map(make_public_task, tasks)})
+
+        def make_public_task(task):
+            new_task = {}
+            for field in task:
+                if field == 'id':
+                    new_task['uri'] = url_for('get_task', task_id=task['id'], _external=True)
+                else:
+                    new_task[field] = task[field]
+            return new_task
+
+        @app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['GET'])
+        def get_task(task_id):
+            task = filter(lambda t: t['id'] == task_id, tasks)
+            if len(task) == 0:
+                abort(404)
+            return jsonify({'task': task[0])
+        ...
+
+        if __name__ == '__main__':
+            app.run(debug=True)
+        
+
+    2.2) use Flask-RESTful
+        pip install flask-restful
+        "Flask-RESTful 是一个可以简化 APIs 的构建的 Flask 扩展。"
+
+
 
 
 
