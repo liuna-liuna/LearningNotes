@@ -1,0 +1,41 @@
+#
+# what is Blueprint in flask in Python
+#
+1) "Flask 用 Blueprint 实现模块化组织程序结构。
+    Blueprint中定义好一整套路由体系以后可以和app注册。
+    每个 Blueprint 有自己的 MVC。
+    Blueprint 把一个大的 application 分割成各自实现不同功能的 module.
+    在其他文件中写功能，然后在主运行文件中导入。实际上是一个路由系统。"
+
+
+    in adminPages.py:
+        from flask import Blueprint
+
+        admin = Blueprint('admin', __name__)    
+        # 至少传入两个参数，分别是蓝图的名字和蓝图所在的包或模块。
+
+        @admin.route('/<int:id>', methods=['GET'])
+        def get(id):
+            pass
+        # ...
+
+    in run.py:
+        from adminPages import admin
+        from userPages import user
+
+        app.register_blueprint(admin, url_prefix='/admin')
+        app.register_blueprint(user, url_prefix='/user')
+
+        if __name__ == '__main__':
+            app.run(debug=True)
+
+
+2) Blueprint的缺点
+    Flask 中的Blueprint不是一个可插拨的应用，因为它不是一个真正的应用，
+        而是一套可以注册 在应用中的操作，并且可以注册多次。
+    一旦应用被创建后，只有销毁整个应用对象才能注销lueprint。
+
+
+# ref:  如何理解flask中的蓝本？ https://www.zhihu.com/question/31748237
+# ref:  flask使用Blueprint进行多模块应用的编写  http://m.blog.csdn.net/IAlexanderI/article/details/78808663
+  
