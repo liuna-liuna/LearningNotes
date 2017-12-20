@@ -1,4 +1,4 @@
-#
+
 # what is REST and how to implement REST in Python
 #
 1) what is REST
@@ -27,7 +27,7 @@
   1.2)  '总结一下什么是RESTful架构：
 　　  （1）每一个URI代表一种资源；
 　　  （2）客户端和服务器之间，传递这种资源的某种表现层；
-　　  （3）客户端通过四个HTTP动词，对服务器端资源进行操作，实现"表现层状态转化"。'
+　　  （3）客户端通过四个HTTP动词，对服务器端资源进行操作，实现"表现层状态转化"。
   
     "URI应该只代表"资源"的位置。它的具体表现形式，应该在HTTP请求的头信息中用Accept和Content-Type字段指定，这两个字段才是对"表现层"的描述"
     
@@ -79,7 +79,18 @@
 
     
 2) implement REST in python
+    用 flask 实现 REST：
+        flask需要把数据库资源通过json的形式提供出去, 所以需要在数据库Model中定义to_json方法, 
+            以json的形式表示数据库数据;
+        或者用 flask 的 jsonify() 函数。
+        flask需要接受客户端发送的json数据从而用于创建资源,所以需要在数据库Model中定义from_json方法;
+        或者用 flask 的 request.json.get() 函数。
+
+        => flask编写API的核心思想就是以json的方式表示和接收资源并将相应操作映射到http方法上从而操纵资源.
+
     2.1) use Flask, Flask-HTTPAuth 
+         if needed, also flask_sqlalchemy, passlib.apps, itsdangerous
+
         pip install flask, flask-httpauth
 
         flask-httpauth 是Flask extension，可以进行RESTful web service的安全认证。有 BASIC 和 DIGEST 两种方式。
@@ -244,11 +255,65 @@
 
 
 
-    2.2) use Flask-RESTful
+    2.2) use Flask-RESTful, Flask-HttpAuth
+
         pip install flask-restful
         "Flask-RESTful 是一个可以简化 APIs 的构建的 Flask 扩展。"
 
+         Flask 可以用视图函数来定义所有的路由;
+         Flask 也可以用 blueprint 模块化，每个 Blueprint 中定义各自的视图函数进行路由；
+         Flask-RESTful 提供了一个 Resource 基础类，它能够定义一个给定 URL 的一个或者多个 HTTP 方法。
+            Api 类的 add_resource 函数使用指定的 endpoint 注册路由到框架上。
 
+         Flask-RESTful 会自动地处理转换成 JSON 数据格式, 不需要使用 jsonify 函数。
+                       fields.Url, marshal 不仅仅能够把 id 转成 uri 并且能够转换其他的参数.
+                       因为 Resouce 类是继承自 Flask 的 MethodView，它能够通过定义 decorators 变量
+                            并且把装饰器赋予给它进行认证。
+                       reqparse 的 RequestParser 类可以进行数据验证，类似命令行解析工具 argparse。
+
+        from flask import Flask
+        from flask_restful import Api, Resource, fields, marshal, regparse
+        from flask_httpauth import HTTPBasicAuth
+
+        app = Flask(__name__)
+        api = Api(app)
+
+        task_fields = {
+            'title': fields.String,
+            'description': fields.String,
+            'done': fields.Boolean,
+            'uri': fields.Url(endpoint1)    # ex. 'task'
+        }
+
+        auth = HTTPBasicAuth()
+        # ...
+        class TaskListAPI(Resource):
+        # ...
+
+        class TaskAPI(Resource):
+            # ...
+            decorators = [auth.login_required]
+            # ...
+            def __init__(self):
+                self.reqparse = regparse.RequestParser()
+                self.reqparse.add_argument('title', type=str, location='json')
+                self.reqparse.add_argument('description', type=str, location='json')
+                self.reqparse.add_argument('done', type=bool, location='json')
+                super(TaskAPI, self).__init__()
+            # ...
+            def put(self, id):
+                task = filter(lambda t: t['id'] == id, tasks)
+                if len(task) == 0:
+                    abort(404)
+                task = task[0]
+                args = self.reqparse.parse_args()
+                for k, v in args.iteritems():
+                    if v is not None:
+                        task[k] = v
+                return {'task': marshal(task, task_fields)} # task_fields作为 marshal 函数的模板
+
+        api.add_resource(TaskListAPI, '/todo/api/v1.0/tasks', endpoint='tasks')
+        api.add_resouce(TaskAPI, '/todo/api/v1.0/tasks/<int:id>', endpoint='task')
 
 
 
@@ -260,3 +325,7 @@
 # ref:  使用python的Flask实现一个RESTful API服务器端[翻译]  http://www.cnblogs.com/vovlie/p/4178077.html
 # ref:  使用Flask设计带认证token的RESTful API接口[翻译]     http://www.cnblogs.com/vovlie/p/4182814.html
 # ref:  REST-auth example   https://github.com/miguelgrinberg/REST-auth/blob/master/api.py
+# ref:  Flask编写API的核心思想  https://segmentfault.com/a/1190000004467187
+# ref:  Flask Restful User's Guide  http://flask-restful.readthedocs.io/en/latest/ 
+# ref:  使用 Flask-RESTful 设计 RESTful API http://www.pythondoc.com/flask-restful/second.html
+# ref:  如何理解flask中的蓝本？ https://www.zhihu.com/question/31748237
