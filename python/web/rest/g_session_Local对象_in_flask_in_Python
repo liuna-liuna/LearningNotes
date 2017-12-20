@@ -1,0 +1,42 @@
+# g, session, Local对象 in flask in Python
+#
+1) flask.g
+    Just store on this whatever you want. 
+    For example a database connection or the user that is currently logged in.
+    Starting with Flask 0.10 this is stored on the application context and no longer on the request context 
+    which means it becomes available if only the application context is bound and not yet a request. 
+    也就是说从0.10开始g兑现就不是在request的级别，而是在应用的级别.
+
+    g是在一次请求的程序上下文和请求上下文之间共享数据的。
+    To share data that is valid for one request only from one function to another, 
+    a global variable is not good enough because it would break in threaded environments. 
+    Flask provides you with a special object that ensures it is only valid for the active request 
+        and that will return different values for each request. 
+    In a nutshell: it does the right thing, like it does for request and session.
+
+    "app context 和 request contextrequest context 很好理解，看名字就知道是 请求上下文。
+        而 app context 却有点误导性，它的字面意思是 应用上下文，但它不是一直存在的，它只是request context 中的一个对 app 的代理(人)，所谓local proxy。
+        它的作用主要是帮助 request 获取当前的应用，它是伴 request 而生，随 request 而灭的。为什么需要这个代理？
+        因为 flask 支持同时运行多个 app，所以需要为每个 request 绑定到具体的 app context。
+        举例说 request A 要改变 app A 的属性，就要把 request A 绑定到 app A 的 context 下。(这里我是猜的，因为我的水平还不涉及到多应用……)"
+
+2) session 对象
+     "g 和 session从第一点可以明白 app context 的生命周期其实也只有一个 request 那么长。
+        既然这样，那么像g这样的属于app context 的变量当然也是只有一个 request 那么长的生命周期了。
+        session 也是一个 request context 的变量，但它把数据保存到了 cookie 中并发送到了客户端，客户端再次请求的时候又带上了cookie。
+        从而实现跨 request 使用。"
+
+
+3) Local对象
+    "它是一个全局对象，你可以往里面保存东西，a线程保存到local对象的，只有a线程能取到，b线程的只有b线程能取到，
+    如果，a，b保存了名字相同的东西，比如x，a取到的值是自己保存的，不会和b保存的混淆，修改操作也一样。 
+    request，session，g都是用相同的原理实现的，都是保存在local对象里的线程（包括greenlet协程）安全的变量。 
+    flask自己实现了local对象而不是使用标准库的threading.Local对象。"
+
+
+
+
+# ref:  Flask的g对象，范围是什么？  https://www.zhihu.com/question/25033592
+# ref:  Flask request，g，session的实现原理    http://blog.csdn.net/yueguanghaidao/article/details/39533841
+# ref:  关于flask的g问题    https://segmentfault.com/q/1010000004620902
+    
