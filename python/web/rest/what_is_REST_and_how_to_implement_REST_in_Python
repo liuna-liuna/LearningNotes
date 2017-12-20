@@ -79,6 +79,27 @@
 
     
 2) implement REST in python
+    2.1) use Flask, Flask-HTTPAuth 
+        pip install flask, flask-httpauth
+
+        flask-httpauth 是Flask extension，可以进行RESTful web service的安全认证。有 BASIC 和 DIGEST 两种方式。
+        在一个常规的web应用中，应该有登录表单提交去认证，同时服务器会创建一个会话过程去进行通讯。
+            这个会话过程id会被存储在客户端的cookie里面。
+        不过 RESTful web service 中，这样就违反了我们REST中无状态的规则，因此，我们需要客户端每次都将他们的认证信息发送到服务器。
+        如果访问需要验证的接口，
+            1) 客户端请求必需每次都发送用户名和密码;
+            2) 使用Token认证请求。
+                原理是第一次客户端与服务器交换过认证信息后得到一个认证token，后面的请求就使用这个token进行请求。
+                而且 Token 通常会给一个过期的时间。
+        
+                好多种办法去实现token。
+                一种简单的做法就是产生一个固定长度的随机序列字符与用户名和密码一同存储在数据库当中，有可能带上一个过期时间。
+                    这样token就变成了一串普通的字符，可以十分容易地和其它字符串验证对比，并且可以检查时间是否过期。
+                更复杂的实现办法是不需要服务器端进行存储token，而是使用数字签名信息作为token。
+                    这样做的好处是经过用户数字签名生成的token是可以防篡改的。
+                Flask使用与数字签名有些相似的办法去实现加密的cookies的，这里我们使用itsdangerous的库去实现。
+
+    
     Example 1:
         编写一个待办事项应用程序而且我们想要为它设计一个 web service。
         根URL： http://[hostname]/todo/api/v1.0/
@@ -98,16 +119,8 @@
             title: 简短的任务描述。字符串类型。
             description: 具体的任务描述。文本类型。
             done: 任务完成的状态。布尔值。
+
             
-
-    2.1) use Flask, Flask-HTTPAuth 
-        pip install flask, flask-httpauth
-
-        flask-httpauth 是Flask extension，可以进行RESTful web service的安全认证。有 BASIC 和 DIGEST 两种方式。
-        在一个常规的web应用中，应该有登录表单提交去认证，同时服务器会创建一个会话过程去进行通讯。
-            这个会话过程id会被存储在客户端的cookie里面。
-        不过 RESTful web service 中，这样就违返了我们REST中无状态的规则，因此，我们需求客户端每次都将他们的认证信息发送到服务器。
-
         from flask import Flask, make_response, abort, url_for, request, jsonify
         from flask_httpauth import HTTPBasicAuth
 
@@ -147,6 +160,89 @@
         if __name__ == '__main__':
             app.run(debug=True)
         
+    Example 2:
+        一个带 token 认证的创建用户、访问用户、访问token的 RESTful Web Service
+
+    Data：
+        User 存储在 sqlite3 中，用 SQLAlchemy 存取。
+        User class 的变量id, username, password_hash.
+            Password 用passlib.apps custom_app_context 加密（取sha256_encrypt).
+        RESTful API访问用用户名和密码验证： flask_httpauth HTTPBasicAuth @auth.login_required, @auth.verify_password（回调函数），
+            或者用token（token 实现为一次解码检索里面的用户id。）: 用 itsdangerous 的 TimedJSONWebSignatureSerializer 来加密 id 用作token。
+        RESTful API:
+            ============ ==================================================== ========================
+            HTTP Method     URL                                                     Action
+            ============ ==================================================== ========================
+            POST            /api/users                                          create a new user
+            GET             /api/users/<int:id>                                 get a user
+            GET             /api/token                                          get token of a user (g.user)
+            GET             /api/resource                                       print Hello from a user (g.user)
+            ============ ==================================================== ========================
+
+        import os
+        from flask import Flask, abort, request, make_response, url_for, jsonify, g
+        from flask_httpauth import HTTPBasicAuth
+        from passlib.apps import custom_app_context as pwd_context
+        from flask_sqlalchemy import SQLAlchemy
+        from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer,
+                                    BadSignature, SignatureExpired)
+
+        # initialization
+        app = Flask(__name__)
+        app.config['SECRET_Key'] = 'the quick brown fox jumps over the lazy dog'
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+        app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+        # extension
+        db = SQLAlchemy(app)
+        auth = HTTPBasicAuth()
+
+        # classes
+        class User(db.Model):
+            __tablename__ = 'users'
+            id = db.Column(db.Integer, primary_key=True)
+            username = db.Column(db.String(32), index=True)
+            ...
+
+            def hash_password(self, password):
+                self.password_hash = pwd_context.encrypt(password)
+            def verify_password(self, password):
+                ...
+            def generate_auth_token(self):
+                ...
+            @staticmethod
+            def verify_auth_token(token):
+                ...
+
+        # functions
+        @auth.verify_password
+        def verify_password(username_or_token, password):
+            ...
+
+        @app.route('/api/users', methods=['POST'])
+        def new_user():
+            ...
+
+        @app.route('/api/user/<int:id>')
+        def get_user(id):
+            ...
+
+        @app.route('/api/token')
+        @auth.login_required
+        def get_token():
+            ...
+
+        @app.route('/api/resource')
+        @auth.login_required
+        def get_resource():
+            ...
+
+        # main entry
+        if __name__ == '__main__':
+            if not os.path.exists('db.sqlite'):
+                db.create_all()
+            app.run(debug=True)
+
+
 
     2.2) use Flask-RESTful
         pip install flask-restful
@@ -159,5 +255,8 @@
 # ref:  理解RESTful架构         http://www.ruanyifeng.com/blog/2011/09/restful.html
 # ref:  RESTful API 设计指南    http://www.ruanyifeng.com/blog/2014/05/restful_api.html
 # ref:  理解本真的REST架构风格    http://www.infoq.com/cn/articles/understanding-restful-style/
-
-
+# ref:  使用 Flask 设计 RESTful APIs    http://www.pythondoc.com/flask-restful/index.html
+# ref:  Python Restful API 资料整理     http://blog.csdn.net/lihe2008125/article/details/60806760
+# ref:  使用python的Flask实现一个RESTful API服务器端[翻译]  http://www.cnblogs.com/vovlie/p/4178077.html
+# ref:  使用Flask设计带认证token的RESTful API接口[翻译]     http://www.cnblogs.com/vovlie/p/4182814.html
+# ref:  REST-auth example   https://github.com/miguelgrinberg/REST-auth/blob/master/api.py
