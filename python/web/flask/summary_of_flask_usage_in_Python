@@ -1,0 +1,203 @@
+#
+# summary of flask usage in Python
+#
+1) 
+
+# ref:  [python]flask框架快速入门   http://blog.csdn.net/cn_wk/article/details/51057187
+# ref:  Flask使用小结   http://python.jobbole.com/84003/
+# ref:  Python的Flask开发框架简单上手笔记   http://www.jb51.net/article/74935.htm
+# ref:  
+# ref:  
+    
+
+192:py2venv naliu$ !vim
+vim ../../tt
+192:py2venv naliu$ cat !$
+cat ../../tt
+#
+# summary of flask usage in Python
+#
+1) Flask 简单应用
+    Flask 类的实例用作我们的 WSGI 应用程序。
+    app = Flask(__name__)
+
+2) 调试：
+    app.run(debug=True)
+    # 默认 http://127.0.0.1:5000/
+    # or app.run(host=..., port=...)
+
+3) 路由:
+    @app.route(...)
+
+4) URL 中的变量规则：
+    @app.route('/user/<username>')
+    @app.route('/user/<converter:variable>')
+
+5) 唯一URL：
+    @app.route('/about')
+    def about():
+        # ...
+    访问 $baseurl/about 时，由 about() 函数响应，
+    访问 $baseurl/about/ 时，报错 404 "Not Found" 错误。
+
+6) URL重定向行为：
+    @app.route('/projects/')
+    def projects():
+        # ...
+    访问 $baseurl/projects 时，由 projects() 函数响应，
+    访问 $baseurl/projects/ 时，由 projects() 函数响应，
+
+7) 用 redirect() 重定向：
+    from flask import redirect
+
+    @app.route('/')
+    def index():
+        return redirect(url_for('login'))
+
+8) 错误处理:
+    @app.errorhandler(404)
+    def page_not_found(error):
+        return render_template('page_not_found.html'), 404
+
+    # or
+    abort(404)
+
+
+9) 构造 URL:
+    url_for(function_name1, function_argsn)
+    # url_for 函数会转义特殊字符和 Unicode 数据。
+
+    @app.route('/')
+    def index(): pass
+
+    @app.route('/login')
+    def login(): pass
+
+    @app.route('/user/<username>')
+    def profile(username): pass
+
+    with app.test_request_context():
+        print url_for('index')
+        print url_for('login')
+        print url_for('login', next='/')
+        print url_for('profile', username='John Doe')
+
+    # output
+    # /
+    # /login
+    # /login?next=/
+    # /user/John%20Doe
+
+10) HTTP 方法：
+    默认，@app.route() 支持 GET 方法，可以用 methods = ['POST', ...] 指定方法。
+    自 Flask 0.6起，如果存在GET，Flask 自动支持 HEAD，OPTIONS 的处理。
+
+11) Flask 中 request， session， q对象, response对象。
+    request： request.method, request.json.get(...), 
+              request.form['username'], request.args.get(...), etc.
+
+    session:  可以跨 request 使用，是在 Cookies 的基础上实现的。
+              如 session['username'], cookies etc.
+
+              from flask import Flask, session, redirect, url_for, escape, request
+
+              @app.route('/login', methods=['GET', 'POST'])
+              def login():
+                
+                if request.method == 'POST':
+                        session['username'] = request.form['username']
+                        return redirect(url_for('index'))
+                return '''
+                    <form action="" method="post">
+                        <p><input type=text name=username>
+                        <p><input type=submit value=Login>
+                    </form>
+                '''
+
+                @app.route('/logout')
+                def logout():
+                    session.pop('username', None)
+
+    cookie:     In request, request.cookies.get(...),
+                In response, response.set_cookie(...).
+
+                @app.route('/')
+                def index():
+                    resp = make_response(render_template(...))
+                    resp.set_cookie('username', 'the username')
+                    return resp
+
+    q:  从 Flask 0.10 以后, q 定义为 application context 绑定，不能跨 request 使用。
+        如 q.user = user_object1.
+
+    response: 视图函数的返回值会被自动转换为一个 response 对象。
+              可以用 make_response() 函数；
+              如果返回的是一个字符串，它会被转换为以该字符串为主体、200 OK为状态码、 MIME 类型是 text/html的 response 对象；
+              如果返回的是一个元祖，必须是 (response, status, headers) 的形式，且至少包含一个元素。
+                status值 会覆盖状态码，headsers可以是一个列表或字典，作为额外的消息标头值。
+
+12) Flask 中做单元测试：
+    简单的解决方案：
+              with app.test_request_context('/login', method='POST'):
+                assert request.path == '/login'
+                assert request.method == 'POST'
+                # ...
+
+              with app.request_context(environ):    # 传递整个 WSGI 环境给 request_context() 方法。
+                assert request.method == 'POST'
+                # ...
+
+13) 静态文件
+    默认放在 static/ 目录下，
+    url_for('static', filename=file1), 这个文件应该存储在文件系统上的 static/file1.
+
+14) 模版文件
+    Flask 配备了 Jinja2 模板引擎。
+    默认放在 templates/ 目录下，return render_template(template_name1, template_argsn)
+    模版文件可以继承，例如组织页眉、页脚、主体等情景下。
+
+    in template1.html:
+        <!doctype html>
+        <title>Hello from Flask</title>
+        {% if name %}
+            <h1>Hello {{ name }}!</h1>
+        {% else %}
+            <h1>Hello World!</h1>
+        {% endif %}
+
+    模板中可以访问 request， session， q对象, get_flashed_message() 函数。
+    从 Flask 0.5 版，.html, .htm, .xml, .xhtml 扩展名的模板中自动转义功能默认是开启的。
+    从字符串加载的模板会禁用自动转义。
+    => 如果 name 包含 HTML，它将会被自动转义。
+
+15) 上传文件
+    客户端的 HTML 表单中要设置 enctype="multipart/form-data"。
+    已上传的文件存储在内存或者文件系统中一个临时的位置。
+    可以通过 request.files 的属性访问。每个上传的文件都存储在这个字典里，近乎一个标准的 Python file 对象。
+    服务器端获取文件：
+        f = request.files[filename1]
+    服务器端保存文件：
+        f.save(...)
+    @app.route('/upload', methods=['GET', 'POST'])
+    def upload_file():
+        if request.method == 'POST':
+            f = request.files['the_file']
+            f.save('/var/www/uploads/uploaded_file.txt')
+            # ...
+
+16) 日志：logger 是一个标准日志类 Logger。
+    app.logger.error('An error occurred')
+    app.logger.warning(...)
+    app.logger.debug(...)
+
+
+17) 整合 WSGI 中间件：
+    # 例如想用 Werkzeug 包中的某个中间件来应付 lighttpd 中的 bugs:
+    from Werkzeug.contrib.fixers import LighttpCGIRootFix
+    app.wsgi_app = LighttpCGIRootFix(app.wsgi_app)
+
+
+
+# ref:  [python]flask框架快速入门   http://blog.csdn.net/cn_wk/article/details/51057187
+# ref:  Flask使用小结   http://python.jobbole.com/84003/
+# ref:  Python的Flask开发框架简单上手笔记   http://www.jb51.net/article/74935.htm
