@@ -3,7 +3,10 @@
 #
 1) Flask 简单应用
     Flask 类的实例用作我们的 WSGI 应用程序。
-    app = Flask(__name__)
+        app = Flask(__name__)
+    
+    定义应用使用的template和static目录:
+        app = Flask(__name__, template_folder=settings.TEMPLATE_FOLDER, static_folder=settings.STATIC_PATH)
 
 2) 调试：
     app.run(debug=True)
@@ -79,11 +82,40 @@
 11) Flask 中 request， session， q对象, response对象。
     request： request.method, request.json.get(...), 
               request.form['username'], request.args.get(...), etc.
-
+              
+              不管post/get使用统一的接收:
+                from flask import request
+                args = request.args if request.method == 'GET' else request.form
+                a = args.get('a', 'default')
+                
+               处理json请求:
+                in the header of request:
+                    "Content-Type": "application/json"
+                in request handler:
+                    data = request.get_json(silent=False)
+                    
+                获取post提交中的checkbox:
+                    定义:
+                        {% for page in pages %}
+                        <tr><td><input type=checkbox name=do_delete value="{{ page['id'] }}"></td></tr>
+                        {%endfor%}
+     
+                    获取:
+                        page_ids = request.form.getlist("do_delete")
+                
+                在request开始结束dosomething:    # 一般可以处理数据库连接等等
+                    @app.before_request
+                        # ...
+                        
+                    @app.teardown_request
+                        # ...
+                
     session:  可以跨 request 使用，是在 Cookies 的基础上实现的。
               如 session['username'], cookies etc.
 
-              from flask import Flask, session, redirect, url_for, escape, request
+              from flask import Flask, session, redirect, url_for, escape, request, timedelta
+              
+              app.secret_key = 'PS#yio`%_!((f_or(%)))s'
 
               @app.route('/login', methods=['GET', 'POST'])
               def login():
@@ -92,14 +124,20 @@
                         return redirect(url_for('index'))
                 return '''
                     <form action="" method="post">
-                        <p><input type=text name=username>
-                        <p><input type=submit value=Login>
+                        <p><input type="text" name="username">
+                        <p><input type="submit" value="Login">
                     </form>
                 '''
 
                 @app.route('/logout')
                 def logout():
                     session.pop('username', None)
+                    
+               session.clear()
+               # session 的过期时间, 是通过cookie实现的
+               session.permanent = True
+               app.permanent_session_lifetime = timedelta(minutes=5)
+               
 
     cookie:     In request, request.cookies.get(...),
                 In response, response.set_cookie(...).
@@ -157,10 +195,22 @@
     客户端的 HTML 表单中要设置 enctype="multipart/form-data"。
     已上传的文件存储在内存或者文件系统中一个临时的位置。
     可以通过 request.files 的属性访问。每个上传的文件都存储在这个字典里，近乎一个标准的 Python file 对象。
+    
     服务器端获取文件：
         f = request.files[filename1]
+        data = f.read()
+        
     服务器端保存文件：
         f.save(...)
+        
+    客户端上传文件:
+        <form action="/image/upload/" method="post" enctype="multipart/form-data">
+        <input type="file" name="upload"/>
+        ...
+        
+     直接返回某个文件:
+        return send_file(settings.TEMPLATE_FOLDER + 'tweet/tweet_list.html')     
+        
     @app.route('/upload', methods=['GET', 'POST'])
     def upload_file():
         if request.method == 'POST':
@@ -179,7 +229,41 @@
     from Werkzeug.contrib.fixers import LighttpCGIRootFix
     app.wsgi_app = LighttpCGIRootFix(app.wsgi_app)
 
+18) 获取用户真实ip
+    real_ip = request.headers.get('X-Real-Ip', request.remote_addr)
 
+19) 项目配置
+    1.直接
+        app.config['HOST'] = 'xxx.a.com'
+        print(app.config.get('HOST'))
+        
+    2.环境变量
+        export MyAppConfig = /path/to/settings.cfg
+        app.config.from_envvar('MyAppConfig')
+        
+    3.对象
+        class Config(object):
+            DEBUG = False
+            TESTING = False
+            DATABASE_URI = 'sqlite://:memory:'
+         
+        class ProductionConfig(Config):
+            DATABASE_URI = 'mysql://user@localhost/foo'
+            
+        app.config.from_object(ProductionConfig)
+        print(app.config.get('DATABASE_URI')       
+        
+    4.文件
+        # default_config.py
+        HOST = 'localhost'
+        PORT = 5000
+        DEBUG = True
+        
+        app.config.from_pyfile('default_config.py')
+    
+    
+    
+    
 
 # ref:  [python]flask框架快速入门   http://blog.csdn.net/cn_wk/article/details/51057187
 # ref:  Flask使用小结   http://python.jobbole.com/84003/
