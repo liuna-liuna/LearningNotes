@@ -1,22 +1,6 @@
 #
 # summary of flask usage in Python
 #
-1) 
-
-# ref:  [python]flask框架快速入门   http://blog.csdn.net/cn_wk/article/details/51057187
-# ref:  Flask使用小结   http://python.jobbole.com/84003/
-# ref:  Python的Flask开发框架简单上手笔记   http://www.jb51.net/article/74935.htm
-# ref:  
-# ref:  
-    
-
-192:py2venv naliu$ !vim
-vim ../../tt
-192:py2venv naliu$ cat !$
-cat ../../tt
-#
-# summary of flask usage in Python
-#
 1) Flask 简单应用
     Flask 类的实例用作我们的 WSGI 应用程序。
     app = Flask(__name__)
@@ -103,7 +87,6 @@ cat ../../tt
 
               @app.route('/login', methods=['GET', 'POST'])
               def login():
-                
                 if request.method == 'POST':
                         session['username'] = request.form['username']
                         return redirect(url_for('index'))
