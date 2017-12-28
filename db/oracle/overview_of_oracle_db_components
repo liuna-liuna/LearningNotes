@@ -116,8 +116,66 @@
                     ex.    > sqlplus /nolog
                         SQL> conn / as sysdba
      
-2) TODO
+2) difference among Oracle, SQL Server, MySQL
+    大型数据库应用有以下特点：海量数据、高吞吐量；复杂逻辑、高计算量，以及高可用性。
+
+    Oracle:     诞生早、结构严谨、高可用、高性能;
+                Oracle成立于1977年，早期的理论基础，反而来自于一篇IBM的论文《A Relational Model of Data for Large Shared Data Banks》;
+
+                数据文件包括：控制文件、数据文件、重做日志文件、参数文件、归档文件、密码文件。
+                              这是根据文件功能行进行划分，并且所有文件都是二进制编码后的文件，对数据库算法效率有极大的提高。
+                由于Oracle文件管理的统一性，就可以对SQL执行过程中的解析和优化，指定统一的标准：RBO（基于规则的优化器）、CBO（基于成本的优化器）
+                              通过优化器的选择，以及无敌的HINT规则，给与了SQL优化极大的自由，对CPU、内存、IO资源进行方方面面的优化。
+
+                安装文件，oracle 2g左右，mysql 100 多m。
+                从支持的数据来说，oracle由于可以使用san/nas，单个oracle数据库存储的数据和支持的用户量都远远超过mysql。
+
+                最贵，功能最多，安装最不方便，Oracle环境里的其他相关组件最多，支持平台数量一般，
+                使用中等方便，开发中等方便，运维中等方便，不开源，速度最慢，最安全。
+
+                oracle 速度慢的可能原因：
+                    1）对于并发访问内部管理数据结构严谨性
+                    2）和对业务数据并发访问严谨性高，要求ACID，如构建一致性读块，保存回滚和日志信息
+                    3）维护各种b-tree， bitmap index，物化视图等等
+                    4）处理各种trigger
+                    5）更新各种内部性能统计
+                    6）检查各种配合是否到限制
+                但是执行快慢主要看一下几点：
+                    1）查询优化器的能力，包括数据分布统计数据的自动采集和利用，对于复杂SQL这个是关键
+                    2）并发访问的冲突粒度，是表级锁，块或页级锁，还是行级锁，读写是否冲突等等，内部数据结构 latch 的应用
+                    3）分区能力
+                    4）存储过程支持程度，因为使用存储过程能显著降低数据处理消耗
+
+                Oracle + Java
+
+    SQL Server: 集成了MS公司的各类产品及资源，提供了强大的可视化界面、高度集成的管理开发工具，在快速构建商业智能（BI）方面颇有建树。
+                MS SQL Server主要面向中小企业。
+
+                数据架构基本是纵向划分，分为：Protocol Layer（协议层）， Relational Engine（关系引擎）， Storage Engine（存储引擎）， SQLOS。
+                SQL执行过程就是逐层解析的过程，其中Relational Engine中的优化器，是基于成本的（CBO），其工作过程跟Oracle是非常相似的。
+                                               在成本之上也是支持很丰富的HINT，包括：连接提示、查询提示、表提示。
+
+                Microsoft SQL Server 2014：中等贵，功能最少，安装中等方便，
+                Microsoft SQL Server 2014环境里的其他相关组件最少，支持平台最少，使用最方便，开发最方便，运维最方便，不开源，速度中等，一般安全。
+
+                SQL Server + C#
+
+
+    MySQL:      开源、简便易用。
+                其开发可追溯至1985年，而第一个内部发行版本诞生，已经是1995年。
+                其主要应用场景就是互联网开发。如 LAMP架构。
+
+                最大的一个特色，就是自由选择存储引擎。每个表都是一个文件，都可以选择合适的存储引擎。常见的引擎有 InnoDB、 MyISAM、 NDBCluster等。
+                但由于这种开放插件式的存储引擎，比如要求数据库与引擎之间的松耦合关系。从而导致文件的一致性大大降低。
+                在SQL执行优化方面，也就有着一些不可避免的瓶颈。在多表关联、子查询优化、统计函数等方面是软肋，而且只支持极简单的HINT。
+
+                免费，功能中等，安装最方便，Mysql环境里的其他相关组件数量中等，支持平台最多，
+                使用最不方便，开发最不方便，运维最不方便，有开源版本，速度最快，最不安全。
+
 
 # ref:  Oracle数据库学习笔记（一）    https://www.cnblogs.com/future2012lg/p/3208886.html
+# ref:  SQL Server 和 Oracle 以及 MySQL 有哪些区别？    https://www.zhihu.com/question/19866767
+# ref:  初学Oracle数据库，有哪些好的建议，能让初学者少走弯路？  https://www.zhihu.com/question/28753107
+# ref:  Oracle常用命令  http://www.cnblogs.com/future2012lg/archive/2013/05/30/3109423.html
 # ref:  TODO
  
