@@ -1,0 +1,123 @@
+#
+# overview_of_oracle_db_components
+#
+1) concepts:
+    Oracle Server:  即通常说的Oracle服务器, includes oracle instance and oracle database.
+    Oracle Instance:   SGA (System Global Area 系统全局区), PGA (Program Global Area 程序全局区)
+                        and 
+                       background process (DBWn, LGWR, CKPT, SMON, PMON, Archiver etc.)
+                       一般情况下 Oracle Instance 和 Database 一对一的方式，但是在Oracle集群（Oracle RAC环境）的情况下是多对一。
+                       
+                       Oracle Instance有两部分组成:
+                            Memeory Structure:  就是Oracle Instance中的SGA and PGA。
+                                                PGA和SGA是平等的关系，并不存在包含关系。
+                                                
+                                                一个Oracle Instance对应一个SGA，SGA在Oracle Instance启动的时候被分配;
+                                                SGA是一个非常大的内存空间，甚至可以占据物理内存的80%。
+                                                一个Server Process启动的时候就会分配一个PGA。
+                                                
+                                                ex. 在Linux/Unix的shell中输入【ipcs】命令查看系统共享内存分配的情况.
+                                                    > ipcs
+                                                    
+                                                in SGA, 3 types 核心的内存区域:
+                                                    Shared Pool,
+                                                    Database Buffer Cache,
+                                                    Redo Log Buffer.
+                                                    in Oracle 11g, 3 types 可选项的:
+                                                        Large Pool,
+                                                        Java Pool,
+                                                        String Pool.
+                                                ex. 查看SGA的信息:
+                                                    show sga;
+                                                    
+                                                参数 SGA_MAX_SIZE ，该参数决定了Oracle Instance SGA的最大值.
+                                                SGA可以动态增长或缩小，SGA每次增大或缩小的单位granules
+                                                （granules是SGA分配内存的基本单位，通常对于SGA小于128M的情况granules=4M，SGA超过128M的情况granules=16M ）。
+                                                SGA是一个连续分配的内存区域，而且他的分配最小单位是granules但是他的最大尺寸不能超过SGA_MAX_SIZE。
+                                                
+                                                ex. 查看SGA的组成部分:
+                                                    desc v$sga_dynamic_components;
+                                                    
+                                                    查看每个组成部分的granules:
+                                                    select component, granule_size from v$sga_dynamic_components;
+                                                    
+                                                其他参数：
+                                                    DB_CACHE_SIZE       用于设置Database Buffer Cache的内存大小
+                                                    LOG_BUFFER          用于设置Redo Log Buffer的内存大小
+                                                    SHARED_POOL_SIZE    用于设置Shared Pool的内存大小
+                                                    LARGE_POOL_SIZE     用于设置Large Pool的内存大小
+                                                    JAVA_POOL_SIZE      用于设置 Java Pool的内存大小
+                                                 
+                                                    Shared Pool（共享池）的主要作用是存储SQL解析后的内容。
+                                                                 共享池包含两块共享内存，这两块共享内存关系到数据库的性能。
+                                                                   Library Cache           存储的是经过编译解析后的SQL和PL/SQL语句的内容。
+                                                                   Data Dictionary Cache   存储着数据库控制信息, 如database files、tables、
+                                                                                           indexes、columns、users、privileges
+                                                                                           和其他的数据库对象的信息。
+                                                                       Library Cache, Data Dictionary Cache SIZE是由Shared Pool来决定的。
+                                                    ex. 可以在线去更改Shared Pool的SIZE:
+                                                       alter system set SHARED_POOL_SIZE=64M
+                                                
+                                                    Database Buffer Cache 中存储的是Data Blocks（数据块）。
+                                                            Oracle中的数据是按照Block来进行存储的，Block是Oracle存储的最基本的单位。
+                                                            在Database Buffer Cache中针对Block的SIZE的设置，对应的参数是：DB_BLOCK_SIZE。
+                                                    ex. 可以在线去更改SIZE
+                                                        alter system set DB_CACHE_SIZE=64M
+                                                        
+                                                    在性能调优的过程中，需要去监控DB_CACHE_SIZE的行为和他的统计信息，
+                                                        可以使用DB_CACHE_ADVICE参数来设定是否要收集信息，
+                                                        如果收集信息那么收集后的信息就会放在V$DB_CACHE_ADVICE表中。
+                                                        
+                                                    Redo Log Buffer: 每次对数据进行改变，在Redo Log里面就会有相应的一条记录，
+                                                                     这条记录称为Redo Entries.
+                                                    Redo Log Buffer的SIZE由参数LOG_BUFFER来决定。
+                                                    
+                                                    Large Pool主要是用于处理一些额外的工作，比如说使用RMAN进行备份需要使用Large Pool
+                                                                或者进行并行处理的时候会需要用到Large Pool。
+                                                    Java Pool Oracle支持Java编程，例如支持Java编写存储过程的。
+                                                    
+                                                
+                            Background Process Structure:  Background Process是Oracle Instance的核心，
+                                                            Oracle中有很多Background Process
+                                                            Oracle Background Process都是以【ora_ 】为前缀，以【_数据库实例名 】为后缀。
+                                                            
+                            ex. 查看Oracle的进程:
+                                    ps -ef | grep ora_
+                            
+                            Oracle的后台进程分为两类，一类是Background Process，另一类就是Server Process。
+                                                            Server Process主要是负责和User Process连接。
+                            
+                            Oracle Background Process又分为两种:
+                                mandatory:  DBWn (Database Writer), LGWR (LOG Writer), CKPT (Checkpoint), 
+                                            SMON (System Monitor), PMON (Process Monitor),
+                                optional:   ARCn (Archiver) etc.
+                            
+                        Oracle Instance启动时就会启动一些Background Process并且分配内存，Oracle Instance是易于消失的。
+                        （相对于数据库文件来说，例如：一断电就没有了）。
+                
+    Oracle Database:    Oracle Database其实就是一堆文件，这堆文件是一堆数据，他们是作为一个整体。
+                        包含三种基本的核心文件类型:
+                            data files *.dbf (存储数据), 
+                            control files *.ctl (记录数据库的一些控制信息), 
+                            redo log files *.log (只要对数据库作了修改，那么就要将修改之前的状态、修改之后的状态都会记录在Redo Log Files中，
+                                            其作用就是恢复Data File。),
+                        and
+                        password files, parameter files, archived log files.
+     
+    Oracle Connection: 指一个Oracle的客户端和后台的服务器建立的一个TCP连接.
+                        Connection建立的过程其实就是首先建立TCP连接，Oracle对用户的身份进行认证、进行安全审计等等.
+     
+    Oracle Process has 3 types:
+        Background process
+        Server process
+        User process
+        
+    Oracle Session: after a connection is set up, a session is set up.
+                    ex.    > sqlplus /nolog
+                        SQL> conn / as sysdba
+     
+2) TODO
+
+# ref:  Oracle数据库学习笔记（一）    https://www.cnblogs.com/future2012lg/p/3208886.html
+# ref:  TODO
+ 
