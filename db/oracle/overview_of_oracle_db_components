@@ -172,10 +172,22 @@
                 免费，功能中等，安装最方便，Mysql环境里的其他相关组件数量中等，支持平台最多，
                 使用最不方便，开发最不方便，运维最不方便，有开源版本，速度最快，最不安全。
 
+3) oracle 数据库管理工具
+    Navicat
+    SQL * PLUS
+
+4) PL/SQL 编程
+    TODO
+
+
 
 # ref:  Oracle数据库学习笔记（一）    https://www.cnblogs.com/future2012lg/p/3208886.html
 # ref:  SQL Server 和 Oracle 以及 MySQL 有哪些区别？    https://www.zhihu.com/question/19866767
 # ref:  初学Oracle数据库，有哪些好的建议，能让初学者少走弯路？  https://www.zhihu.com/question/28753107
 # ref:  Oracle常用命令  http://www.cnblogs.com/future2012lg/archive/2013/05/30/3109423.html
+# ref:   Oracle之内存结构（SGA、PGA）   http://blog.itpub.net/25264937/viewspace-694917/
+# ref:   oracle数据库体系结构  https://wenku.baidu.com/view/da78e0fc551810a6f5248688.html
+# ref:   Oracle PL-SQL基础语法   https://wenku.baidu.com/view/de66bec16137ee06eff91875.html?from=search
+# ref:  ORACLE PLSQL编程详解  全8篇 https://wenku.baidu.com/view/94ebfb53bb68a98271fefa74.html?from=search
 # ref:  TODO
  
