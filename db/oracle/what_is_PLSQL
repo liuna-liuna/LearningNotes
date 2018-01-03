@@ -1,0 +1,19 @@
+#
+# what is PL/SQL
+#
+1) PL/SQL = Procedural Language/SQL,过程化SQL语言, 是Oracle数据库对SQL语句的扩展。
+    PL/SQL的目的是联合数据库语言和过程语言。
+    
+2) PL/SQL的基本单位叫做一个块（block），整个PL/SQL块分三部分：声明部分（用declare开头）、执行部分（以 begin开头）
+    和异常处理部分（以exception开头）。
+    其中执行部分是必须的，其他两个部分可选。
+    
+    DECLARE...
+    BEGIN
+    ...
+    EXCETPION
+    ...
+    END
+    
+    
+# ref:  plsql   https://baike.baidu.com/item/plsql/9042661?fr=aladdin
