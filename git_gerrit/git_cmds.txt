@@ -1,0 +1,33 @@
+#
+# GIT commands
+#
+
+1) to rename a file / folder keeping its commit history
+
+	cd $parent-folder-path
+	git pull
+	git checkout -- .
+	git filter-branch --tree-filter 'if [ -f ./conf/selfservice_wrapper_configuration.json ]; then mv ./conf/selfservice_wrapper_configuration.json ./conf/selfservice_config.json; fi' HEAD
+	[optional] git pull		# if diverge appears
+	git commit -m 'rename conf/selfservice_wrapper_configuration.json to conf/selfservice_config.json keeping commit history'
+	git push
+	git rm selfservice_wrapper_configuration.json
+	git commit -m 'remove selfservice_wrapper_configuration.json after renamed it to selfservice_config.json'
+	git push
+	
+	# to double check that commit history is kept
+	git log --follow ./conf/selfservice_config.json
+	
+	
+2) to merge a file to another on same branch
+	git checkout $destination_file
+	git merge $destination_file $destination_file $source_file		# git merge ours base other
+	git commit -m '...'
+	git push origin master
+	
+	# ref:	https://stackoverflow.com/questions/10784523/how-do-i-merge-changes-to-a-single-file-rather-than-merging-commits
+	# ref:	https://www.kernel.org/pub/software/scm/git/docs/git-merge-file.html
+	
+3) to check the information of a repository
+	cd $local_workspace
+	git remote show origin
