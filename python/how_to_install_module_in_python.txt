@@ -191,5 +191,16 @@ python -m pip install pylint
 # ref:  http://stackoverflow.com/questions/19532125/cant-install-pil-after-mac-os-x-10-9
 
 
-
+#
+# install a module from source code
+#
+1) steps:
+  download source code from eg. github
+  enzip
+  cd $local_installation_path
+  [optional] python setup.py build
+  python setup.py install
+  
+# ref:  https://docs.python.org/2/install/
+  
 
