@@ -30,7 +30,26 @@
         finally:
             temp.close()
 
+   # an example of tempfile.NamedTemporaryFile
+      import tempfile
+      import commands
+      import os
+      
+      commandname = "cat"
+      
+      f = tempfile.NamedTemporaryFile(delete=False)
+      f.write("oh hello there")
+      f.close() # file is not immediately deleted because we
+                # used delete=False
+      
+      res = commands.getoutput("%s %s" % (commandname,f.name))
+      print res
+      os.unlink(f.name)
+
+
 
 # ref:  Python tempfile模块学习笔记（临时文件）_python  https://yq.aliyun.com/ziliao/134081
 # ref:  python 临时文件夹 的 tempfile模块学习   http://blog.csdn.net/liangzhao_jay/article/details/17719953
 # ref:  努力加贝的博客  http://blog.sina.com.cn/s/articlelist_2688648385_0_2.html
+# ref:   create & read from tempfile   https://stackoverflow.com/questions/5344287/create-read-from-tempfile
+
