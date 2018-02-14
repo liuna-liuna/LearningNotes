@@ -1,0 +1,16 @@
+#
+# usage of datetime, dateutil
+#
+1) how to fix exception "Can't subtract offset-naive and offset-aware datetimes"
+	
+	import datetime
+	import dateutil
+	
+	naive = dt.replace(tzinfo=None)
+	naive = dt.replace(tzinfo=dateutil.tz.tzlocal())
+
+
+
+# ref:	Can't subtract offset-naive and offset-aware datetimes	https://stackoverflow.com/questions/796008/cant-subtract-offset-naive-and-offset-aware-datetimes
+# ref:	Working with datetime module and timezones in Python	https://www.hackerearth.com/zh/practice/notes/sachin/working-with-datetime-module-and-timezones-in-python/
+
