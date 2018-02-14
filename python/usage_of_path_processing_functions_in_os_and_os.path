@@ -83,6 +83,14 @@
     os.path.walk(topdir, walkDir, None)
 
   
+4) how to check if executable exists in Python
+	
+	import os
+	
+	if os.path.isfile(fpath) and os.access(fpath, os.X_OK):
+		print('Executable {0} exists.'.format(fpath))
 
+
+# ref:	Test if executable exists in Python?	https://stackoverflow.com/questions/377017/test-if-executable-exists-in-python
 # ref:  http://blog.csdn.net/emaste_r/article/details/12442675
 # ref:  http://blog.csdn.net/b_h_l/article/details/11241841
