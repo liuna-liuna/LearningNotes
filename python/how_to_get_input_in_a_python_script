@@ -68,6 +68,43 @@
 		if __name__ == "__main__":
 			main(sys.argv[1:])
 	
+4) use argparse
+	import argparse
+	parser = argparse.ArgumentParser()
+	parser.add_argument(...)
+	args = parser.parse_args()
+	...
+
+	4.1) how to use paired --no-sth/--sth arguments
+
+		parser = argparse.ArgumentParser()
+		exclusive_grp = parser.add_mutually_exclusive_group()
+		exclusive_grp.add_argument('--foo', action='store_true', help='do foo')
+		exclusive_grp.add_argument('--no-foo', action='store_true', help='do not do foo')
+		args = parser.parse_args()
+		
+		print 'Starting program', 'with' if args.foo else 'without', 'foo'
+		print 'Starting program', 'with' if args.no_foo else 'without', 'no_foo'
+
+	4.2) how to print help message for this script
+
+		parser = argparse.ArgumentParser()
+		try:
+			options = parser.parse_args()
+		except:
+			parser.print_help()
+			sys.exit(0)
+
+	4.3) class argparse.ArgumentParser(prog=None, usage=None, description=None, epilog=None, parents=[], formatter_class=argparse.HelpFormatter, 
+								prefix_chars='-', fromfile_prefix_chars=None, argument_default=None, 
+								conflict_handler='error', add_help=True)
+			
+			
+# ref:	https://stackoverflow.com/questions/9234258/in-python-argparse-is-it-possible-to-have-paired-no-something-something-arg
+# ref:	https://stackoverflow.com/questions/4042452/display-help-message-with-python-argparse-when-script-is-called-without-any-argu
+# ref:	https://docs.python.org/2/library/argparse.html
+
+
 
 # ref doc: http://www.tutorialspoint.com/python/python_command_line_arguments.htm
 
