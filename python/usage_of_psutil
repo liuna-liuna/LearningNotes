@@ -1,0 +1,19 @@
+#
+# usage of psutil 
+#
+1) how to check if program is running
+	
+	import psutil
+	
+	print(psutil.pids()) # Print all pids
+	
+	# To access the process information, use:
+	for pid in psutil.pids():
+		p = psutil.Process(pid)
+		if p.name() == "java":
+			print("cmdline for a java program: " + str(p.cmdline()))
+
+
+# ref:	Checking if program is running	https://stackoverflow.com/questions/37678954/checking-if-program-is-running
+	
+	
