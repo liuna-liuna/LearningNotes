@@ -139,6 +139,21 @@ Open a pipe to/from a command returning a file object.
                ...
             subprocess.CalledProcessError: Command 'exit 1' returned non-zero exit status 1
 
+        e) how to hide output of subprocess in Python 2.7
+	        <= redirect the output to DEVNULL
+	        
+	        import os
+	        import subprocess
+	        FNULL= open(os.devnull, 'w')
+	        retcode = subprocess.call(['echo', 'foo'], stdout=FNULL, stderr=subprocess.STDOUT)
+	        
+	        # or
+	        with open(os.devnull, 'w') as FNULL:
+	        	...
+	
+# ref:	How to hide output of subprocess in Python 2.7	https://stackoverflow.com/questions/11269575/how-to-hide-output-of-subprocess-in-python-2-7
+
+        
 
     # ref:  https://docs.python.org/2/library/subprocess.html
     # ref:  http://www.cnblogs.com/vamei/archive/2012/09/23/2698014.html
