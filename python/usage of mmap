@@ -1,0 +1,115 @@
+#
+# usage of mmap
+#
+1) mmap — Memory-mapped file support
+	Memory-mapped file objects behave like both strings and like file objects. Unlike normal string objects, however, these are mutable. 
+	You can use mmap objects in most places where strings are expected; for example, you can use the re module to search through a memory-mapped file. 
+	Since they’re mutable, you can change a single character by doing obj[index] = 'a', or change a substring by assigning to a slice: obj[i1:i2] = '...'. 
+	You can also read and write data starting at the current file position, and seek() through the file to different positions.
+
+	A memory-mapped file is created by the mmap constructor, which is different on Unix and on Windows. In either case you must provide a file descriptor 
+		for a file opened for update. If you wish to map an existing Python file object, use its fileno() method to obtain the correct value 
+		for the fileno parameter. Otherwise, you can open the file using the os.open() function, which returns a file descriptor directly 
+		(the file still needs to be closed when done).
+		
+	class mmap.mmap(fileno, length[, tagname[, access[, offset]]]) (Windows version)
+	class mmap.mmap(fileno, length[, flags[, prot[, access[, offset]]]]) (Unix version)
+
+
+2) examples:
+
+	Example 1. a simple way of using mmap
+		import mmap
+		
+		# write a simple example file
+		with open("hello.txt", "wb") as f:
+			f.write("Hello Python!\n")
+		
+		with open("hello.txt", "r+b") as f:
+			# memory-map the file, size 0 means whole file
+			mm = mmap.mmap(f.fileno(), 0)
+			# read content via standard file methods
+			print mm.readline()  # prints "Hello Python!"
+			# read content via slice notation
+			print mm[:5]  # prints "Hello"
+			# update content using slice notation;
+			# note that new content must have same size
+			mm[6:] = " world!\n"
+			# ... and read again using standard file methods
+			mm.seek(0)
+			print mm.readline()  # prints "Hello  world!"
+			# close the map
+			mm.close()
+			
+	Example 2. how to create an anonymous map and exchange data between the parent and child processes:
+		import mmap
+		import os
+		
+		mm = mmap.mmap(-1, 13)
+		mm.write("Hello world!")
+		
+		pid = os.fork()
+		
+		if pid == 0:  # In a child process
+			mm.seek(0)
+			print mm.readline()
+		
+			mm.close()
+	
+	Example 3. read file content: first line, a couple of bytes 
+		import mmap
+		import contextlib
+		
+		with open('lorem.txt', 'r') as f:
+			with contextlib.closing(mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)) as m:
+				print 'First 10 bytes via read :', m.read(10)
+				print 'First 10 bytes via slice:', m[:10]
+				print '2nd   10 bytes via read :', m.read(10)
+			
+	Example 4. search for a string in a file
+		If your file is not too large, you can read it into a string, and just use that (easier and often faster than reading and checking line per line):
+			if 'blabla' in open('example.txt').read():
+				print("true")
+		
+		Another example using open(...).read():
+			def CheckUserExists(user):
+				with open("C:/~/database.txt", 'r') as file:
+					if re.search('^{0}$'.format(re.escape(user)), file.read(), flags=re.M):
+						return True
+					else:
+						return False
+			
+			username = input("Please enter you Username: ")
+			if CheckUserExists(username): # it's redundant to check if == True here
+				print("You exist!")
+			else:
+				print("This user does not exist...")
+				
+		Another trick: you can alleviate the possible memory problems by using mmap.mmap() to create a "string-like" object 
+			that uses the underlying file (instead of reading the whole file in memory):
+			import mmap
+			
+			f = open('example.txt')
+			s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
+			if s.find('blabla') != -1:
+				print('true')
+
+		NOTE: in python 3, mmaps behave like bytearray objects rather than strings, so the subsequence you look for with find() 
+			has to be a bytes object rather than a string as well, eg. s.find(b'blabla'):
+			#!/usr/bin/env python3
+			import mmap
+			
+			with open('example.txt', 'rb', 0) as file, \
+				mmap.mmap(file.fileno(), 0, access=mmap.ACCESS_READ) as s:
+				if s.find(b'blabla') != -1:
+					print('true')
+					
+		You could also use regular expressions on mmap e.g., case-insensitive search: if re.search(br'(?i)blabla', s):
+
+
+	
+# ref:	https://docs.python.org/2/library/mmap.html
+# ref:	https://pymotw.com/2/mmap/
+# ref:	https://stackoverflow.com/questions/4940032/how-to-search-for-a-string-in-text-files
+# ref:	https://stackoverflow.com/questions/26391805/check-if-string-exists-in-a-text-file
+
