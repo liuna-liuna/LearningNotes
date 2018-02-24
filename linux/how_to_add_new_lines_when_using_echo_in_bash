@@ -1,0 +1,24 @@
+#
+# how to add new lines when using echo in bash
+#
+1) echo -e 
+        # echo -e 'line1\nline2'
+        line1
+        line2
+
+    or
+    
+        # shopt -s xpg_echo
+        # echo 'line1\nline2'
+        line1
+        line2
+
+2) printf
+        # printf 'line1\nline2\n'
+        line1
+        line2
+
+
+# ref:  https://unix.stackexchange.com/questions/219268/how-to-add-new-lines-when-using-echo
+# ref:  https://stackoverflow.com/questions/20536112/how-to-insert-a-new-line-in-linux-shell-script
+
