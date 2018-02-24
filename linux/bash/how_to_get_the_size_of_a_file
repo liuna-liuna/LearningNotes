@@ -1,0 +1,18 @@
+#
+# how to get the size of a file
+#
+1) stat -c%s "$file"
+
+    e.g.
+        stat --printf="%s" file.any
+     
+     or
+        #!/bin/bash
+        FILENAME=/home/heiko/dummy/packages.txt
+        FILESIZE=$(stat -c%s "$FILENAME")
+        echo "Size of $FILENAME = $FILESIZE bytes."
+
+2) wc -c "$filename" | awk '{print $1}'
+
+
+# ref:  https://unix.stackexchange.com/questions/16640/how-can-i-get-the-size-of-a-file-in-a-bash-script
