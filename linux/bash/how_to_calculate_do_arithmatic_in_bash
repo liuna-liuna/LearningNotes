@@ -1,12 +1,45 @@
 #
 # how to calculate / do arithmatic in bash
 #
-1) for integer:	two formats:
-	$[ expression ] , deprecated
-	$((expression)) , better
+1) for integer:	5 formats:
+	$[ expression ] , deprecated;
+	$((expression)) , better;
+	could also use declare;
+	could also use expr;
+	could also use let.
 	
-	ex. echo 8 % 7 = $((8 % 7))
+	e.g. echo 8 % 7 = $((8 % 7))
 		echo 2 ^ 8 = $[ 2 ** 8 ]
+		
+		$ n=6/3
+		$ echo $n
+		6/3
+		$ declare -i n
+		$ n=6/3
+		$ echo $n
+		2
+
+		$ z=5
+		$ z=`expr $z+1`   ---- Need spaces around + sign.
+		$ echo $z
+		5+1
+		$ z=`expr $z + 1`
+		$ echo $z
+		6
+
+		$ let z=5
+		$ echo $z
+		5
+		$ let z=$z+1
+		$ echo $z
+		6
+		$ let z=$z + 1     # --- Spaces around + sign are bad with let
+		-bash: let: +: syntax error: operand expected (error token is "+")
+		
+		$let z=z+1         # --- look Mom, no $ to read a variable.
+		$echo $z
+		7
+
 
 2) for float: using bc / dc
 	echo "scale=10; ${userinput}" | bc 
@@ -18,5 +51,6 @@
 	python -c "print 20+5/2"
 	awk "BEGIN {print 100/3}"
 
-	# ref doc:	http://unix.stackexchange.com/questions/40786/how-to-do-integer-float-calculations-in-bash-or-other-languages-frameworks
+# ref:	http://unix.stackexchange.com/questions/40786/how-to-do-integer-float-calculations-in-bash-or-other-languages-frameworks
+# ref:	http://faculty.salina.k-state.edu/tim/unix_sg/bash/math.html
 	
