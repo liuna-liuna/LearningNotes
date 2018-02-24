@@ -1,5 +1,5 @@
 #
-# how to check the modified time of a file on CentOS
+# how to check the modified time of a file
 #
 Method1. use stat
 		stat -c'%n %y' /usr/share/tomcat5/webapps/lncmd*
