@@ -99,10 +99,23 @@
 								prefix_chars='-', fromfile_prefix_chars=None, argument_default=None, 
 								conflict_handler='error', add_help=True)
 			
+	4.4) how to pass a list as option
+		parser = ArgumentParser()
+		parser.add_argument('-l', '--list', help='delimited list input', type=str)
+		args = parser.parse_args()
+		my_list = [int(item) for item in args.list.split(',')]
+		
+		Then,
+			python test.py -l "265340,268738,270774,270817" [other arguments]
+		or,
+			python test.py -l 265340,268738,270774,270817 [other arguments]
+
 			
 # ref:	https://stackoverflow.com/questions/9234258/in-python-argparse-is-it-possible-to-have-paired-no-something-something-arg
 # ref:	https://stackoverflow.com/questions/4042452/display-help-message-with-python-argparse-when-script-is-called-without-any-argu
 # ref:	https://docs.python.org/2/library/argparse.html
+# ref:	https://stackoverflow.com/questions/15753701/argparse-option-for-passing-a-list-as-option
+# ref doc: http://www.tutorialspoint.com/python/python_command_line_arguments.htm
 
 
 
