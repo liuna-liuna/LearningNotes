@@ -7,21 +7,32 @@
     b = a.reshape(2, 3), a.shape = (2, 3), a.resize(2, 3)
     hstack((a, b)) == concatenate((a, b), axis=1)
     vstack((a, b)) == concatenate((a, b), axis=0)
+    np.hstack((a, b)) == np.column_stack((a, b))
+    # example output:
+    array([[ True,  True,  True,  True,  True,  True],
+       [ True,  True,  True,  True,  True,  True],
+       [ True,  True,  True,  True,  True,  True]])
+    np.row_stack((a, b))
     hsplit, vsplit, dsplit, split
     a.tolist()
+    np.fromstring(s1, dtype=int)
     np.msort(a), np.sort(a), np.argsort(a)
     np.sort_complex(a)
     indices = np.searchsorted(a, b), np.insert(a, indices, b)
     a.astype(int)
+    barray = d.astype(bool), barray = np.array([True, False, False, True])
+    barray.any(), barray.all()
+    np.unique(a), np.in1d(a, b_array)
     np.where(cond), np.argwhere(cond), np.condition(cond), np.extract(cond, a), np.take(a, indices)
     np.argmin(a), np.argmax(a)
-    np.maximum(a, b, c), np.minimum(a, b, c)
+    np.maximum(a, b, c), np.minimum(a, b, c) # element-level max, min, N ndarrays.
     a.fill(b)
     np.exp(a)
     np.arange(start, end_exclude, step), np.linspace(start, end_include, N)
     np.mod(a, n) == a%n, np.fmod(a, n)
+    np.modf(a)  # output: two arrays: one is array of fractions, one is integer part in float type.
     np.mean(a), np.average(n)
-    np.pth(a) = max(a) - min(a)
+    np.ptp(a) = max(a) - min(a)
     np.var(a), np.std(a), np.sqrt(a),
     np.log(a),
     np.dot(a),
@@ -52,7 +63,8 @@
     a.T, a.I, a.trace(), a.diagonal(),
     np.dot(a, b), np.inner(a, b), np.outer(a, b),
     np.cov(x), np.cov(x, y),
-    np.corrcoef(x, y).
+    np.corrcoef(x, y),
+    np.inv(m), np.qr(m)
     
 4) for polymonial:
     poly = np.polyfit(x, a, n),
