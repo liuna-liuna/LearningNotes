@@ -100,6 +100,46 @@
         anim = animation.FuncAnimation(fig, update, generate, interval=150)
         plt.show()
 
+5) matplotlib 用 imshow 绘制二维图
+        import matplotlib.pyplot as plt
+
+		points = np.arange(-5, 5, 0.01)
+		X, Y = np.meshgrid(points, points)
+		Z = np.sqrt(X**2 + Y**2)
+		
+		plt.imshow(Z, cmap=plt.cm.gray)
+		plt.colorbar()
+		plt.draw()
+	
+6) matplotlib 用 contourf, contour 绘制等高线图
+	
+		import matplotlib.pyplot as plt
+		import numpy as np
+
+		def f(x, y):
+			return (1 - x/2 + x**5 + y**3) / np.exp(- x**2 - y**2)
+			
+		# define input data
+		N = 256
+		x = np.linspace(-3, 3, N)
+		y = np.linspace(-3, 3, N)
+		# generate grid data
+		X, Y = np.meshgrid(x, y)
+
+		# visualize
+		# fill in the color of equal-height-coutour, 
+		#	8 = how many parts is the contour devided.
+		plt.contourf(X, Y, f(X, Y), 8, alpha=0.75, cmap=plt.cm.hot)
+		# draw the contour
+		C = contour(X, Y, f(X, Y), 8, colors='black', linewidth=0.5)
+		# write the numbers to contour
+		plt.clabel(C, inline=True, fontsize=10)
+		# remove ticks on axis
+		plt.xticks(())
+		plt.yticks(())
+		plt.show()
+
+
 # ref:  【python数据挖掘课程】十五.Matplotlib调用imshow()函数绘制热图   
 #         http://blog.csdn.net/Eastmount/article/details/73392106?locationNum=5&fps=1
 # ref:   matplotlib 画图  http://blog.csdn.net/blog_empire/article/category/2556533
