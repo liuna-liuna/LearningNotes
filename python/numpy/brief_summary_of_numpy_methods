@@ -16,7 +16,13 @@
     hsplit, vsplit, dsplit, split
     a.tolist()
     np.fromstring(s1, dtype=int)
-    np.msort(a), np.sort(a), np.argsort(a)
+    # np.msort(a) = np.sort(a, axis=0)
+    np.msort(a)
+    # e.x. a = array([('Galahad', 1.7, 38), ('Arthur', 1.8, 41),
+           ('Lancelot', 1.8999999999999999, 38)],
+          dtype=[('name', '|S10'), ('height', '<f8'), ('age', '<i4')])
+    np.sort(a), np.sort(a, axis=1, order=['age', 'height'])
+    np.argsort(a)
     np.sort_complex(a)
     indices = np.searchsorted(a, b), np.insert(a, indices, b)
     a.astype(int)
@@ -31,15 +37,18 @@
     np.arange(start, end_exclude, step), np.linspace(start, end_include, N)
     np.mod(a, n) == a%n, np.fmod(a, n)
     np.modf(a)  # output: two arrays: one is array of fractions, one is integer part in float type.
-    np.mean(a), np.average(n)
+    np.mean(a), np.average(n, weight=...)
     np.ptp(a) = max(a) - min(a)
     np.var(a), np.std(a), np.sqrt(a),
-    np.log(a),
+    np.log(a), np.log2(a), np.log10(a), np.log1p(a)
     np.dot(a),
     np.clip(x, y),
-    a.prod(), a.cumprod(),
+    a.sum(), a.cumsum(axis=...)
+    a.prod(), a.cumprod(axis=...),
     np.sign(a), np.piecewise(a, [cond], [return]),
     np.array_equal(a, b),
+    np.equal(a1, a2) == a1.__eq__(a2)   # element-wise comparison
+    np.allclose(a1, a2, rtol, atol, equal_nan=False)    # rtol = relative tolerance, atol = absolute ...
     np.isreal(a),
     np.trim_zeros(a),
     np.rint(a).
@@ -81,7 +90,8 @@
     np.linalg.solve(A, b) <=> Ax=b,
     np.linalg.eigvals(A),
     np.linalg.eig(A),
-    np.linalg.svd(A).
+    np.linalg.svd(A),
+    np.linalg.qr(A)
     
 6) for probability distribution:
     np.random.binomial(n, p, size=N),
