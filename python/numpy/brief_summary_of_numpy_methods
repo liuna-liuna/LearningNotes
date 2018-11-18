@@ -112,7 +112,16 @@
     plt.semilogx(), plt.semilogy(), plt.loglog().
     
     
-    
+ 8) for txt,  csv data in file:
+    np.genfromtxt(fname, delimiter, usecols, unpack, dtype, skip_header, skip_footer, converters, maxrows, encoding, comments, missing_values,
+                  filling_values, names, excludelist, deletechars, defaultfmt, autostrip, replace_space, case_sensitive,
+                  usemask, invalid_raise, loose)
+                  # generic function to load ASCII data from a text file with missing values handled as specified.
+    np.loadtxt(...) # a fast reader for simply formatted data without handling missing value.
+    np.mafromtxt    # return a masked array
+    np.ndfromtxt    # return a single-array
+    np.recfromtxt   # return a record array
+    np.savetxt(fname, X, fmt, delimiter, newline, header, footer, comments, encoding)   # save an array to a text file
     
     
     
