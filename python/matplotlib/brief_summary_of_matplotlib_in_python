@@ -164,4 +164,6 @@
 #         http://blog.csdn.net/Eastmount/article/details/73392106?locationNum=5&fps=1
 # ref:   matplotlib 画图  http://blog.csdn.net/blog_empire/article/category/2556533
 # ref:    matplotlib.pyplot.hist parameters   http://blog.csdn.net/claroja/article/details/72910163
+# ref:	https://matplotlib.org/examples/ticks_and_spines/ticklabels_demo_rotation.html
+# ref:	https://matplotlib.org/gallery/text_labels_and_annotations/multiline.html#sphx-glr-gallery-text-labels-and-annotations-multiline-py
 
