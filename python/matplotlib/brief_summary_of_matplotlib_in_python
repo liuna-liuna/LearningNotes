@@ -1,7 +1,7 @@
 #
 # brief summary of matplotlib in python
 #
-1) brief summary of matplotlib.pyplt:
+1) brief summary of matplotlib.pyplot:
 
     import matplotlib.pyplot as plt
     from matplotlib.dates import MonthLocator, DayLocator, DateFormatter
@@ -22,6 +22,26 @@
         plt.legend(loc='best', fancybox=True),
         plt.semilogx(), plt.semilogy(), plt.loglog(),
         plt.fill_between(x, y1, y, where=y>y.mean(), alpha=0.4).
+	
+	A complete exampel of using plt:
+		# 3.1 visualize
+				# plt.bar(x=data_midx.index.levels[0], height=data_midx.sum(level=0), log=True)
+				fig = plt.figure()
+				ax = fig.add_subplot(111)
+				ax.bar(x=data_midx.index.levels[0], height=data_midx.sum(level=0), log=True)
+				ax.set_title('crmRestApi requests count in POD {}\n              total:{}\nwith"?limit=":{}'.
+					format(reqs_urls.name, total_num, limits_num))
+				if data_midx.index.levels[0].size >= 6:
+					# set ticklabels to vertical, and tweak spacing
+					ax.set_xticklabels(data_midx.index.levels[0], rotation='vertical')
+					plt.subplots_adjust(bottom=0.3)
+				else:
+					# use default horizontal ticklabels
+					pass
+				ax.grid()
+				plt.show()
+				png_file_path = os.path.join(DATA_PATH, fn.replace(r'.json', '.png'))
+				fig.savefig(png_file_path)
 
 2) of matplotlib.finance ( or mpl_finance after matplotlib 2.0):
       import mpl_finance 
