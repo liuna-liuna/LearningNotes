@@ -23,7 +23,7 @@
         plt.semilogx(), plt.semilogy(), plt.loglog(),
         plt.fill_between(x, y1, y, where=y>y.mean(), alpha=0.4).
 	
-	A complete exampel of using plt:
+	A complete example of using plt:
 		# 3.1 visualize
 				# plt.bar(x=data_midx.index.levels[0], height=data_midx.sum(level=0), log=True)
 				fig = plt.figure()
