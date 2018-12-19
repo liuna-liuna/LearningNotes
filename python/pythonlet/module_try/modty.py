@@ -147,7 +147,7 @@
                 'withYears', 'years']
             <=> getValues(), get..., minus..., plus...
                 org.joda.time: from Period: array('i',[0, 0, 0, 1, 0, 0, 0, 0])  values
-                                    PT86400S toDurationFrom PT86400S toDurationTo       P1D toDuration  P1DtoString
+                                    PT86400S toDurationFrom, PT86400S toDurationTo,       P1D toDuration,  P1DtoString.
                 # ref: https://stackoverflow.com/questions/17940200/
                         how-to-find-the-duration-of-difference-between-two-dates-in-java
 
@@ -255,7 +255,7 @@
                      'toLocalizedPattern', 'toPattern']
                 <=> applyPattern, parse, format, to....
 
-            4) doc to https://pdit-document-repository.oraclecorp.com/display/APS/DateTime+Parser+in+Jython
+            4) doc to ...
             5) ref: https://persevere.iteye.com/blog/1755237
 
         4. module jpype 可以用来在 Python 中和 Java 交互。
@@ -327,19 +327,91 @@
 
             # ref: https://sdk.cn/news/7225
 
-        5. org.json.simple.* of Java in jython
-			TODO
+        5. org.json.simple.* package
+            5.1 json module in Python, json in java, jython: org.json.simple.* package
+            1) json module from Python2.7 can't be used in jython for version:
+            2) check version of WebLogic, jython, wlst:
+               $java weblogic.version, $java weblogic.version -verbose
+                    WebLogic Server 10.3.6.0.181022 REL9 BUNDLE Patch for BUG28764353 Thu Oct 11 01:12:14 PDT 2018
+                    WebLogic Server 10.3.6.0  Tue Nov 15 08:52:36 PST 2011 1441050
+               $java weblogic.utils.Versions | egrep -i --color 'wlst|ython|java|json|py'
+                    ANTLR Java based compiler generator Client 2.7 Mon Jun 11 12:19:48 EDT 2007  ImplVersion: 2.7.7
+                    Eclipse Java Development Tools 3.5.3 Fri May 20 04:56:54 EDT 2011  ImplVersion: 3.5.3.0
+                    Common Security SAML 2.0 Management JavaBeans 1.0 Fri Aug 19 08:44:53 MDT 2011  ImplVersion: 6.2.0.0
+                    Java.net implementation of MimePull.jar taken from Glassfish JAXWS 2.1.5 1.1 Wed Jul 27 16:50:24 MDT 2011  ImplVersion: 1.3
+                    Java.net Stax Extensions 1.0 Tue Jun 3 07:12:06 PDT 2008  ImplVersion: 1.2
+                    Java.net xml stream buffer 1.0 Fri Oct 22 10:08:31 PDT 2010  ImplVersion: 0.5
+                    Javax Enterprise Activation 1.1 Tue Apr 8 09:31:17 PDT 2008  ImplVersion: 1.1
+                    Javax Annotation 1.0 Fri Dec 25 09:02:47 PST 2009  ImplVersion: 1.0
+                    Javax Interceptor 1.0 Tue Mar 20 15:37:16 MDT 2007  ImplVersion: 1.0
+                    Javax Enterprise Beans  3.0 Mon Jun 11 12:21:01 EDT 2007  ImplVersion: 3.0.1
+                    Java Data Objects 2.0 Mon Jun 11 12:20:56 EDT 2007  ImplVersion: 2.0.1
+                    Java Enterprise Deployment APIs  1.2 Tue Mar 20 15:37:28 MDT 2007  ImplVersion: 1.2
+                    Java Enterprise Messaging  1.1 Mon Jun 11 12:21:11 EDT 2007  ImplVersion: 1.1.1
+                    Javax Server Pages  Client Capable 1.3 Tue Jun 21 09:59:39 EDT 2011  ImplVersion: 2.1
+                    Java Web Services  2.0 Tue Mar 20 15:37:37 MDT 2007  ImplVersion: 2.0
+                    Javax Enterprise Mail 1.1 Mon Jul 6 10:41:09 MDT 2009  ImplVersion: 1.4.1
+                    Java Enterprise Management APIs  1.0 Tue Mar 20 15:37:49 MDT 2007  ImplVersion: 1.0
+                    Java Persistence Client Capable 1.0 Tue Oct 7 12:18:34 PDT 2008  ImplVersion: 1.0.2
+                    Java Connector  1.5 Mon Jun 11 12:22:07 EDT 2007  ImplVersion: 1.5.1
+                    Java Authorization Contract for Containers 1.0 Wed Feb 6 15:01:03 PST 2008  ImplVersion: 1.1
+                    Javax Enterprise Servlets  Client Capable 1.0 Thu Aug 2 12:41:25 EDT 2007  ImplVersion: 2.5
+                    Javax Transaction APIs  Client Capable 1.0 Thu Aug 2 12:42:14 EDT 2007  ImplVersion: 1.1
+                    Java XML Registry 1.0 Wed Feb 6 15:01:03 PST 2008  ImplVersion: 1.0
+                    Java XML Soap Extensions 1.3 Mon Jun 11 12:22:59 EDT 2007  ImplVersion: 1.3.1.0
+                    Java Stream XML Extensions 1.1 Mon Jun 11 12:23:05 EDT 2007  ImplVersion: 1.1.1.0
+                    Java API for XML-based RPC   1.2 Mon Jun 11 12:23:10 EDT 2007  ImplVersion: 1.2.1
+                    WebLogic java compiler utils package Client Capable 1.2 Thu Feb 11 03:38:50 EST 2010  ImplVersion: 1.2.0.0
+                    Weblogic Server Java Authentication Helper Classes Client Capable 1.1 Mon Jul 5 20:42:35 EDT 2010  ImplVersion: 1.1.0.0
+
+                $java org.python.util.jython
+                    *sys-package-mgr*: can't create package cache dir, '$PRODPATH1/wlserver_10.3/server/lib/
+                        weblogic.jar/cachedir/packages'
+                    Jython 2.2.1 on java1.7.0_191
+
+            3) path of jython.jar, wlst.sh, weblogic.jar
+                $PRODPATH1/oracle_common/util/jython/jython.jar
+                $PRODPATH1/oracle_common/common/bin/wlst.sh
+                $PRODPATH1/wlserver_10.3/common/bin/wlst.sh
+                $PRODPATH1/wlserver_10.3/server/lib/weblogic.jar
+
+            5.2. org.json.simple.* of Java in jython
+            1) frequently-used packages:
+                import org.json.simple.parser.JSONParser
+                import org.json.simple.JSONObject
+                import org.json.simple.JSONArray
+
+            2) class content:
+            dir(JSONParser()):
+                ['S_END', 'S_INIT', 'S_IN_ARRAY', 'S_IN_ERROR', 'S_IN_FINISHED_VALUE', 'S_IN_OBJECT', 'S_IN_PAIR_VALUE',
+                 'S_PASSED_PAIR_KEY', '__init__', 'class', 'equals', 'getClass', 'getPosition', 'hashCode',
+                 'notify', 'notifyAll', 'parse', 'position', 'reset', 'toString', 'wait']
+             <=> parse, class
+
+            dir(JSONObject()):
+                ['__init__', 'class', 'clear', 'clone', 'containsKey', 'containsValue', 'empty', 'entrySet', 'equals',
+                'escape', 'get', 'getClass', 'hashCode', 'isEmpty', 'keySet', 'notify', 'notifyAll', 'put', 'putAll',
+                'remove', 'size', 'toJSONString', 'toString', 'values', 'wait', 'writeJSONString']
+            <=> get, keySet, values, entrySet, contains..., put..., remove, clear, ...empty,
+                clone, class, size, to...String.
+
+            dir(JSONArray()):
+                ['__init__', 'add', 'addAll', 'class', 'clear', 'clone', 'contains', 'containsAll', 'empty',
+                'ensureCapacity', 'equals', 'get', 'getClass', 'hashCode', 'indexOf', 'isEmpty', 'iterator',
+                'lastIndexOf', 'listIterator', 'notify', 'notifyAll', 'remove', 'removeAll', 'retainAll',
+                'set', 'size', 'subList', 'toArray', 'toJSONString', 'toString', 'trimToSize',
+                'wait', 'writeJSONString']
+            <=> get, set, ...iterator, add..., contains..., clear, ...empty,
+                clone, class, size, to..., ...indexOf, subList.
 
         Notes: how to test in jython, more precisely in $java weblogic.WLST:
-                on <host> in <env>:
+                on ... in ... POD:
                 pushd /fsnadmin/aia/naliu/
-				export PRODPATH=...
-				export PRODPATH2=...
-                # export CLASSPATH=$PRODPATH/wlserver_10.3/server/lib/weblogic.jar:${FASS_CLASSP}:$CLASSPATH
-                export CLASSPATH=$PRODPATH2/lib/natty-0.11.jar:$PRODPATH2/lib/antlr-runtime-3.5.2.jar:$PRODPATH2/lib/slf4j-api-1.7.10.jar:$PRODPATH/jdk/:$CLASSPATH
-                export WLS_HOME=$PRODPATH/wlserver_10.3
-                export java=$PRODPATH/jdk/bin/java
-                . $WLS_HOME/server/bin/setWLSEnv.sh
+                # export CLASSPATH=$PRODPATH1/wlserver_10.3/server/lib/weblogic.jar:${FASS_CLASSP}:$CLASSPATH
+                export CLASSPATH=$PRODPATH2/modules/lib/json-simple-1.1.1.jar:$PRODPATH2/lib/natty-0.11.jar:$PRODPATH2/lib/antlr-runtime-3.5.2.jar:$PRODPATH2/lib/slf4j-api-1.7.10.jar:$PRODPATH1/jdk/:$CLASSPATH
+                export WL_HOME=$PRODPATH1/wlserver_10.3
+                export java=$PRODPATH1/jdk/bin/java
+                . $WL_HOME/server/bin/setWLSEnv.sh
                 $java weblogic.WLST datetime_parser_injy.py
 
     MODIFIED  (MM/DD/YY)
@@ -603,13 +675,177 @@ def try_jpype():
     print('jpype shutdown JVM:\t{}'.format(res))
 
 
+"""try org.json.simple.*
+"""
+def try_simplejson():
+    # JSON_STR as input str in JSON format to test json
+    JSON_STR = """{
+    	  "oid": {
+    		"port": "port2",
+    		"host": "host2",
+    		"state": "OK"
+    	  },
+    	  "domains": [
+    		{
+    		  "servers": [
+    			{
+    			  "port": port3,
+    			  "server_name": "AdminServer",
+    			  "stdout": "domain_path1/servers/AdminServer/logs/AdminServer.out",
+    			  "host": "host3",
+    			  "state": "RUNNING"
+    			},
+    			{
+    			  "port": port4,
+    			  "server_name": "HomePageServer_1",
+    			  "stdout": "domain_path4/servers/HomePageServer_1/logs/HomePageServer_1.out",
+    			  "host": "host4",
+    			  "state": "RUNNING"
+    			}
+    		  ],
+    		  "state": "OK",
+    		  "domain_name": "domain1"
+    		}
+    	  ],
+    	  "state": "OK",
+    	  "pod_name": "pod1"
+    	  "db_conn": {
+    		"db_instances": [
+    		  {
+    			"instance_url": "jdbc:oracle:thin:@db1:port1:instance1",
+    			"state": "CONN_OK"
+    		  }
+    		],
+    		"db_service": [
+    		  {
+    			"service_url": "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=db1)(PORT=port1)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=service1)(INSTANCE_NAME=instance1)))",
+    			"state": "CONN_OK"
+    		  }
+    		],
+    		"db_connecton_type": "MDS",
+    		"state": "OK"
+    	  }
+    	}"""
+
+    # check if python module json works?
+    # <=> json module in python not working in jython 2.2.1.
+    try:
+        # import sys
+        # sys.path.insert(1, '/u01/SRE/PYTHON_BASE/python/lib/python2.7/site-packages/pandas/io/json')
+        # # File "/u01/SRE/PYTHON_BASE/python/lib/python2.7/site-packages/pandas/io/json/json.py", line 11
+        # #         from pandas.io.common import (get_filepath_or_buffer, _get_handle,
+        # #                                      ^
+        # # SyntaxError: invalid syntax
+
+        import json
+        json_obj = json.loads(JSON_STR)
+    except ImportError:
+        print('Exception raised in import json:\n%s\nIgnore. Using org.json.simple.*.\n' % str(e))
+        # do nothing
+        pass
+
+    import org.json.simple.parser.JSONParser as JSONParser
+    import org.json.simple.JSONObject as JSONObject
+    import org.json.simple.JSONArray as JSONArray
+
+    # try JSONParser
+    parser = JSONParser()
+    json_obj = parser.parse(JSON_STR)
+    print('str in JSON format after JSONParser().parse(JSON_STR):\n%s\n' % (json_obj))
+    print('\ttype(json_obj):\t%s' % (type(json_obj)))    # <type 'javainstance'>
+    print('\tjson_obj.class:\t%s\n' % (json_obj.class))    # org.json.simple.JSONObject
+    print("dir(JSONParser().parse(JSON_STR)):\n%s\n" % (dir(json_obj)))
+
+    # to get data from  <type 'javainstance'> of result of JSONParser.parse()
+    oid_obj = json_obj['oid']
+    print("json_obj['oid']:\t%s" % oid_obj)
+    print("\tjson_obj['oid'] type:\t%s" % type(oid_obj))  # <type 'javainstance'>
+    print('\toid_obj.class:\t%s\n' % (oid_obj.class))    # org.json.simple.JSONObject
+
+    # print("\tjson_obj['oid']['host']:\t%s" % oid_obj['host'])
+    # print("\tjson_obj['oid']['port']:\t%s" % oid_obj['port'])
+    print("\ndir(json_obj['oid']):\n%s\n" % (dir(oid_obj)))
+    oid_json_str = oid_obj.toJSONString()
+    print("\t.toJSONString(), type:\t%s:\n\t%s\n" % (type(oid_json_str), oid_json_str))
+    oid_str = oid_obj.toString()
+    print("\t.toString(), type:\t%s:\n\t%s\n" % (type(oid_str), oid_str))
+    print("\t.keySet:\t%s" % (oid_obj.keySet()))
+    print("\t.values:\t%s\n" % (oid_obj.values()))
+    print("\t.oid_obj.get('host'):\t%s\n" % (oid_obj.get('host')))
+    # iterate
+    for k, v in zip(oid_obj.keySet(), oid_obj.values()):
+        print('\t%s: %s' % (k, v))
+
+    # module info
+    print("dir(JSONParser()):\n%s\n" % (dir(JSONParser())))
+    print("dir(JSONObject()):\n%s\n" % (dir(JSONObject())))
+    print("dir(JSONArray()):\n%s\n" % (dir(JSONArray())))
+
+    # try JSONObject, JSONArray
+    # copy domains -> servers here
+    # [both work]
+    # domains_obj = json_obj.get('domains')
+    domains_obj = json_obj['domains']
+    print("\ttype(domains_obj):\t%s" % (type(domains_obj)))  # <type 'javainstance'>
+    print("\tdomains_obj.class:\t%s\n" % (domains_obj.class))  # org.json.simple.JSONArray
+    print("domains_obj:\n%s\n" % (domains_obj))
+    print("dir(domains_obj):\n%s\n" % (dir(domains_obj)))
+
+    # [NOT work] b/c <type 'javainstance'>, should be Java Array type, no .get, [0] works.
+    #   servers_obj = domains_obj.get('servers')
+    servers_obj = domains_obj[0].get('servers')
+    print("type(servers_obj):\t%s" % (type(servers_obj)))       # <type 'javainstance'>
+    print("servers_obj.class:\t%s\n" % (servers_obj.class))     # org.json.simple.JSONArray
+    print("servers_obj:\n%s\n" % (servers_obj))
+    print("dir(servers_obj):\n%s\n" % (dir(servers_obj)))
+
+    servers_arr = JSONArray()
+    for server in servers_obj:
+        # iterate over a list
+        obj1 = JSONObject()
+        print("\ttype(server):\t%s" % (type(server)))           # <type 'javainstance'>
+        # [both work]
+        print("\tserver.class:\t%s\n" % (server.class))           # org.json.simple.JSONObject
+        # print("\tserver.getClass():\t%s\n" % (server.getClass())) # org.json.simple.JSONObject
+        print("dir(server):\n%s\n" % (dir(server)))
+        for entry in server.entrySet():
+            # print("original entry in servers_obj.entrySet():\n%s" % (entry))    # server_name=AdminServer
+            # print("\ttype(entry):\t%s" % (type(entry))) # <type 'javainstance'>
+            # print("dir(entry):\n%s\n" % (dir(entry)))
+
+            # [both work]
+            # k, v = entry.toString().split('=')
+            k, v = entry.key, entry.value
+            obj1[k] = v
+            # print("copied to obj1:\n%s\n" % (obj1))
+        servers_arr.add(obj1)
+    print("copied to servers_arr:\n%s\n" % (servers_arr))
+
+    # clone domains_obj Java org.json.simple.JSONArray type to a new JSONArray
+    domains_arr2 = domains_obj.clone()
+    print("original: id(domains_obj):\t%s" % (id(domains_obj)))
+    print("after domains_obj.clone(), id:\t%s,\tcontent:\n%s\n" % (id(domains_arr2), domains_arr2))
+    # clone domains_obj Java org.json.simple.JSONArray type to a new JSONArray
+    servers_arr2 = servers_obj.clone()
+    print("original: id(servers_obj):\t%s" % (id(servers_obj)))
+    print("after servers_obj.clone(), id:\t%s,\tcontent:\n%s\n" % (id(servers_arr2), servers_arr2))
+
+    # clone server in servers_obj Java org.json.simple.JSONObject type to a new JSONObject
+    for server in servers_obj:
+        server_obj2 = server.clone()
+        print("original: id(server):\t%s" % (id(server)))
+        print("after server.clone(), id:\t%s,\tcontent:\n%s\n" % (id(server_obj2), server_obj2))
+
+
+
 # main entry
 def main():
     # linecache
     # try_linecache()
     # try_update_a_file()
     # try_jpype()
-    try_natty()
+    # try_natty()
+    try_simplejson()
 
     # TODO
     pass
