@@ -731,8 +731,8 @@ def try_simplejson():
     # <=> json module in python not working in jython 2.2.1.
     try:
         # import sys
-        # sys.path.insert(1, '/u01/SRE/PYTHON_BASE/python/lib/python2.7/site-packages/pandas/io/json')
-        # # File "/u01/SRE/PYTHON_BASE/python/lib/python2.7/site-packages/pandas/io/json/json.py", line 11
+        # sys.path.insert(1, '$PRODPATH3/PYTHON_BASE/python/lib/python2.7/site-packages/pandas/io/json')
+        # # File "$PRODPATH3/PYTHON_BASE/python/lib/python2.7/site-packages/pandas/io/json/json.py", line 11
         # #         from pandas.io.common import (get_filepath_or_buffer, _get_handle,
         # #                                      ^
         # # SyntaxError: invalid syntax
