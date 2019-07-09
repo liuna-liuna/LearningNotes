@@ -40,7 +40,7 @@ Example 3.
  -- 简单 case 语句
  SELECT Name,
    CASE Sex WHEN 1 THEN '男'
-            WHEN 1 THEN '男'
+            WHEN 0 THEN '女'
             ELSE '其他'
    END AS Sex
   FROM people;
@@ -49,7 +49,7 @@ Example 3.
   SELECT Name,
          Sex = 
    CASE WHEN 1 THEN '男'
-            WHEN 1 THEN '男'
+            WHEN 0 THEN '女'
             ELSE '其他'
    END AS Sex
   FROM people;
